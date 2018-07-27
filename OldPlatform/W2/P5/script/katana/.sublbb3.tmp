@@ -1,0 +1,49 @@
+from Katana import KatanaFile, version, FarmAPI,Nodes3DAPI
+import NodegraphAPI,sys,json,os
+
+katana_scene = sys.argv[1]
+anal_txt = sys.argv[2]
+#_tid_from_cmd = sys.argv[2]
+#_inf_from_cmd = sys.argv[3]
+print katana_scene
+print anal_txt
+ 
+def kanana_analyse(katana_scene,anal_txt):
+
+
+	#yourKatanaScene = "/home/ladaojeiang/yes/demos/katana_files/aovs_prman.katana"
+	KatanaFile.Load( katana_scene ) # Loading scene /yourDirectory/yourFile.katana
+
+	render_info_dict={}
+	render_outputs={}
+	render_nodes = NodegraphAPI.GetAllNodesByType("Render")
+	if len(render_nodes) != 0:    
+		for render_node in render_nodes:
+
+			render_name=render_node.getName() 
+
+			render_node_info=Nodes3DAPI.RenderNodeUtil.GetRenderNodeInfo(render_node)
+
+			for render_output_name in render_node_info.getAllOutputNames():
+				
+				render_output=render_node_info.getOutputInfoByName(render_output_name,0)['outputFile']
+				if render_output.find('tmp')==1:
+					pass            
+				elif render_output.find('Source')>0:
+					render_outputs['Source']=render_output
+				elif render_output.find('Variance')>0:
+					render_outputs['Variance']=render_output
+				elif render_output.find('Final')>0:
+					render_outputs['Final']=render_output
+				render_info_dict[render_name]=render_outputs
+				print render_info_dict
+			anal_txt_handle = file(anal_txt, 'w')
+			anal_txt_handle.write(json.dumps(render_info_dict))
+			anal_txt_handle.close()
+		else:
+			print 'the render node 0, analysis failed!'
+			if  os.path.exists(anal_txt):
+				os.remove(anal_txt)
+			sys.exit(1)
+
+kanana_analyse(katana_scene,anal_txt)

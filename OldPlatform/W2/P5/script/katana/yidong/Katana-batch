@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+#program by Gearslogy:
+#Katana ENV SETTINGS FROM liuyangping@QQ.com
+
+#================================
+#2016.5.31 Fix the rendering 3d thread
+
+#================================
+#2016.2.27 render client can rendering the relative path abc
+
+
+#====================================
+#2016.2.23 add render dependencies
+
+
+
+#====================================
+#2016.2.20 setting for the muster network render
+
+
+#========================================
+#2015.3.5 FIX Start serveral katanas running!
+#this script is setting the Batch Rendering For katana ---2015 12 - 7
+
+echo "Gearslogy bash run the katana"
+export KATANA_RESOURCES=/opt/katana/RD/katana_plugin/KtoA/:/opt/katana/RD/katana_plugin/Gearslogy:$KATANA_RESOURCES
+export PATH=/opt/katana/RD/katana_plugin/KtoA/bin:$PATH
+export LD_LIBRARY_PATH=/opt/katana/RD/katana_plugin/KtoA/bin:$LD_LIBRARY_PATH
+export PYTHONPATH=/opt/katana/RD/katana_plugin/KtoA/python:$PYTHONPATH
+export KATANA_TMPDIR="/tmp/nzs-data"
+export TMPDIR="/tmp/nzs-data"
+#echo -e "\033[37;41m auto set the rlm server \033[0m"
+#export RLM_LICENSE=4101@10.60.5.248
+#export solidangle_LICENSE=5060@10.60.5.248
+
+#if RLM SERVER STATS : 
+scname="$1"
+scnode="$2"
+scrange="$3"
+sc_3d_thread="$4"
+sc_2d_thread="$5"
+sc_project_path="$6"
+echo "====================Debug Input Program argv====================="
+echo $scname
+echo $scnode
+echo $scrange
+echo $sc_3d_thread
+echo $sc_2d_thread
+echo "Setting the Project Path......... is $sc_project_path"
+cd $sc_project_path
+echo "===================Debug Input Program argv======================"
+
+
+if [ "$sc_3d_thread" == "" ]; then
+{
+    echo "Gearslogy-message::find set the 3d thread render is null,system will default set the 3d hreads 8"
+    $sc_3d_thread=8
+}
+fi
+
+if [ "$sc_2d_thread" == "" ]; then
+{
+    echo "Gearslogy-message::find set the 3d thread render is null,system will default set the  2d  threads 8"
+    $sc_2d_thread=8
+}
+fi
+
+
+
+sc_render_node_array=$(echo $scnode | tr "," "\n")
+for tt in $sc_render_node_array; do
+    echo "Rendering Node List -> $tt"
+done
+
+function Rendering()
+{
+   
+    for render_node in $sc_render_node_array; do
+	   	/opt/katana/katana --batch --threads3d=${sc_3d_thread} --katana-file="$scname" --render-node=$render_node -t "$scrange"
+	done
+
+}
+Rendering

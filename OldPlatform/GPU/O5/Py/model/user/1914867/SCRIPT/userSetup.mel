@@ -1,0 +1,4 @@
+print "the userSetup strat \n\n";
+dirmap -en true;
+dirmap -m "I:" "/mnt";
+print "the userSetup end\n\n";

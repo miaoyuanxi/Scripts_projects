@@ -1,0 +1,7 @@
+//Maya Preference 2017 (Release 1)
+//
+//
+
+evalDeferred("autoLoadPlugin(\"\", \"AbcImport\", \"AbcImport\")");
+evalDeferred("autoLoadPlugin(\"\", \"AbcExport\", \"AbcExport\")");
+

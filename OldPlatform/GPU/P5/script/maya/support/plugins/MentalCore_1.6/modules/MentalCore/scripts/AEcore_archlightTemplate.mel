@@ -1,0 +1,509 @@
+//  Copyright (c)2012 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_archlightTemplate ( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_archlight_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+	
+		editorTemplate -beginLayout "Distribution" -collapse 0;		
+				
+			editorTemplate -l "Light Distribution Mode" -addControl "distribution_mode" "core_archlight_DistributionModeChange";
+			
+			editorTemplate -beginLayout "Light Profile" -collapse 0;
+				editorTemplate -l "Light Profile" -addControl "profile";
+
+				editorTemplate -addSeparator;
+
+				editorTemplate -l "Rotation Preset" -addControl "rotpreset" "core_archlight_RotationPresetChange";	
+				editorTemplate -l "X" -addControl "rotx";					
+				editorTemplate -l "Y" -addControl "roty";
+				editorTemplate -l "Z" -addControl "rotz";										
+				
+			editorTemplate -endLayout;
+			
+			editorTemplate -beginLayout "Reference Light" -collapse 0;
+				editorTemplate -l "Intensity" -addControl "reference_light_intensity";				
+				editorTemplate -l "Unit of Intensity" -addControl "reference_light_units" "core_archlight_RefLightUnitsChange";
+				editorTemplate -l "Distance in Units" -addControl "reference_light_dist";
+				editorTemplate -l "Luminous Efficacy (lm/w)" -addControl "reference_light_efficacy";
+			editorTemplate -endLayout;
+			
+			editorTemplate -beginLayout "Spotlight Parameters" -collapse 0;
+				editorTemplate -l "Inner Cone Angle" -addControl "spread";
+				editorTemplate -l "Dropoff" -addControl "dropoff";
+				editorTemplate -beginNoOptimize;
+				editorTemplate -l "Use Relative Inner Cone Angle" -addControl "relative_spread";
+				editorTemplate -l "Use Cone Angles with Light Profiles" -addControl "spot_angle_profile" "core_archlight_SpotAngleProfileChange";
+				editorTemplate -endNoOptimize;
+			editorTemplate -endLayout;
+			
+		editorTemplate -endLayout;
+
+		
+		editorTemplate -beginLayout "Color" -collapse 0;						
+			editorTemplate -l "Color Mode" -addControl "colormode" "core_archlight_ColorModeChange";
+			
+			editorTemplate -addSeparator;
+				
+			editorTemplate -label "Colour Profile" -addControl "colprofile";
+			editorTemplate -l "Color" -addControl "color";
+
+			editorTemplate -addSeparator;
+			
+			editorTemplate -callCustom AEcore_archlight_tempPresetCreate AEcore_archlight_tempPresetReplace "colortemppreset";
+			editorTemplate -l "Custom Temperature" -addControl "colortemp";				
+			editorTemplate -l "Temperature Model" -addControl "colormodel";	
+		
+		editorTemplate -endLayout;
+
+
+		editorTemplate -beginLayout "Intensity" -collapse 0;					
+			editorTemplate -l "Intensity Mode" -addControl "intensitymode" "core_archlight_IntensityModeChange";
+		
+			editorTemplate -beginLayout "Relative" -collapse 0;
+				editorTemplate -l "Intensity" -addControl "intensity";
+			editorTemplate -endLayout;
+		
+			editorTemplate -beginLayout "Absolute" -collapse 0;
+				editorTemplate -l "Intensity Multiplier" -addControl "intensitymultiplier";
+				editorTemplate -l "Photon Multiplier" -addControl "photonintensitymultiplier";				
+				editorTemplate -l "Scene Unit Size" -addControl "sceneunits";
+			editorTemplate -endLayout;
+		
+			editorTemplate -beginLayout "Scale Profile" -collapse 0;
+				editorTemplate -l "Enable Profile Intensity Scaling" -addControl "scale_profile" core_archlight_ScaleProfileChange;
+				editorTemplate -l "New Peak Intensity" -addControl "scale_profile_intensity";
+				editorTemplate -l "Unit of Intensity" -addControl "scale_profile_units" "core_archlight_ScaleProfileUnitsChange";
+				editorTemplate -l "Distance in Units" -addControl "scale_profile_dist";
+				editorTemplate -l "Luminous Efficacy (lm/w)" -addControl "scale_profile_efficacy";
+			editorTemplate -endLayout;
+
+			editorTemplate -beginLayout "RGB Unit Conversion" -collapse 0;
+				editorTemplate -l "RGB Unit Conversion Preset" -addControl "rgb_unit_preset" "core_archlight_RGBPresetChange";
+				editorTemplate -l "RGB Unit Conversion" -addControl "rgb_unit_conversion";
+			editorTemplate -endLayout;
+		
+		editorTemplate -endLayout;
+				
+
+		editorTemplate -beginLayout "Advanced" -collapse 0;		
+			editorTemplate -beginLayout "Area Lights" -collapse 0;
+				editorTemplate -beginNoOptimize;
+				editorTemplate -l "Preserve Profile Shape with Area Lights" -addControl "preserve_profile_shape";
+				editorTemplate -l "Cosine Distribution" -addControl "cos_distrib";
+				editorTemplate -endNoOptimize;
+				editorTemplate -l "Cosine Exponent" -addControl "cos_exp";
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Visible Area Lights" -collapse 0;
+				editorTemplate -l "Dark Visible Area Light Backs" -addControl "area_back_black";
+				editorTemplate -l "Visible Area Intensity" -addControl "visible_area_intensity";
+				editorTemplate -l "Visible Area Falloff" -addControl "visible_area_falloff";
+				editorTemplate -l "Visible Area Exponent" -addControl "visible_area_exponent";
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Shadows" -collapse 0;
+				editorTemplate -l "Enable Shadows" -addControl "shadow_enable";
+				editorTemplate -l "Shadow Factor" -addControl "shadow_factor";
+				editorTemplate -l "Shadow Threshold" -addControl "shadow_threshold";
+		
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Attenuation" -collapse 0;
+				editorTemplate -label "Falloff Exponent" -addControl "exponent";
+				editorTemplate -addSeparator;
+				editorTemplate -l "Enable Attenuation" -addControl "atten" "core_archlight_AttenChange";
+				editorTemplate -l "Start Attenuation" -addControl "start";
+				editorTemplate -l "Stop Attenuation" -addControl "stop";
+				editorTemplate -l "Start/Stop Falloff" -addControl "atten_falloff";	
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;	
+		
+		AEmentalrayBaseTemplate($nodeName);
+		
+	editorTemplate -suppress "caching";
+	editorTemplate -suppress "nodeState";
+	
+	editorTemplate -endScrollLayout;		
+}
+				
+global proc core_archlight_DistributionModeChange ( string $nodeName )
+{
+	string $nodeAttr = $nodeName + ".distribution_mode";
+	int $value = `getAttr $nodeAttr`;		
+	
+	string $scalestring = $nodeName + ".scale_profile";
+	int $scale = `getAttr $scalestring`;		
+
+	switch ($value){		
+		case 0:
+		{
+			editorTemplate -dimControl $nodeName "profile" 1;
+			editorTemplate -dimControl $nodeName "rotpreset" 1;
+			editorTemplate -dimControl $nodeName "rotx" 1;
+			editorTemplate -dimControl $nodeName "roty" 1;
+			editorTemplate -dimControl $nodeName "rotz" 1;
+			
+			editorTemplate -dimControl $nodeName "spot_angle_profile" 1;			
+			editorTemplate -dimControl $nodeName "spread" 0;
+			editorTemplate -dimControl $nodeName "dropoff" 0;	
+			editorTemplate -dimControl $nodeName "relative_spread" 0;
+					
+			editorTemplate -dimControl $nodeName "reference_light_intensity" 0;
+			editorTemplate -dimControl $nodeName "reference_light_units" 0;
+			core_archlight_RefLightUnitsChange ($nodeName);			
+			
+									
+			editorTemplate -dimControl $nodeName "intensitymode" 1;
+			editorTemplate -dimControl $nodeName "intensity" 1;								
+			
+			editorTemplate -dimControl $nodeName "intensitymultiplier" 0;
+			editorTemplate -dimControl $nodeName "photonintensitymultiplier" 0;
+			editorTemplate -dimControl $nodeName "sceneunits" 0;			
+			
+			editorTemplate -dimControl $nodeName "rgb_unit_preset" 0;
+			core_archlight_RGBPresetChange ($nodeName);			
+			
+			
+			editorTemplate -dimControl $nodeName "scale_profile" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_intensity" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_units" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_dist" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_efficacy" 1;
+								
+			break;
+		}
+		case 1:
+		{
+			editorTemplate -dimControl $nodeName "profile" 0;
+			editorTemplate -dimControl $nodeName "rotpreset" 0;
+			core_archlight_RotationPresetChange ($nodeName);			
+			editorTemplate -dimControl $nodeName "spot_angle_profile" 0;
+			core_archlight_SpotAngleProfileChange ($nodeName);			
+					
+			editorTemplate -dimControl $nodeName "reference_light_intensity" 1;
+			editorTemplate -dimControl $nodeName "reference_light_units" 1;
+			editorTemplate -dimControl $nodeName "reference_light_dist" 1;
+			editorTemplate -dimControl $nodeName "reference_light_efficacy" 1;
+			
+			
+			editorTemplate -dimControl $nodeName "intensitymode" 0;
+			core_archlight_IntensityModeChange ($nodeName);		
+					
+						
+			break;
+		}
+	}
+
+}
+
+global proc core_archlight_SpotAngleProfileChange ( string $nodeName )
+{
+	string $nodeAttr = $nodeName + ".spot_angle_profile";
+	int $value = `getAttr $nodeAttr`;		
+	
+	string $distributionstring = $nodeName + ".distribution_mode";
+	int $distribution_mode = `getAttr $distributionstring`;		
+	
+	switch ($value){		
+		case 0:
+		{
+			if ($distribution_mode == 1)
+			{
+				editorTemplate -dimControl $nodeName "spread" 1;
+				editorTemplate -dimControl $nodeName "dropoff" 1;	
+				editorTemplate -dimControl $nodeName "relative_spread" 1;						
+			}
+			break;
+		}
+		case 1:
+		{			
+			editorTemplate -dimControl $nodeName "spread" 0;
+			editorTemplate -dimControl $nodeName "dropoff" 0;
+			editorTemplate -dimControl $nodeName "relative_spread" 0;					
+			break;
+		}
+	}
+
+}
+
+global proc core_archlight_RotationPresetChange ( string $nodeName )
+{	
+	string $nodeAttr = $nodeName + ".rotpreset";
+	int $value = `getAttr $nodeAttr`;
+	if ($value == 1)
+	{		
+		editorTemplate -dimControl $nodeName "rotx" 0;	
+		editorTemplate -dimControl $nodeName "roty" 0;	
+		editorTemplate -dimControl $nodeName "rotz" 0;	
+	}
+	else 
+	{
+		editorTemplate -dimControl $nodeName "rotx" 1;	
+		editorTemplate -dimControl $nodeName "roty" 1;	
+		editorTemplate -dimControl $nodeName "rotz" 1;	
+	}
+}
+
+global proc core_archlight_RefLightUnitsChange ( string $nodeName )
+{	
+	string $nodeAttr = $nodeName + ".reference_light_units";
+	int $value = `getAttr $nodeAttr`;
+	switch ($value)
+	{
+		case 0:	
+		case 1:	
+		case 3:
+		{
+			editorTemplate -dimControl $nodeName "reference_light_dist" 1;	
+			editorTemplate -dimControl $nodeName "reference_light_efficacy" 1;	
+			break;
+		}
+		case 2:
+		{
+			editorTemplate -dimControl $nodeName "reference_light_dist" 0;	
+			editorTemplate -dimControl $nodeName "reference_light_efficacy" 1;	
+			break;
+		}	
+		case 4:
+		case 5:				
+		case 7:
+		{
+			editorTemplate -dimControl $nodeName "reference_light_dist" 1;	
+			editorTemplate -dimControl $nodeName "reference_light_efficacy" 0;	
+			break;
+		}	
+		case 6:		
+		{
+			editorTemplate -dimControl $nodeName "reference_light_dist" 0;	
+			editorTemplate -dimControl $nodeName "reference_light_efficacy" 0;	
+			break;		
+		}	
+	}
+}
+
+
+
+global proc core_archlight_ColorModeChange (string $nodeName) {
+	string $nodeAttr = $nodeName + ".colormode";
+	int $value = `getAttr $nodeAttr`;			
+	switch ($value){		
+		case 0:
+		{
+			editorTemplate -dimControl $nodeName "colprofile" 0;	
+			editorTemplate -dimControl $nodeName "color" 0;	
+			editorTemplate -dimControl $nodeName "colortemppreset" 1;
+			editorTemplate -dimControl $nodeName "colortemp" 1;
+			editorTemplate -dimControl $nodeName "colormodel" 1;			
+			break;
+		}
+		case 1:
+		{
+			editorTemplate -dimControl $nodeName "colprofile" 1;
+			editorTemplate -dimControl $nodeName "color" 1;	
+			editorTemplate -dimControl $nodeName "colortemppreset" 0;
+			AEcore_archlight_tempPresetChange ($nodeName + ".colortemppreset");			
+			editorTemplate -dimControl $nodeName "colormodel" 0;
+			break;
+		}
+	}
+}
+
+
+global proc AEcore_archlight_tempPresetCreate(string $plug) {
+	setUITemplate -pst attributeEditorTemplate;
+	
+	optionMenuGrp -label "Temperature Preset" -cc ("AEcore_archlight_tempPresetChange \"" + $plug + "\"") AEcore_archlight_tempPresetMenu;
+	
+	menuItem -da 0 -l "Custom";
+	menuItem -da 1500 -l "Match Flame";
+	menuItem -da 1600 -l "Low Pressure Sodium";
+	menuItem -da 1900 -l "Candle Flame";
+	menuItem -da 2000 -l "Sunrise/Sunset";
+	menuItem -da 2100 -l "High Pressure Sodium";
+	menuItem -da 2680 -l "40W Tungsten Bulb";
+	menuItem -da 2800 -l "Warm White Bulb";	
+	menuItem -da 2900 -l "Warm White Fluorescent";
+	menuItem -da 3000 -l "200W Tungsten Bulb";	
+	menuItem -da 3200 -l "Halogen White Bulb";	
+	menuItem -da 3400 -l "Tungsten Lamp";		
+	menuItem -da 3500 -l "White Fluorescent";	
+	menuItem -da 4000 -l "White Mercury Lamp";	
+	menuItem -da 4200 -l "Cool White Bulb";		
+	menuItem -da 4500 -l "Xenon Lamp";			
+	menuItem -da 5000 -l "Full Spectrum Bulb";
+	menuItem -da 5200 -l "Cool White Fluorescent";
+	menuItem -da 5500 -l "Sunlight";
+	menuItem -da 5600 -l "Photo Flash";	
+	menuItem -da 5800 -l "Daylight Bulb";		
+	menuItem -da 6000 -l "Xenon HID";			
+	menuItem -da 6500 -l "Typical Summer Light";	
+	menuItem -da 7000 -l "Daylight Fluorescent";	
+	menuItem -da 8000 -l "Summer Shade";			
+	menuItem -da 12000 -l "Blue Sky";			
+		
+	setUITemplate -ppt;
+	AEcore_archlight_tempPresetReplace( $plug );
+}
+
+global proc AEcore_archlight_tempPresetReplace(string $plug) 
+{
+	optionMenuGrp -e -cc ("AEcore_archlight_tempPresetChange \"" + $plug + "\"") AEcore_archlight_tempPresetMenu;
+	connectControl -in 2 AEcore_archlight_tempPresetMenu $plug;
+	AEcore_archlight_tempPresetChange($plug);
+}
+
+global proc AEcore_archlight_tempPresetChange( string $nodeName )
+{	
+	int $value = `getAttr $nodeName`;
+	string $node[];
+	tokenize $nodeName "." $node;
+	if ($value == 0)
+		editorTemplate -dimControl $node[0] "colortemp" 0;			
+	else 
+		editorTemplate -dimControl $node[0] "colortemp" 1;			
+}
+
+global proc core_archlight_IntensityModeChange (string $nodeName) 
+{
+	string $nodeAttr = $nodeName + ".intensitymode";
+	int $value = `getAttr $nodeAttr`;		
+	
+	string $scalestring = $nodeName + ".scale_profile";
+	int $scale = `getAttr $scalestring`;		
+	
+	string $distribstring = $nodeName + ".distribution_mode";
+	int $distrib = `getAttr $distribstring`;		
+
+	switch ($value){		
+		case 0:
+		{
+			editorTemplate -dimControl $nodeName "intensity" 0;								
+			
+			editorTemplate -dimControl $nodeName "intensitymultiplier" 1;
+			editorTemplate -dimControl $nodeName "photonintensitymultiplier" 1;
+			editorTemplate -dimControl $nodeName "sceneunits" 1;
+			editorTemplate -dimControl $nodeName "scale_profile" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_intensity" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_units" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_dist" 1;
+			editorTemplate -dimControl $nodeName "scale_profile_efficacy" 1;
+			editorTemplate -dimControl $nodeName "rgb_unit_preset" 1;			
+			break;
+						
+		}
+		case 1:
+		{			
+			editorTemplate -dimControl $nodeName "intensity" 1;								
+			
+			editorTemplate -dimControl $nodeName "intensitymultiplier" 0;
+			editorTemplate -dimControl $nodeName "photonintensitymultiplier" 0;
+			editorTemplate -dimControl $nodeName "sceneunits" 0;
+			if ($distrib == 1)
+			{
+				editorTemplate -dimControl $nodeName "scale_profile" 0;		
+				core_archlight_ScaleProfileChange ($nodeName);
+			}
+			else
+			{	
+				editorTemplate -dimControl $nodeName "scale_profile" 1;
+				editorTemplate -dimControl $nodeName "scale_profile_intensity" 1;
+				editorTemplate -dimControl $nodeName "scale_profile_units" 1;
+				editorTemplate -dimControl $nodeName "scale_profile_dist" 1;
+				editorTemplate -dimControl $nodeName "scale_profile_efficacy" 1;
+			}
+			
+			editorTemplate -dimControl $nodeName "rgb_unit_preset" 0;
+			core_archlight_RGBPresetChange ($nodeName);			
+									
+			break;
+		}
+	}
+}
+
+global proc core_archlight_ScaleProfileChange ( string $nodeName )
+{
+	string $nodeAttr = $nodeName + ".scale_profile";
+	int $value = `getAttr $nodeAttr`;
+	if ( $value == 1 ) 
+	{	
+		editorTemplate -dimControl $nodeName "scale_profile_intensity" 0;
+		editorTemplate -dimControl $nodeName "scale_profile_units" 0;		
+		core_archlight_ScaleProfileUnitsChange ($nodeName);
+	} 
+	else 
+	{		
+		editorTemplate -dimControl $nodeName "scale_profile_intensity" 1;
+		editorTemplate -dimControl $nodeName "scale_profile_units" 1;
+		editorTemplate -dimControl $nodeName "scale_profile_dist" 1;
+		editorTemplate -dimControl $nodeName "scale_profile_efficacy" 1;
+	}
+}
+
+global proc core_archlight_ScaleProfileUnitsChange ( string $nodeName )
+{	
+	string $nodeAttr = $nodeName + ".scale_profile_units";
+	int $value = `getAttr $nodeAttr`;
+	switch ($value)
+	{
+		case 0:		
+		case 3:
+		{
+			editorTemplate -dimControl $nodeName "scale_profile_dist" 1;	
+			editorTemplate -dimControl $nodeName "scale_profile_efficacy" 1;	
+			break;
+		}
+		case 2:
+		{
+			editorTemplate -dimControl $nodeName "scale_profile_dist" 0;	
+			editorTemplate -dimControl $nodeName "scale_profile_efficacy" 1;	
+			break;
+		}	
+		case 5:		
+		case 7:
+		{
+			editorTemplate -dimControl $nodeName "scale_profile_dist" 1;	
+			editorTemplate -dimControl $nodeName "scale_profile_efficacy" 0;	
+			break;
+		}	
+		case 6:		
+		{
+			editorTemplate -dimControl $nodeName "scale_profile_dist" 0;	
+			editorTemplate -dimControl $nodeName "scale_profile_efficacy" 0;	
+			break;		
+		}	
+	}
+}
+
+global proc core_archlight_RGBPresetChange ( string $nodeName )
+{	
+	string $nodeAttr = $nodeName + ".rgb_unit_preset";
+	int $value = `getAttr $nodeAttr`;
+	if ($value == 3)
+	{		
+		editorTemplate -dimControl $nodeName "rgb_unit_conversion" 0;					
+	}
+	else		
+	{
+		editorTemplate -dimControl $nodeName "rgb_unit_conversion" 1;								
+	}	
+}
+
+global proc core_archlight_AttenChange ( string $nodeName )
+{	
+	string $nodeAttr = $nodeName + ".atten";
+	int $value = `getAttr $nodeAttr`;
+	if ($value == 1)
+	{		
+		editorTemplate -dimControl $nodeName "start" 0;
+		editorTemplate -dimControl $nodeName "stop" 0;
+		editorTemplate -dimControl $nodeName "atten_falloff" 0;				
+	}
+	else		
+	{
+		editorTemplate -dimControl $nodeName "start" 1;
+		editorTemplate -dimControl $nodeName "stop" 1;
+		editorTemplate -dimControl $nodeName "atten_falloff" 1;								
+	}	
+}

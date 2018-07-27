@@ -1,0 +1,37 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEMentalCoreLogoCreate(string $image, string $attr) {		
+	$form = `formLayout -h 26`;
+	
+	$bar_left = `picture -image "mc_titlebar_l.png" -h 26 -w 10`;
+	$bar = `picture -image "mc_titlebar.png" -h 26 -w 1 -tl 1`;
+	$bar_right = `picture -image $image -h 26 -w 200`;
+		
+	formLayout -edit
+		-attachForm     $bar_left     "top"    0
+		-attachForm     $bar_left     "left"   0
+		-attachForm     $bar_left     "bottom" 0
+
+		-attachForm     $bar_right     "top"    0
+		-attachForm     $bar_right     "right"  0
+		-attachForm     $bar_right     "bottom" 0
+
+		-attachForm     $bar "top"    0
+		-attachForm     $bar "bottom" 0
+		-attachControl  $bar "left"   0 $bar_left
+		-attachControl  $bar "right"  0 $bar_right
+	$form;
+		
+		
+	setParent..;
+}
+
+global proc AEMentalCoreLogoReplace(string $attr) {
+}
+
+global proc AEMentalCoreLogo(string $image) {
+	editorTemplate -callCustom ("AEMentalCoreLogoCreate " + $image) "AEMentalCoreLogoReplace" "";
+}

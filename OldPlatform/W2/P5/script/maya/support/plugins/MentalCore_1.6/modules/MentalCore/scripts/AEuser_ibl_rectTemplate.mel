@@ -1,0 +1,60 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+		
+global proc AEuser_ibl_rect_modeNew(string $attr) {
+	attrEnumOptionMenuGrp
+            -l "Shadow Mode"
+            -at $attr
+            -ei 0 "No Shadow"
+            -ei 1 "Opaque"
+            -ei 2 "Transparent"
+			user_ibl_rect_mode;
+}
+
+global proc AEuser_ibl_rect_modeReplace(string $attr) {
+	attrEnumOptionMenuGrp
+            -e
+            -at $attr
+			user_ibl_rect_mode;
+}
+
+global proc AEuser_ibl_rect_intensityNew(string $attr) {
+	attrFieldSliderGrp -l "Intensity" -min 0.0 -max 1.0 -fmx 999999 -at $attr "user_ibl_rect_intensity";
+}
+
+global proc AEuser_ibl_rect_intensityReplace(string $attr) {
+	attrFieldSliderGrp -e -at $attr "user_ibl_rect_intensity";
+}
+
+global proc AEuser_ibl_rect_coneNew(string $attr) {
+	attrFieldSliderGrp -l "Cone" -min 0.0 -max 180.0 -at $attr "user_ibl_rect_cone";
+}
+
+global proc AEuser_ibl_rect_coneReplace(string $attr) {
+	attrFieldSliderGrp -e -at $attr "user_ibl_rect_cone";
+}
+
+global proc AEuser_ibl_rectTemplate( string $nodeName )
+{	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Texture" -collapse 0;
+			editorTemplate -label "Texture" -addControl "texture";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Light Parameters" -collapse 0;
+			editorTemplate -callCustom "AEuser_ibl_rect_modeNew" "AEuser_ibl_rect_modeReplace" "shadow_mode";
+			editorTemplate -label "Sample Limit" -addControl "samples";
+			editorTemplate -label "Color" -addControl "color";
+			editorTemplate -callCustom "AEuser_ibl_rect_intensityNew" "AEuser_ibl_rect_intensityReplace" "intensity";
+			editorTemplate -callCustom "AEuser_ibl_rect_coneNew" "AEuser_ibl_rect_coneReplace" "cone";
+			editorTemplate -label "Falloff" -addControl "falloff";
+			editorTemplate -label "Angular Falloff" -addControl "angular_falloff";
+			editorTemplate -label "Swap UV" -addControl "swap_uv";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

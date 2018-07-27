@@ -1,0 +1,119 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+//////////////////
+// Dim Controls //
+//////////////////
+
+global proc AEcore_env_lightCheckFalloff(string $nodeName) {
+	if (`getAttr($nodeName + ".falloff")`) {
+		editorTemplate -dimControl $nodeName "falloff_loc_vis" 0;
+		editorTemplate -dimControl $nodeName "falloff_start" 0;
+		editorTemplate -dimControl $nodeName "falloff_stop" 0;
+		editorTemplate -dimControl $nodeName "falloff_speed" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "falloff_loc_vis" 1;
+		editorTemplate -dimControl $nodeName "falloff_start" 1;
+		editorTemplate -dimControl $nodeName "falloff_stop" 1;
+		editorTemplate -dimControl $nodeName "falloff_speed" 1;
+	}
+	
+	python("from mentalcore import mlib; mlib.update_envlight_falloff_loc('" + $nodeName + "')");
+}
+
+global proc AEcore_env_lightCheckType(string $nodeName) {
+	if (`getAttr($nodeName + ".type")`) {
+		editorTemplate -dimControl $nodeName "dir_exp" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "dir_exp" 1;
+	}
+	
+	python("from mentalcore import mlib; mlib.update_envlight_loc('" + $nodeName + "')");
+}
+
+global proc AEcore_env_lightCheckMode(string $nodeName) {
+	int $mode = `getAttr($nodeName + ".mode")`;
+	int $colour_mode = `getAttr($nodeName + ".colour_mode")`;
+
+	if ($mode == 0 || $mode == 1 || $mode == 3) {
+		editorTemplate -dimControl $nodeName "colprofile" 0;
+		editorTemplate -dimControl $nodeName "colour" 0;
+		editorTemplate -dimControl $nodeName "colour_mode" 0;
+		editorTemplate -dimControl $nodeName "ao_amount" 0;
+		editorTemplate -dimControl $nodeName "ao_colour" 0;
+		
+		AEcore_env_lightCheckColorMode($nodeName);
+	}
+	else {
+		editorTemplate -dimControl $nodeName "colprofile" 1;
+		editorTemplate -dimControl $nodeName "colour_mode" 1;
+		editorTemplate -dimControl $nodeName "colour" 1;
+		editorTemplate -dimControl $nodeName "ao_amount" 1;
+		editorTemplate -dimControl $nodeName "ao_colour" 1;
+		editorTemplate -dimControl $nodeName "env_blur" 1;
+		editorTemplate -dimControl $nodeName "env_blur_res" 1;
+	}
+}
+
+global proc AEcore_env_lightCheckColorMode(string $nodeName) {
+	int $mode = `getAttr($nodeName + ".colour_mode")`;
+
+	if ($mode == 1) {
+		editorTemplate -dimControl $nodeName "env_rot" 0;
+		editorTemplate -dimControl $nodeName "env_blur" 0;
+		editorTemplate -dimControl $nodeName "env_blur_res" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "env_rot" 1;
+		editorTemplate -dimControl $nodeName "env_blur" 1;
+		editorTemplate -dimControl $nodeName "env_blur_res" 1;
+	}
+}
+
+
+
+global proc AEcore_env_lightTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_env_light_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Light Parameters" -collapse 0;
+			editorTemplate -label "Light Type" -addControl "type" "AEcore_env_lightCheckType";
+			editorTemplate -label "Light Mode" -addControl "mode" "AEcore_env_lightCheckMode";
+			editorTemplate -label "Light Affects" -addControl "affects";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Colour Parameters" -collapse 0;			
+			editorTemplate -label "Colour Mode" -addControl "colour_mode" "AEcore_env_lightCheckColorMode";
+			editorTemplate -label "Colour Profile" -addControl "colprofile";
+			editorTemplate -label "Colour" -addControl "colour";
+			editorTemplate -label "Intensity" -addControl "intensity";
+			editorTemplate -label "AO Amount" -addControl "ao_amount";
+			editorTemplate -label "AO Colour" -addControl "ao_colour";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Directionality Blend" -addControl "dir_blend";
+			editorTemplate -label "Directional Focus" -addControl "dir_exp";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Environment Parameters" -collapse 0;
+			editorTemplate -label "Environment Rotation" -addControl "env_rot";
+			editorTemplate -label "Environment Blur" -addControl "env_blur";
+			editorTemplate -label "Blur Resolution" -addControl "env_blur_res";
+			editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Falloff Parameters" -collapse 0;
+			editorTemplate -label "Enable Falloff" -addControl "falloff" "AEcore_env_lightCheckFalloff";
+			editorTemplate -label "Display Locators" -addControl "falloff_loc_vis";
+			editorTemplate -label "Falloff Start" -addControl "falloff_start";
+			editorTemplate -label "Falloff Stop" -addControl "falloff_stop";
+			editorTemplate -label "Falloff Speed" -addControl "falloff_speed";
+		editorTemplate -endLayout;
+		
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

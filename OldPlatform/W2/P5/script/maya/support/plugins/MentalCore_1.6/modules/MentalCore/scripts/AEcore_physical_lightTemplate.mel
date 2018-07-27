@@ -1,0 +1,119 @@
+//  Copyright (c)2012 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_physical_light_tempPresetCreate(string $plug) {
+
+	optionMenuGrp -label "Temperature Preset" -cc ("AEcore_physical_light_tempPresetChange \"" + $plug + "\"") AEcore_physical_light_tempPresetMenu;
+	
+	menuItem -da 0 -l "Custom";
+	menuItem -da 1500 -l "Match Flame";
+	menuItem -da 1600 -l "Low Pressure Sodium";
+	menuItem -da 1900 -l "Candle Flame";
+	menuItem -da 2000 -l "Sunrise/Sunset";
+	menuItem -da 2100 -l "High Pressure Sodium";
+	menuItem -da 2680 -l "40W Tungsten Bulb";
+	menuItem -da 2800 -l "Warm White Bulb";	
+	menuItem -da 2900 -l "Warm White Fluorescent";
+	menuItem -da 3000 -l "200W Tungsten Bulb";	
+	menuItem -da 3200 -l "Halogen White Bulb";	
+	menuItem -da 3400 -l "Tungsten Lamp";		
+	menuItem -da 3500 -l "White Fluorescent";	
+	menuItem -da 4000 -l "White Mercury Lamp";	
+	menuItem -da 4200 -l "Cool White Bulb";		
+	menuItem -da 4500 -l "Xenon Lamp";			
+	menuItem -da 5000 -l "Full Spectrum Bulb";
+	menuItem -da 5200 -l "Cool White Fluorescent";
+	menuItem -da 5500 -l "Sunlight";
+	menuItem -da 5600 -l "Photo Flash";	
+	menuItem -da 5800 -l "Daylight Bulb";		
+	menuItem -da 6000 -l "Xenon HID";			
+	menuItem -da 6500 -l "Typical Summer Light";	
+	menuItem -da 7000 -l "Daylight Fluorescent";	
+	menuItem -da 8000 -l "Summer Shade";			
+	menuItem -da 12000 -l "Blue Sky";			
+		
+	setUITemplate -ppt;
+	AEcore_physical_light_tempPresetReplace( $plug );
+}
+
+global proc AEcore_physical_light_tempPresetReplace(string $plug) 
+{
+	optionMenuGrp -e -cc ("AEcore_physical_light_tempPresetChange \"" + $plug + "\"") AEcore_physical_light_tempPresetMenu;
+	connectControl -in 2 AEcore_physical_light_tempPresetMenu $plug;
+	AEcore_physical_light_tempPresetChange($plug);
+}
+
+global proc AEcore_physical_light_tempPresetChange( string $nodeName )
+{	
+	int $opt = `getAttr $nodeName`;
+	string $node[];
+	tokenize $nodeName "." $node;
+	if ($opt == 0)
+		editorTemplate -dimControl $node[0] "temperature" 0;			
+	else 
+		editorTemplate -dimControl $node[0] "temperature" 1;			
+}
+
+global proc AEcore_physical_lightCheckColorMode (string $nodeName) {
+	string $nodeAttr = $nodeName + ".color_mode";
+	int $value = `getAttr $nodeAttr`;			
+	switch ($value){		
+		case 0:
+		{
+			editorTemplate -dimControl $nodeName "colprofile" 0;	
+			editorTemplate -dimControl $nodeName "color" 0;	
+			editorTemplate -dimControl $nodeName "temperature_preset" 1;
+			editorTemplate -dimControl $nodeName "temperature" 1;
+			break;
+		}
+		case 1:
+		{
+			editorTemplate -dimControl $nodeName "colprofile" 1;
+			editorTemplate -dimControl $nodeName "color" 1;	
+			editorTemplate -dimControl $nodeName "temperature_preset" 0;
+			AEcore_physical_light_tempPresetChange($nodeName + ".temperature_preset");			
+			break;
+		}
+	}
+}
+
+global proc AEcore_physical_lightTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_physical_light_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Light Parameters" -collapse 0;
+			editorTemplate -label "Colour Mode" -addControl "color_mode" "AEcore_physical_lightCheckColorMode";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Colour Profile" -addControl "colprofile";
+			editorTemplate -label "Colour" -addControl "color";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -callCustom AEcore_physical_light_tempPresetCreate AEcore_physical_light_tempPresetReplace "temperature_preset";
+			editorTemplate -label "Temperature" -addControl "temperature";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Intensity" -addControl "intensity";
+			editorTemplate -label "Falloff Exponent" -addControl "falloff_exp";
+			
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Spotlight Parameters" -collapse 0;
+			editorTemplate -label "Inner Cone Angle" -addControl "inner_cone";
+			editorTemplate -label "Dropoff" -addControl "dropoff";
+			editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Advanced Parameters" -collapse 0;
+			editorTemplate -label "Shadow Threshold" -addControl "threshold";
+			editorTemplate -label "Cosine Exponent" -addControl "cos_exp";
+		editorTemplate -endLayout;
+		
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

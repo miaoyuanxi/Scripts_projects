@@ -1,0 +1,14 @@
+global proc render_18445_maya2(string $proj, string $rd)
+{
+	print("\nScript - render_18445_maya2 Running...\n");
+	// set project path
+	setProject $proj;
+
+	if(`gmatch $proj "*18445*"`){
+		putenv "IDMT_PROJECTS" "//file-cluster/GDC/Projects";
+		dirmap -en 1;
+		dirmap -m "//file-cluster/GDC" "//10.50.100.6/hq/18000/18445";
+	
+	}
+	file -save -force;
+}

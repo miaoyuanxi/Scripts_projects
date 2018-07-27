@@ -1,0 +1,68 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+
+global proc AEcore_blend_materialsTemplate ( string $nodeName )
+{
+	AEMentalCoreLogo("mc_core_blend_materials_logo.png");
+
+	AEswatchDisplay $nodeName;
+
+	editorTemplate -beginScrollLayout;	
+		editorTemplate -beginLayout "Base Material" -collapse 0;
+			editorTemplate -l "Base Material" -addControl "base";
+		editorTemplate -endLayout;	
+	
+		editorTemplate -beginLayout "Coat Materials" -collapse 0;
+			editorTemplate -l "Coat Material 1" -addControl "coat1";
+			editorTemplate -l "Clear Coat" -addControl "coat1_add";
+			editorTemplate -l "Blend Amount" -addControl "coat1_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 2" -addControl "coat2";
+			editorTemplate -l "Clear Coat" -addControl "coat2_add";
+			editorTemplate -l "Blend Amount" -addControl "coat2_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 3" -addControl "coat3";
+			editorTemplate -l "Clear Coat" -addControl "coat3_add";
+			editorTemplate -l "Blend Amount" -addControl "coat3_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 4" -addControl "coat4";
+			editorTemplate -l "Clear Coat" -addControl "coat4_add";
+			editorTemplate -l "Blend Amount" -addControl "coat4_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 5" -addControl "coat5";
+			editorTemplate -l "Clear Coat" -addControl "coat5_add";
+			editorTemplate -l "Blend Amount" -addControl "coat5_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 6" -addControl "coat6";
+			editorTemplate -l "Clear Coat" -addControl "coat6_add";
+			editorTemplate -l "Blend Amount" -addControl "coat6_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 7" -addControl "coat7";
+			editorTemplate -l "Clear Coat" -addControl "coat7_add";
+			editorTemplate -l "Blend Amount" -addControl "coat7_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 8" -addControl "coat8";
+			editorTemplate -l "Clear Coat" -addControl "coat8_add";
+			editorTemplate -l "Blend Amount" -addControl "coat8_blend";
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Coat Material 9" -addControl "coat9";
+			editorTemplate -l "Clear Coat" -addControl "coat9_add";
+			editorTemplate -l "Blend Amount" -addControl "coat9_blend";
+		editorTemplate -endLayout;	
+	
+		AEmentalrayBaseTemplate($nodeName);
+			
+	editorTemplate -endScrollLayout;
+}

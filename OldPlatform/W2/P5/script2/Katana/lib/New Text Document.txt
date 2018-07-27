@@ -1,0 +1,45 @@
+render_node = NodegraphAPI.GetNode('1250_150_r0_3_char_din_BTY')
+graphState = NodegraphAPI.GetCurrentGraphState()
+render_node.getParameter("lock").setValue(0,0)
+#print render_node.getParameters().getXML()
+render_node_info = Nodes3DAPI.RenderNodeUtil.GetRenderNodeInfo(render_node,graphState)
+
+for i in xrange(render_node_info.getNumberOfOutputs()):
+    outputInfo = render_node_info.getOutputInfoByIndex(i, forceLocal=False)
+    print outputInfo
+    print outputInfo['name']
+    print outputInfo["outputFile"]
+
+
+    
+    
+    
+render_info_dict={}
+render_nodes = NodegraphAPI.GetAllNodesByType("Render")
+graphState = NodegraphAPI.GetCurrentGraphState()
+if len(render_nodes) != 0:    
+    for render_node in render_nodes:
+        render_output_dict={}
+        render_frame_dict={}
+        render_name=render_node.getName() 
+        #print render_node.getParameters().getXML()
+        scene_name = os.path.basename(os.path.basename(katana_scene))
+        print "the rener node name is  %s" % render_name
+        num_re =re.compile(r"(\d+_\d+)[\D]*", re.I)
+        if num_re.findall(scene_name):
+            scene_num = num_re.findall(scene_name)[0]
+            if render_name.startswith(scene_num):           
+                render_node.getParameter("lock").setValue(0,0)
+                render_node_info=Nodes3DAPI.RenderNodeUtil.GetRenderNodeInfo(render_node,graphState)
+
+                for i in xrange(render_node_info.getNumberOfOutputs()):
+                    outputInfo = render_node_info.getOutputInfoByIndex(i, forceLocal=False)
+                    print outputInfo
+                    render_output_name = outputInfo['name']
+                    render_output = outputInfo["outputFile"]
+                    if render_output.find('Temp')>0:
+                        
+                        print ("the %s output is %s ,it is tmp ,dont copy"  % (render_output_name,render_output))
+                    else:                       
+                        render_output_dict[render_output_name]=render_output
+                    #print render_output_dict

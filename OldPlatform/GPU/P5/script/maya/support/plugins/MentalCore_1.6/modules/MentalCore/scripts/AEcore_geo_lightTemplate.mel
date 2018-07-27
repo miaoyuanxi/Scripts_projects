@@ -1,0 +1,43 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+source "AEMentalCoreLogo.mel";
+
+global proc AEcore_geo_lightTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_geo_light_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Source Geometry" -collapse 0;
+			editorTemplate -label "Source Geo" -addControl "source_geo";
+			editorTemplate -label "Visibility" -addControl "visibility";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Light Shaders" -collapse 0;
+			editorTemplate -label "Light Shader" -addControl "light_shader";
+			editorTemplate -label "Photon Shader" -addControl "photon_shader";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Area Light Samples" -collapse 0;
+			editorTemplate -label "High Samples" -addControl "high_samples";
+			editorTemplate -label "High Sample Limit" -addControl "high_sample_limit";
+			editorTemplate -label "Low Samples" -addControl "low_samples";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Photons" -collapse 0;
+			editorTemplate -label "Emit GI" -addControl "emit_gi";
+			editorTemplate -label "GI Photons" -addControl "gi_photons";
+			editorTemplate -label "Emit Caustics" -addControl "emit_caustics";
+			editorTemplate -label "Caustic Photons" -addControl "caustic_photons";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Energy" -addControl "photon_energy";
+			editorTemplate -label "Intensity" -addControl "photon_intensity";
+			editorTemplate -label "Exponent" -addControl "exponent";
+		editorTemplate -endLayout;
+		
+		editorTemplate -suppress "time";
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

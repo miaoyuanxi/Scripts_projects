@@ -1,0 +1,321 @@
+global proc nCInitialize(string $proj)
+{
+	if(`gmatch $proj "*20233*"`){
+		print("\nDisable cycleCheck  @ 20233\n\n");
+		cycleCheck -e off;
+	}
+	
+	if(`gmatch $proj "*163455*"`){
+		print("\nDirectoryMapping update_001 @ 163455\n\n");
+		dirmap -en 1;
+		dirmap -m "C:/KB03" "//10.50.1.4/d/inputData/maya/163000/163455/KB03";
+		dirmap -m "C:/KB03/3_PostProduction/Lighting/Z_Ep##" "//10.50.1.4/d/inputData/maya/163000/163455/KB03/3_PostProduction/Lighting/Z_Ep";	
+		dirmap -m "C:/KB03/2_Production/Assets/Z_ep##" "//10.50.1.4/d/inputData/maya/163000/163455/KB03/2_Production/Assets/Z_ep";
+	}
+	if(`gmatch $proj "*18445*"`){
+		print("\ninfo@18445 - BEGIN");
+		string $env_name = "IDMT_PROJECTS";
+		string $env_value= "//10.50.1.6/d/inputdata8/maya/18000/18445/file-cluster/GDC/Projects";
+		string $dirmap_1 = "//file-cluster";
+		string $dirmap_2 = "//10.50.1.6/d/inputdata8/maya/18000/18445/file-cluster";
+
+		print("\n	Initialize Env Variables " + $env_name + " -> " + $env_value);
+		putenv $env_name $env_value;
+
+		print("\n	Directory Mapping " + $dirmap_1 + " -> " + $dirmap_2);
+		dirmap -en 1;
+		dirmap -m $dirmap_1 $dirmap_2;
+		
+		// putenv "MAYA_PLUG_IN_PATH" "\\\\10.50.8.2\\p\\script\\maya\\support\\plugins\\18445_huanqiu"
+
+		if(!`pluginInfo -q -loaded gameControlLoccator.mll`) loadPlugin "gameControlLoccator.mll";
+		if(!`pluginInfo -q -loaded geometryComputer.mll`) loadPlugin "geometryComputer.mll";
+		if(!`pluginInfo -q -loaded radialDeformer.mll`) loadPlugin "radialDeformer.mll";
+		if(!`pluginInfo -q -loaded reSelectLocator.mll`) loadPlugin "reSelectLocator.mll";
+		if(!`pluginInfo -q -loaded underworldBlendShape.mll`) loadPlugin "underworldBlendShape.mll";
+		
+		//string $prefixName = "<RenderLayer>/<Scene>_<RenderLayer>";
+		//catch(`setAttr -type "string" "defaultRenderGlobals.imageFilePrefix" $prefixName`);
+		//$prefixName = `getAttr defaultRenderGlobals.imageFilePrefix`;
+		//print("\n	Change output prefix to " + $prefixName);
+
+		print("\ninfo@18445 - END\n\n");
+	}
+}
+
+global proc string nCGetFullFileName()
+{
+// Descritpion:
+//	 GET FULL FILE NAME
+// NOTE: 
+//	 Unix style
+	return `file -q -sceneName`;	// unix style already
+}
+
+global proc string nCShortFileName(string $fullFileName)
+{
+// Descritpion:
+//	 get scene name
+// NOTE: 1.short name or long name - 
+//	 2.automatically converted to unix path style if it is NOT
+//	 3.file extension will be removed.
+
+	// 1. converted to unix path style
+		$fullFileName = `substituteAllString $fullFileName "\\" "/"`;
+		string $buff[];
+
+	// 2. naked file name
+		$i = `tokenize $fullFileName "/" $buff`;
+		$fullFileName = $buff[$i-1];
+
+	return $fullFileName;
+}
+
+global proc string nCRemoveExtFromFileName(string $shortFileName)
+{
+// Descritpion:
+//	 REMOVE EXTENSTION FROM SHORT FILENAME
+
+	string $buff[];
+	tokenize $shortFileName "." $buff;
+	$shortFileName = $buff[0];
+	return $shortFileName;
+}
+
+global proc nCCleanpreMels()
+{
+	string $default_preMel = `getAttr "defaultRenderGlobals.preMel"`;
+	if($default_preMel != ""){
+		setAttr -type "string" defaultRenderGlobals.preMel "";
+	}
+}
+
+global proc nCCleanpostMels()
+{
+	string $default_postMel = `getAttr "defaultRenderGlobals.postMel"`;
+	if($default_postMel != ""){
+		setAttr -type "string" defaultRenderGlobals.postMel "";
+	}
+}
+
+global proc nCShaveWriteRibs(string $ribRoot)
+{
+// PREFRAME SCRIPT
+
+	print("\n\n----Writting rib...\n\n");
+
+	// 0 rib root check
+	if(!`filetest -d $ribRoot`){		
+		string $sceneName = `file -q -sceneName -shortName`;
+		$sceneName = substring($sceneName, 1, size($sceneName) - 3);
+		$ribRoot = "c:/temp/tpbkk/" + $sceneName;
+		$ribRoot += "/rib";
+		sysFile -makeDir $ribRoot;
+		print("No rib root directory provided, default to " + $ribRoot);
+	}
+
+	// 1. hide  all shave nodes 
+	string $allShaveNodes[] = `ls -type "shaveHair"`;
+	for($each in $allShaveNodes){
+		string $buff[] = `listRelatives -p $each`;
+		setAttr ($buff[0] + ".visibility") 0;
+	}
+
+
+	// 2. export rib archive
+	int $frameNum = `currentTime -q`;
+	$ribRoot = substituteAllString($ribRoot, "\\", "/");
+	if(!`gmatch $ribRoot "*/"`){
+		$ribRoot += "/";
+	}
+	
+	for($each in $allShaveNodes){
+		string $buff[] = `listRelatives -p $each`;
+		string $str = $ribRoot + $buff[0];
+		string $ribName = $str + "/" + $buff[0] +"." + $frameNum + ".rib";
+		sysFile -makeDir $str;
+		shaveWriteRib -hn $each $ribName;
+		print("\nWrite rib as " + $ribName + " - Done.\n");
+	}
+}
+
+global proc nCShaveReadRibs(string $ribRoot)
+{
+// PRERENDER SCRIPT
+
+	print("\n\n----Reading rib...\n\n");
+
+	// 0 rib root check
+	if(!`filetest -d $ribRoot`){		
+		string $sceneName = `file -q -sceneName -shortName`;
+		$sceneName = substring($sceneName, 1, size($sceneName) - 3);
+		$ribRoot = "c:/temp/tpbkk/" + $sceneName;
+		$ribRoot += "/rib";
+		print("No rib root directory provided, default to " + $ribRoot);
+	}
+
+	// 1. check if ribs in $ribRoot
+	string $temp[];
+	if(!`gmatch $ribRoot "*/"`){
+		$ribRoot += "/";
+	}
+	$temp = `getFileList -folder $ribRoot`;
+	if(`size $temp`){
+		// 2. read rib archive
+		string $allRibArchiveNodes[] = `ls -type "delightRibArchive"`;		
+		for($each in $allRibArchiveNodes){
+			string $shaveNodeName, $fullRibName, $str;
+			string $temp[];			
+			int $i = `tokenize $each "_" $temp`;
+			if(`size $temp`){
+				$shaveNodeName = $temp[0];
+				for($j=1;$j<$i-1;$j++){
+					$shaveNodeName += "_" + $temp[$j];
+				}
+			}
+			string $path = $ribRoot + $shaveNodeName;
+			$fullRibName = $path + "/" + $shaveNodeName +".@.rib";
+			setAttr -type "string" ($each + ".ribFilename") $fullRibName;
+			print("\n	Read rib from " + $fullRibName + " -  " + $each + "\n");
+		}
+	}else{
+		error("No rib generated in ribRoot.");
+	}
+}
+
+global proc nCRestoreAfterBakePTC(string $ribRoot)
+{
+// PREFRAME SCRIPT
+
+	print("\n\n----Writting ptc...\n\n");
+
+	// 0 rib root check
+	if(!`filetest -d $ribRoot`){		
+		string $sceneName = `file -q -sceneName -shortName`;
+		$sceneName = substring($sceneName, 1, size($sceneName) - 3);
+		$ribRoot = "c:/temp/tpbkk/" + $sceneName;
+		$ribRoot += "/ptc";
+		sysFile -makeDir $ribRoot;
+		print("No rib root directory provided, default to " + $ribRoot);
+	}
+	
+	// enable eye_glass
+	setAttr "eye_glass.visibility" 1;
+
+	// 1. restore delightRibArchive nodes
+	string $allRibArchiveNodes[] = `ls -type "delightRibArchive"`;		
+	for($each in $allRibArchiveNodes){
+		setAttr ($each + ".visibility") 1;
+	}
+
+	string $buff[] = `ls -type "delightAtmosphereShader"`;
+	for($s in $buff){
+		if(`attributeExists "bake" $s`){
+			setAttr ($s + ".bake") 0;
+		}
+		if(`attributeExists "bake_file" $s`){
+			setAttr -type "string" ($s + ".bake_file") ($ribRoot + "/bake_file.#.ptc");
+		}
+	}
+}
+
+global proc nC3DelightBakePTC(string $ribRoot)
+{
+// PREFRAME SCRIPT
+
+	print("\n\n----Writting ptc...\n\n");
+
+	// 0 rib root check
+	if(!`filetest -d $ribRoot`){		
+		string $sceneName = `file -q -sceneName -shortName`;
+		$sceneName = substring($sceneName, 1, size($sceneName) - 3);
+		$ribRoot = "c:/temp/tpbkk/" + $sceneName;
+		$ribRoot += "/ptc";
+		sysFile -makeDir $ribRoot;
+		print("No rib root directory provided, default to " + $ribRoot);
+	}
+	
+	// disable eye_glass
+	setAttr "eye_glass.visibility" 0;
+
+	// 1. hide  all delightRibArchive nodes 
+	string $allRibArchiveNodes[] = `ls -type "delightRibArchive"`;		
+	for($each in $allRibArchiveNodes){
+		setAttr ($each + ".visibility") 0;
+	}
+	
+	// 2. settings for baking
+	string $buff[] = `ls -type "delightAtmosphereShader"`;
+	for($s in $buff){
+		if(`attributeExists "bake" $s`){
+			setAttr ($s + ".bake") 1;
+		}
+		if(`attributeExists "bake_file" $s`){
+			setAttr -type "string" ($s + ".bake_file") ($ribRoot + "/bake_file.#.ptc");
+		}
+	}
+
+	// 3. render bbk_ptc_renderpass
+	if(`objExists "bbk_ptc_renderpass"`){
+		delightRender "bbk_ptc_renderpass";
+	}
+}
+
+global proc prDeleteFolder( string $folderPath )
+// deletes given folder
+// usage: prDeleteFolder( "C:/temp/folderToDelete/" );
+// note: do not forget "/" at the end of folder-string
+// NOTE: THIS SCRIPT IS FROM PAZROT@FORUMS.CGSOCIETY
+{
+	 // search for files in given folder
+	 string $subFiles[] = `getFileList -folder $folderPath`;
+
+	 // delete $eachFile or call prDeleteFolder if $eachFile is a folder
+	 for($eachFile in $subFiles){
+		if(`filetest -d ($folderPath+$eachFile)`){
+			prDeleteFolder($folderPath+$eachFile+"/");
+		}else{
+			sysFile -delete ($folderPath+$eachFile);
+		}
+	 }
+	 // delete folder (it should be empty now)
+	 sysFile -removeEmptyDir $folderPath;
+}
+
+global proc nCShaveCleanupRibPtc(string $ribRoot)
+{
+// POSTRENDER SCRIPT
+
+	print("\n\n----Clean up rib...\n\n");
+
+	// 0 rib root check
+	if(!`filetest -d $ribRoot`){		
+		string $sceneName = `file -q -sceneName -shortName`;
+		$sceneName = substring($sceneName, 1, size($sceneName) - 3);
+		$ribRoot = "c:/temp/tpbkk/" + $sceneName;
+		print("No rib root directory provided, default to " + $ribRoot);
+	}
+
+	// 1. check if ribs in $ribRoot
+	string $temp[];
+	if(!`gmatch $ribRoot "*/"`){
+		$ribRoot += "/";
+	}
+	string $ribPath = $ribRoot + "rib" + "/";
+	prDeleteFolder $ribPath;
+	string $ptcPath = $ribRoot + "ptc" + "/";
+	prDeleteFolder $ptcPath;
+
+}
+
+global proc nCSetFrameRangeForPTCRenderPass(string $rp, int $sf, int $ef, int $bf)
+{
+	if(`objExists $rp`){
+		// set frame range for bbk_ptc_renderpass		
+		setAttr ($rp + ".animation") 1;
+		setAttr ($rp + ".startFrame") $sf;
+		setAttr ($rp + ".endFrame") $ef;
+		setAttr ($rp + ".increment") $bf;
+	}
+
+}

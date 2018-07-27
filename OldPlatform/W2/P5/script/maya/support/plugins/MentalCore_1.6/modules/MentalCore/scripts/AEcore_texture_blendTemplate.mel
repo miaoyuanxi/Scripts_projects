@@ -1,0 +1,49 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_layersCreate ( string $nodeName )
+{
+	$nodeName = `basenameEx $nodeName`;
+	python("from mentalcore import AEcore_texture_blend; AEcore_texture_blend.createLayout(\"" + $nodeName + "\")");
+}
+
+global proc AEcore_layersChange ( string $nodeName )
+{		
+	$nodeName = `basenameEx $nodeName`;
+	python("from mentalcore import AEcore_texture_blend; AEcore_texture_blend.refreshLayout(\"" + $nodeName + "\")");
+}
+
+global proc AEcore_texture_blendTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_texture_blend_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Layers" -collapse 0;
+			editorTemplate -callCustom "AEcore_layersCreate" "AEcore_layersChange" $nodeName;
+		editorTemplate -endLayout;
+	
+		editorTemplate -beginLayout "Colour Correction" -collapse 1;
+			editorTemplate -label "Gain" -addControl "cc_gain";
+			editorTemplate -label "Gamma" -addControl "cc_gamma";
+			editorTemplate -label "Offset" -addControl "cc_offset";
+			editorTemplate -label "Bias" -addControl "cc_bias";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Hue" -addControl "cc_hue";
+			editorTemplate -label "Saturation" -addControl "cc_sat";
+			editorTemplate -label "Value" -addControl "cc_value";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Options" -collapse 1;
+			editorTemplate -label "Alpha Is Luminance" -addControl "alpha_is_lum";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+		
+		editorTemplate -suppress "layer";
+
+	editorTemplate -endScrollLayout;
+}

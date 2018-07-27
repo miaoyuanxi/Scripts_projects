@@ -1,0 +1,20 @@
+//  Copyright (c)2012 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_scalar_to_vectorTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_scalar_to_vector_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -addControl "inputX";
+			editorTemplate -addControl "inputY";
+			editorTemplate -addControl "inputZ";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

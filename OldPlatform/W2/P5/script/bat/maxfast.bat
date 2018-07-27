@@ -1,0 +1,1 @@
+xcopy /y /f "\\18.1.0.241\pool\script\max\Rwing_cb.ms"  %1"/scripts/startup/"

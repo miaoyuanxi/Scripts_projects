@@ -1,0 +1,6 @@
+//Maya Preference 2017 (Release 1)
+//
+//
+evalDeferred("autoLoadPlugin(\"\", \"xgenToolkit\", \"xgenToolkit\")");
+evalDeferred("autoLoadPlugin(\"\", \"modelingToolkit\", \"modelingToolkit\")");
+evalDeferred("autoLoadPlugin(\"\", \"AbcImport\", \"AbcImport\")");

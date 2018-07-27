@@ -1,0 +1,2 @@
+dirmap -en true;
+dirmap -m "//file-cluster" "//10.50.24.10/d/inputdata5/119000/119386/gdc/file-cluster";

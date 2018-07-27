@@ -1,0 +1,20 @@
+{
+"Max":["3dsmax.exe","3dsmaxcmd.exe"],
+"MaxClient":["3dsmax.exe","3dsmaxcmd.exe"],
+"Maya":["mayabatch.exe","Render.exe","maya.exe","prman.exe"],
+"MayaClient":["mayabatch.exe","Render.exe","maya.exe","prman.exe"],
+"Houdini":["mantra.exe","hython.exe"],
+"C4D":["CINEMA 4D 64 Bit.exe","CINEMA 4D.exe"],
+"Blender":["blender.exe"],
+"Softimage":["XSIBATCH.exe"],
+"Lightwave":["lwsn.exe"],
+"Keyshot":["keyshot6.exe","keyshot.exe"],
+"SketchUp":["SketchUp.exe"],
+"Clarisse":["cnode.exe","clarisse.exe"],
+"Nuke":["Nuke9.0.exe","Nuke10.0.exe","Nuke10.5.exe"],
+"Mrstand":["ray.exe"],
+"Vray":["vray.exe"],
+"Vue":["Vue 12 xStream.exe","Vue xStream 2015.exe","Vue xStream 2016.exe","Vue 10 xStream.exe","Vue 9.5 xStream.eon","Vue 10 xStream RenderNode.exe","Vue 9.5 xStream RenderNode.exe"],
+"OctaneRender":["octane.exe"],
+"Katana":["katanaBin.exe"]
+}

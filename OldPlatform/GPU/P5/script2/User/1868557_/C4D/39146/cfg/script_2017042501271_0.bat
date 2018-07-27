@@ -1,0 +1,1 @@
+c:/python27/python.exe C:/WORK/helper\39146\cfg\script_2017042501271_0 "2017042501271" "0" "helperJob" "11252987602704" "GG084"

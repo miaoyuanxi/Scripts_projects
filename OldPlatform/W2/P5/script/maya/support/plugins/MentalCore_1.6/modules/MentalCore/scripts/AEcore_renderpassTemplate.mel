@@ -1,0 +1,166 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+source "AEMentalCoreLogo.mel";
+
+global proc AEcore_renderpassTypeCallback(string $node)
+{
+	$type = `getAttr ( $node + ".type" )`;
+
+	if ($type == 35 || $type == 36) {
+		editorTemplate -dimControl $node "custom_shader" 0;
+	}
+	else {
+		editorTemplate -dimControl $node "custom_shader" 1;
+	}
+	
+	if ($type >= 2 && $type <= 7 || $type == 19 || $type == 38) {
+		editorTemplate -dimControl $node "en_light_linking" 0;
+		editorTemplate -dimControl $node "light_link_mode" 0;
+	}
+	else {
+		editorTemplate -dimControl $node "en_light_linking" 1;
+		editorTemplate -dimControl $node "light_link_mode" 1;
+	}
+	
+	AEcore_lightPassUpdate($node);
+}
+
+global proc AEcore_renderpassClampCallback(string $node)
+{
+	$clamp = `getAttr ( $node + ".en_clamp" )`;
+	editorTemplate -dimControl $node "clamp" (1 - $clamp);
+}
+
+
+global proc AEcore_lightPassCreate(string $nodeName)
+{
+	$nodeName = `basenameEx $nodeName`;
+
+	frameLayout -l "Light Passes" -vis 0 -cl false "mc_rp_lightpass_layout";
+	columnLayout;
+	
+	attrControlGrp -l "Diffuse" -a ($nodeName + ".diffuse") "mc_rp_lightpass_diff";
+	attrControlGrp -l "Diffuse Raw" -a ($nodeName + ".diffuse_raw") "mc_rp_lightpass_diff_raw";
+	attrControlGrp -l "Shadow" -a ($nodeName + ".shadow") "mc_rp_lightpass_shad";
+	attrControlGrp -l "Shadow Raw" -a ($nodeName + ".shadow_raw") "mc_rp_lightpass_shad_raw";
+	attrControlGrp -l "Diffuse Without Shadows" -a ($nodeName + ".diffuse_no_shad") "mc_rp_lightpass_diffnoshad";
+	attrControlGrp -l "Diffuse Without Shadows Raw" -a ($nodeName + ".diffuse_no_shad_raw") "mc_rp_lightpass_diffnoshad_raw";
+	attrControlGrp -l "Specular" -a ($nodeName + ".specular") "mc_rp_lightpass_spec";
+}
+
+global proc AEcore_lightPassReplace(string $nodeName)
+{
+	$nodeName = `basenameEx $nodeName`;
+	
+	attrControlGrp -e -a ($nodeName + ".diffuse") "mc_rp_lightpass_diff";
+	attrControlGrp -e -a ($nodeName + ".diffuse_raw") "mc_rp_lightpass_diff_raw";
+	attrControlGrp -e -a ($nodeName + ".shadow") "mc_rp_lightpass_shad";
+	attrControlGrp -e -a ($nodeName + ".shadow_raw") "mc_rp_lightpass_shad_raw";
+	attrControlGrp -e -a ($nodeName + ".diffuse_no_shad") "mc_rp_lightpass_diffnoshad";
+	attrControlGrp -e -a ($nodeName + ".diffuse_no_shad_raw") "mc_rp_lightpass_diffnoshad_raw";
+	attrControlGrp -e -a ($nodeName + ".specular") "mc_rp_lightpass_spec";
+
+	AEcore_lightPassUpdate($nodeName);
+}
+
+global proc AEcore_lightPassUpdate(string $node)
+{
+	if (`frameLayout -q -exists "mc_rp_lightpass_layout"`)
+	{
+		$pass_type = `getAttr ( $node + ".type" )`;
+		
+		if ($pass_type == 38)
+			frameLayout -e -vis 1 "mc_rp_lightpass_layout";
+		else
+			frameLayout -e -vis 0 "mc_rp_lightpass_layout";
+	}
+}
+
+
+global proc AEcore_rpmetaCreate ( string $nodeName )
+{
+	$nodeName = `basenameEx $nodeName`;
+	python("from mentalcore import AEcore_renderpass; AEcore_renderpass.createLayout(\"" + $nodeName + "\")");
+}
+
+global proc AEcore_rpmetaChange ( string $nodeName )
+{		
+	$nodeName = `basenameEx $nodeName`;
+	python("from mentalcore import AEcore_renderpass; AEcore_renderpass.refreshLayout(\"" + $nodeName + "\")");
+}
+
+global proc AEcore_renderpassTemplate( string $nodeName )
+{	
+	//Get maya version
+	int $maya_ver = `about -f`;
+	int $maya2013 = 0;
+	if ($maya_ver >= 2013)
+		$maya2013 = 1;
+
+	AEMentalCoreLogo("mc_core_renderpass_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Render Pass " -collapse 0;
+			editorTemplate -label "Enable" -addControl "enable";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Type" -addControl "type" "AEcore_renderpassTypeCallback";
+			editorTemplate -label "Custom Shader" -addControl "custom_shader";
+			editorTemplate -label "Num Channels" -addControl "channels";
+			editorTemplate -label "Bit Depth" -addControl "bit_depth";
+			editorTemplate -label "Colour Profile" -addControl "cprofile";
+			editorTemplate -label "Filtering" -addControl "filtering";
+			editorTemplate -label "Pass Group" -addControl "group";
+		editorTemplate -endLayout;
+		editorTemplate -callCustom "AEcore_lightPassCreate" "AEcore_lightPassReplace" $nodeName;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -beginNoOptimize;
+			editorTemplate -label "Visible in Primary" -addControl "vis_in_primary";
+			editorTemplate -label "Visible in Transparency" -addControl "vis_in_trans";
+			editorTemplate -label "Visible in Reflections" -addControl "vis_in_refl";
+			editorTemplate -label "Visible in Refractions" -addControl "vis_in_refr";
+			editorTemplate -endNoOptimize;
+			editorTemplate -addSeparator;
+			editorTemplate -label "Scale" -addControl "scale";
+			editorTemplate -label "Offset" -addControl "offset";
+			editorTemplate -label "Enable Clamp" -addControl "en_clamp" "AEcore_renderpassClampCallback";
+			editorTemplate -label "Clamp" -addControl "clamp";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Object/Material Linking" -collapse 0;
+			editorTemplate -label "Enable Object/Material Linking" -addControl "en_obj_linking";
+			editorTemplate -label "Link Mode" -addControl "obj_link_mode";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Light Linking" -collapse 0;
+			editorTemplate -label "Enable Light Linking" -addControl "en_light_linking";
+			editorTemplate -label "Link Mode" -addControl "light_link_mode";
+		editorTemplate -endLayout;
+		
+		if ($maya2013) {
+			editorTemplate -beginLayout "Metadata" -collapse 1;
+				editorTemplate -callCustom "AEcore_rpmetaCreate" "AEcore_rpmetaChange" $nodeName;
+			editorTemplate -endLayout;
+		}
+		
+		AEcore_renderpassTypeCallback($nodeName);
+		AEcore_renderpassClampCallback($nodeName);
+		
+		AEmentalrayBaseTemplate($nodeName);
+		
+		editorTemplate -suppress "renderlayer";
+		editorTemplate -suppress "diffuse";
+		editorTemplate -suppress "diffuse_raw";
+		editorTemplate -suppress "shadow";
+		editorTemplate -suppress "shadow_raw";
+		editorTemplate -suppress "diffuse_no_shad";
+		editorTemplate -suppress "diffuse_no_shad_raw";
+		editorTemplate -suppress "specular";
+		editorTemplate -suppress "linked_objs";
+		editorTemplate -suppress "linked_mats";
+		editorTemplate -suppress "linked_lights";
+		editorTemplate -suppress "metadata";
+		editorTemplate -suppress "caching";
+		editorTemplate -suppress "nodeState";
+
+	editorTemplate -endScrollLayout;
+}

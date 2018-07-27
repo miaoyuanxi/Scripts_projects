@@ -1,0 +1,1710 @@
+#  Copyright (c)2011 Core CG
+#  All rights reserved
+#  www.core-cg.com
+
+# guard against multiple inclusions
+$ifndef "MentalCore_mi_included"
+set "MentalCore_mi_included" "true"
+
+
+#############################
+# MentalCore Render Globals #
+#############################
+
+declare shader
+	geometry "core_globals" (
+		# Render Passes
+		array shader	"renderpasses",			#: shortname "passes"
+							 
+		# Geo Shaders
+		array shader	"geoshader",			#: shortname "geos"
+							 
+		# General Settings
+		boolean		"enable",					#: shortname "ec" default 0
+		integer		"output_mode",				#: shortname "outm" min 0 max 2 enum "Preview Render Pass:Preview Composite:Render All Passes"
+		shader		"preview_pass",				#: shortname "pp"
+		shader		"preview_composite",		#: shortname "cmp"
+
+		integer		"exr_comp",					#: shortname "exrc" default 2 min 0 max 5 enum "None:Run Length Encoding:Zip (16 Scanlines):Piz-Based Wavelet Compression:Lossy 24Bit Float Compression:Zip (1 Scanline)"
+		integer		"fb_mem_mode",				#: shortname "fbm" default 2 min 0 max 2 enum "Disabled:Memory Mapped:Cached"
+		integer		"file_mode",				#: shortname "fm" default 2 min 0 max 2 enum "Separate Files:Grouped:Single EXR"
+
+		integer		"primary_channels",			#: shortname "ch" default 1 min 0 max 1 enum "3:4"
+		integer		"primary_bit_depth",		#: shortname "bd" default 2 min 0 max 3 enum "8 Bit Integer:16 Bit Integer:16 Bit Float:32 Bit Float" 
+		string		"primary_group",			#: shortname "gp"
+							 
+		boolean		"en_colour_management",		#: shortname "ecm" default 0
+		integer		"in_cprofile",				#: shortname "incp" default 1 min 0 max 2 enum "Linear:sRGB:Rec. 709"
+		integer		"out_cprofile",				#: shortname "otcp" default 0 min 0 max 2 enum "Linear:sRGB:Rec. 709"
+		integer		"preview_cprofile",			#: shortname "pvcp" default 1 min 0 max 2 enum "Linear:sRGB:Rec. 709"
+
+		integer		"output_override",			#: shortname "outo" min 0 max 9 enum "Normal:Primary Holdout:Matte:Post Only:Core Materials Only:Mia Materials Only:Paint Materials Only:Hair Materials Only:Surface Shaders Only:Holdout"
+		boolean		"disable_baked_textures",	#: shortname "dbt" default 0
+							 
+		boolean		"en_bloom",					#: shortname "enbl" default 0
+		integer		"bloom_source",				#: shortname "blsrc" default 4 min 0 max 4 enum "Beauty:Specular:Reflections:Incandesence:All Highlights"
+		scalar		"bloom_scale",				#: shortname "blsc" default 1. min .0 softmax 4.
+		scalar		"bloom_threshold",			#: shortname "blth" default 1. min .0 softmax 4.
+		scalar		"bloom_saturation",			#: shortname "blst" default 1. min .0 softmax 4.
+
+		# Pass Switches
+		boolean		"en_beauty_passes",		#: shortname "ebp" default 1
+		boolean		"en_post_passes",		#: shortname "epp" default 1
+		boolean		"en_matte_passes",		#: shortname "emp" default 1
+		boolean		"en_custom_passes",		#: shortname "eap" default 1
+
+		# Occlusion
+		boolean		"en_ao",				#: shortname "eoc" default 0
+		integer		"ao_mode",				#: shortname "aom" default 0 min 0 max 2 enum "MentalCore:Mentalray Built-in:Mentalray GPU"
+		color		"ao_colour",			#: shortname "ocl" default .0 .0 .0
+		integer		"ao_samples",			#: shortname "ocs" default 32 min 1
+		scalar		"ao_spread",			#: shortname "ocsp" default 88. min .0 softmax 100
+		scalar		"ao_falloff",			#: shortname "ocfo" default 1 min .0
+		scalar		"ao_near_clip",			#: shortname "onc" default 1. min .0 softmax 100
+		scalar		"ao_far_clip",			#: shortname "ofc" default 20. min .0 softmax 100
+		scalar		"ao_amt_amb_occ",		#: shortname "oaa" default 1.. min .0 max 1
+		scalar		"ao_amt_direct_occ",	#: shortname "oad" default .0 min .0 max 1
+		
+		boolean		"ao_opacity",			#: shortname "oom" default 0
+		boolean		"ao_vis_indirect",		#: shortname "ovi" default 0
+		boolean		"ao_vis_refl",			#: shortname "ovrf" default 0
+		boolean		"ao_vis_refr",			#: shortname "ovrr" default 1
+		boolean		"ao_vis_trans",			#: shortname "ovtp" default 1
+							 
+		integer		"ao_inclexcl_id",		#: shortname "oie" default 0
+		integer		"ao_nonself_id",		#: shortname "ons" default 0
+							 
+		boolean		"ao_caching",			#: shortname "aoc" default 0
+		scalar		"ao_cache_density",		#: shortname "acd" default 1 min .0
+		integer		"ao_cache_points",		#: shortname "acp" default 64 min 1
+
+		# Enviroment
+		boolean		"en_envl",				#: shortname "ele" default 0
+		scalar		"envl_scale",			#: shortname "elsc" default .5 min .0 softmax 1.
+		scalar		"envl_blur",			#: shortname "elb" default 2.0 min 0.0 softmax 4.0	
+		integer		"envl_blur_res",		#: shortname "elbr" default 512 min 0 softmax 1000
+		boolean		"envl_en_flood_colour",	#: shortname "elefc" default 0
+		color		"envl_flood_colour",	#: shortname "elfc" default .0 .0 .0	
+
+		# Indirect Globals
+		scalar		"indirect_scale",			#: shortname "ins" default 1. min 0 softmax 1
+		scalar		"indirect_occlusion",		#: shortname "inoc" default 0.5 min 0 max 1
+							 
+		# Globals Shaders
+		shader		"env_shader",				#: shortname "envsh"
+		shader		"photographic_shader",		#: shortname "phsh"
+		shader		"dof_shader",				#: shortname "dofsh"
+				
+		## MR OPTIONS ##
+		boolean		"contrast_all_buffers",		#: shortname "cab" default 0
+		boolean		"ray_differentials",		#: shortname "rdif" default 0
+		# Only for mr 3.9
+		boolean		"hair_mem_mode",			#: shortname "hmem" default 0
+		boolean		"hair_caps",				#: shortname "hcap" default 1
+		boolean		"finalgather_legacy",		#: shortname "fgl" default 0
+
+		# Unified sampling - only for mr 3.9
+		boolean		"unified_sampling",			#: shortname "us" default 0			
+		scalar		"samples_min",				#: shortname "umin" default 1. min .1 softmax 100	
+		scalar		"samples_max",				#: shortname "umax" default 64. min 1. softmax 100			
+		scalar		"samples_quality",			#: shortname "uq" default 0.5 min .0 softmax 2
+		scalar		"samples_error_cutoff",		#: shortname "uec" default 0 min .0 softmax 1.
+		boolean		"samples_per_object",		#: shortname "upo" default 0
+
+		# Progressive rendering
+		boolean		"progressive",				#: shortname "pg" default 0			
+		integer		"prog_subsamp_size",		#: shortname "pgss" default 1 min 1
+		integer		"prog_subsamp_mode",		#: shortname "pgsm" default 1 min 0 max 1 enum "Sparse:Detail"			
+		integer		"prog_subsamp_pattern",		#: shortname "pgsp" default 1 min 0 max 1 enum "Linear:Scatter"	
+		integer		"prog_min_samples",			#: shortname "pgmns" default 4 min 0 softmax 100
+		integer		"prog_max_samples",			#: shortname "pgmxs" default 100 min 0 softmax 100
+		integer		"prog_max_time",			#: shortname "pgmxt" default 0 min 0
+		scalar		"prog_error_threshold",		#: shortname "pget" default 0.05 min .0
+
+		boolean		"prog_ao_cache",			#: shortname "pgoc" default 0	
+		integer		"prog_ao_cache_points",		#: shortname "pgcp" default 1 min 1
+		integer		"prog_ao_cache_rays",		#: shortname "pgcr" default 128 min 0
+		integer		"prog_ao_cache_max_frame",	#: shortname "pgcf" default 32
+		integer		"prog_ao_cache_exclude",	#: shortname "pgce" default 0
+
+		# Image based lighting
+		integer		"ibl_mode",					#: shortname "iblm" default 0 min 0 max 3 enum "Off:Automatic:Approximate:Light"	
+		boolean		"ibl_env_cache",			#: shortname "iblec" default 0
+		integer		"ibl_env_res",				#: shortname "ibler" default 512 min 1
+		integer		"ibl_env_shader_samples",	#: shortname "ibless" default 2 min 1
+		scalar		"ibl_quality",				#: shortname "iblq" default .2 min .0 softmax 1.		
+		integer		"ibl_shadows",				#: shortname "iblsh" default 2 min 0 max 2 enum "Off:Solid:Transparent"	
+		color		"ibl_scale",				#: shortname "iblsc" default 1. 1. 1.
+		integer		"ibl_approx_split",			#: shortname "iblsp" default 4 min 0
+		integer		"ibl_approx_split_vis",		#: shortname "iblspv" default 2 min 0
+
+		# Stereo rendering
+		boolean		"en_stereo_rendering",		#: shortname "est" default 0
+		integer		"stereo_method",			#: shortname "stm" default 1 min 0 max 2 enum "Toe In=0:Off Axis=1:Offset=2"
+		scalar		"eye_separation",			#: shortname "sts" default .1 min .0
+		# Only for mr 3.9
+		scalar		"parallax_distance",		#: shortname "stp" default 10.
+
+		# Metadata - only for mr 3.10
+		array struct "metadata" {
+			boolean		"meta_enable", 			#: shortname "mte" default 1
+			integer		"meta_type", 			#: shortname "mtt" default 0 min 0 max 4 enum "String:Boolean:Integer:Scalar:Vector"
+			string		"meta_key",				#: shortname "mtk" 
+			string		"meta_string",			#: shortname "mtst" 
+			boolean		"meta_bool",			#: shortname "mtb" default 0	
+			integer		"meta_int",				#: shortname "mti" default 0
+			scalar		"meta_scalar",			#: shortname "mtsc" default 0
+			vector		"meta_vector"			#: shortname "mtv"
+		}, #: shortname "meta"
+        
+        string		"maya_file_path",           #: shortname "mfp"
+        string		"maya_file_name",			#: shortname "mfn" 
+							 
+		# Other 3.10 options
+		integer		"exr_format",						#: shortname "exrf" default 0 min 0 max 1 enum "Scanline:Tiled"
+		boolean		"trace_camera_motion_vectors", 		#: shortname "tcmv" default 0
+		boolean		"trace_camera_clip",				#: shortname "tccp" default 0
+		integer		"finalgather_importance",			#: shortname "fgimp" default 0 min 0 max 2 enum "Off:Partial:Full"
+		color		"detail_shadowmap_contrast",		#: shortname "dsmc" default 0. 0. 0.
+		scalar		"light_relative_scale",				#: shortname "lrs" default 0.318 min .0
+							 
+		# AO Trace Flags
+		boolean		"ao_flag_visible",			#: shortname "aofv" default 0
+		boolean		"ao_flag_shadow",			#: shortname "aofsh" default 1
+		boolean		"ao_flag_reflect",			#: shortname "aofrfl" default 0
+		boolean		"ao_flag_refract",			#: shortname "aofrfr" default 0
+		boolean		"ao_flag_transp",			#: shortname "aoftr" default 0
+		boolean		"ao_flag_caustic",			#: shortname "aofcu" default 0
+		boolean		"ao_flag_globillum",		#: shortname "aofgi" default 0
+		boolean		"ao_flag_finalgather",		#: shortname "aoffg" default 0
+		
+		# Global Clamp
+		boolean		"en_global_clamp",			#: shortname "egc" default 0
+		scalar		"global_clamp",				#: shortname "gc" default 1 min 0 max 99999
+
+		# Proxy Textures
+		boolean		"use_proxy_textures",		#: shortname "upt" default 1
+		boolean		"use_proxy_textures_sec",	#: shortname "upts" default 0
+        
+        # MR 3.11 Options
+        integer		"light_importance_sampling",                 #: shortname "lis" default 0 min 0 max 2 enum "Off:On:Always"
+        scalar      "light_importance_sampling_variance",        #: shortname "lisv" default 0.001
+        boolean     "light_importance_sampling_precomp",         #: shortname "lisp" default 0
+        
+        boolean     "multiple_importance_sampling",              #: shortname "mis" default 0
+        
+        integer		"shutter_shape",			#: shortname "shsp" default 1 min 0 max 1 enum "None (Box):Trapezoidal"
+        scalar		"shutter_efficiency",		#: shortname "shef" default 0.8 min .5 max 1.
+        
+        boolean     "ao_gpu_override_quality",  #: shortname "gpuoq" default 0
+        integer		"ao_gpu_passes",            #: shortname "gpup" default 1 min 1
+        integer		"ao_gpu_rays",              #: shortname "gpur" default 1 min 1
+        
+        boolean     "nested_assemblies",        #: shortname "nsa" default 0
+
+        boolean     "preview_profile_pri_buffer",   #: shortname "pppb" default 0
+	)
+	version 1
+	apply geometry
+	#: nodeid 819000
+end declare
+
+####################
+# MentalCore State #
+####################
+
+declare shader
+	color "core_state" (
+		boolean		"enable",					#: shortname "en" default 0
+		integer		"lic_mode",					#: shortname "lm" default 0
+	)
+	version 1
+	apply state
+	#: nodeid 818000
+end declare
+
+#########################
+# MentalCore Renderpass #
+#########################
+
+declare shader
+	material "core_renderpass" (
+		array shader	"renderlayer",		#: shortname "rl"
+			
+		# Render Pass Attributes
+		boolean		"enable",				#: shortname "en" default 1
+		integer		"type",					#: shortname "ty" default 0 min 0 max 41 enum "Beauty:Colour:Diffuse:Diffuse Raw:Shadow:Shadow Raw:Diffuse Without Shadows:Diffuse Without Shadows Raw:Ambient:Ambient Raw:Indirect:Indirect Raw:Ambient Occlusion:Translucency:Subsurface:Subsurface Front:Subsurface Mid:Subsurface Back:Incandescence:Specular:Reflection:Refraction:Bloom Source:Depth:Normal World:Normal Camera:Point World:Point Camera:Motion Vector:Opacity:Facing Ratio:UV:Material ID:Object ID:Matte:Custom Colour:Custom Vector:Environment:Light Select:Diagnostic Samples:Diagnostic Error:Diagnostic Time"
+		integer		"channels",				#: shortname "ch" default 1 min 0 max 2 enum "1:3:4"
+		integer		"bit_depth",			#: shortname "bd" default 2 min 0 max 3 enum "8 Bit Integer=0:16 Bit Integer=1:16 Bit Float=2:32 Bit Float=3" 
+		integer		"cprofile",				#: shortname "cp" default 0 min 0 max 3 enum "Default Output Profile:Linear:sRGB:Rec. 709"
+		boolean		"filtering",			#: shortname "fl" default 1
+		string		"group",				#: shortname "gp"
+								
+		# Light Select Passes
+		boolean		"diffuse",				#: shortname "df" default 1
+		boolean		"diffuse_raw",			#: shortname "dfr" default 0
+		boolean		"shadow",				#: shortname "sh" default 0
+		boolean		"shadow_raw",			#: shortname "shr" default 0
+		boolean		"diffuse_no_shad",		#: shortname "dfns" default 0
+		boolean		"diffuse_no_shad_raw",	#: shortname "dfnsr" default 0
+		boolean		"specular",				#: shortname "sp" default 1
+			
+		# Visiblity Attributes
+		boolean		"vis_in_primary",		#: shortname "veye" default 1
+		boolean		"vis_in_trans",			#: shortname "vtra" default 1
+		boolean		"vis_in_refl",			#: shortname "vrfl" default 0
+		boolean		"vis_in_refr",			#: shortname "vrfr" default 0	
+						
+		# Tonemap Attributes
+		scalar		"scale",				#: shortname "sca" default 1.0	
+		scalar		"offset",				#: shortname "off" default .0
+		boolean		"en_clamp",				#: shortname "enc" default 0
+		scalar		"clamp",				#: shortname "clp" default 1.0
+						
+		# Custom Shader
+		shader		"custom_shader",		#: shortname "csh"
+							
+		# Object/Material/Light Linking
+		boolean		"en_obj_linking",		#: shortname "eol" default 0
+		integer		"obj_link_mode",		#: shortname "olm" min 0 max 1 enum "Inclusive:Exclusive"
+		boolean		"en_light_linking",		#: shortname "ell" default 0
+		integer		"light_link_mode",		#: shortname "llm" min 0 max 1 enum "Inclusive:Exclusive"
+								
+		array geometry	"linked_objs",		#: shortname "lkobj"
+		array material	"linked_mats",		#: shortname "lkmat"
+		array light		"linked_lights",	#: shortname "lklgt"
+								
+		#Metadata - only for mr 3.10
+		array struct "metadata" {
+			boolean		"meta_enable", 			#: shortname "mte" default 1
+			integer		"meta_type", 			#: shortname "mtt" default 0 min 0 max 4 enum "String:Boolean:Integer:Scalar:Vector"
+			string		"meta_key",				#: shortname "mtk" 
+			string		"meta_string",			#: shortname "mtst" 
+			boolean		"meta_bool",			#: shortname "mtb" default 0	
+			integer		"meta_int",				#: shortname "mti" default 0
+			scalar		"meta_scalar",			#: shortname "mtsc" default 0
+			vector		"meta_vector"			#: shortname "mtv"
+		}, #: shortname "meta"
+	)
+	version 1
+	#: nodeid 818999
+end declare
+
+########################
+# MentalCore Composite #
+########################
+
+declare shader
+	color "core_composite" (
+		color		"input",				#: shortname "in" default .0 .0 .0
+	)
+	version 1
+	#: nodeid 818998
+end declare
+
+
+#######################
+# MentalCore Material #
+#######################
+
+declare shader
+	color "core_material" (
+		# General
+		color		"diffuse",			#: shortname "cl" default .5 .5 .5
+		scalar		"transparency",		#: shortname "tr" default .0 min .0 max 1.
+		scalar		"cutout_opacity",	#: shortname "co" default 1. min .0 max 1.
+		color		"incandesence",		#: shortname "inc" default .0 .0 .0
+		shader		"subsurface",		#: shortname "sss"
+		scalar		"diffuse_weight",	#: shortname "dfw" default 1. min .0 max 1.
+		scalar		"roughness",		#: shortname "rgh" default .0 min .0 max 1.
+
+		# Bump
+		shader		"overall_bump",		#: shortname "oab"
+		shader		"standard_bump",	#: shortname "stb"
+		shader		"normal_map",		#: shortname "nrm"
+
+		boolean		"bump_affect_diff",	#: shortname "bad" default 1 min .0 max 1.
+		boolean		"bump_affect_spec",	#: shortname "bas" default 1 min .0 max 1.
+		boolean		"bump_affect_refl",	#: shortname "barl" default 1 min .0 max 1.
+		boolean		"bump_affect_refr",	#: shortname "barf" default 1 min .0 max 1.
+
+		# Ambient
+		scalar		"ambient_contrib",	#: shortname "abc" default 1. min .0 softmax 1.
+		shader		"custom_amb_env",	#: shortname "cae"
+
+		# Blinn
+		boolean		"en_blinn",		#: shortname "enb" default 1
+		scalar		"blinn_amt",		#: shortname "bla" default 1. min .0 softmax 1.
+		color		"blinn_col",		#: shortname "blc" default .5 .5 .5
+		scalar		"blinn_ecc",		#: shortname "ble" default .3 min .0 softmax 1.
+		scalar		"blinn_rloff",		#: shortname "blr" default .6 min .0 softmax 4.
+
+		# Phong
+		boolean		"en_phong",		#: shortname "enp" default 0
+		scalar		"phong_amt",		#: shortname "pha" default 1. min .0 softmax 1.
+		color		"phong_col",		#: shortname "phc" default .5 .5 .5
+		scalar		"phong_exp",		#: shortname "phe" default 50. min 0 softmax 100.
+
+		# Velvet
+		boolean		"en_velvet",		#: shortname "env" default 0
+		scalar		"velvet_amt",		#: shortname "vla" default .8 min .0 softmax 1.
+		color		"velvet_col",		#: shortname "vlc" default .4 .4 .4
+		scalar		"velvet_backscatter",	#: shortname "vlb" default .1 min .0 max 1.
+		scalar		"velvet_edge",		#: shortname "vle" default 10. min .0 max 100.
+		scalar		"velvet_rough",		#: shortname "vlr" default .1 min .0 max 1.
+
+		# Glossy
+		boolean		"en_glossy",		#: shortname "eng" default 0
+		scalar		"glossy_amt",		#: shortname "gla" default .8 min .0 softmax 1.
+		color		"glossy_col",		#: shortname "glc" default .5 .5 .5
+		scalar		"glossy_rough",		#: shortname "glr" default .1 min .0 max 1.
+		scalar		"glossy_sharp",		#: shortname "gls" default .98 min .0 max 1.
+
+		# Ramp Spec
+		boolean		"en_rspec",			#: shortname "enrs" default 0
+		scalar		"rspec_amt",		#: shortname "rsa" default .8 min .0 softmax 1.
+		scalar		"rspec_ecc",		#: shortname "rse" default .2 min .0 softmax 1.
+		array struct	"rspec_col" {
+		   scalar		"rspec_col_position",			#: min .0 max 1.
+		   color		"rspec_col_color",
+		   integer		"rspec_col_interp"			#: default 2 enum "0:1:2:3"
+		}, 
+		array struct	"rspec_falloff" {
+		   scalar		"rspec_falloff_position",
+		   scalar		"rspec_falloff_value",
+		   integer		"rspec_falloff_interp"			#: default 1 enum "0:1:2:3"
+		},
+						   
+		# Custom Spec
+		color		"custom_spec",		#: shortname "cus"
+
+		# Reflection
+		boolean		"en_refl",			#: shortname "enrfl" default 0
+		boolean		"refl_energy_con",	#: shortname "rflec" default 1
+		scalar		"reflectivity",		#: shortname "rfl" default .6 min .0 softmax 1.
+		color		"refl_col",			#: shortname "rflcl" default 1. 1. 1.
+		array struct	"refl_curve" {
+			scalar		"refl_curve_position",
+			scalar		"refl_curve_value",
+			integer		"refl_curve_interp"			#: default 1 enum "0:1:2:3"
+		}, 
+		boolean		"refl_metal",		#: shortname "rflm" default 0
+		scalar		"refl_max_dist",	#: shortname "rflmd" default 0. min .0 softmax 100.
+		scalar		"refl_falloff",		#: shortname "rflfo" default 2. min .0 softmax 10.
+		boolean		"refl_falloff_to_col",	#: shortname "rflftc" default 0
+		color		"refl_falloff_col",	#: shortname "rflfc" default .0 .0 .0
+		scalar		"refl_glossy",		#: shortname "rflg" default .0 min .0 softmax 1.
+		integer		"refl_samples",		#: shortname "rfls" default 8 min 0 softmax 32
+		boolean		"refl_single_env",	#: shortname "rflse" default 0
+		boolean		"refl_skip_inside",	#: shortname "rflsi" default 1
+		integer		"refl_depth",		#: shortname "rfld" default 0 min 0 max 10
+		shader		"custom_refl_env",	#: shortname "crle"
+		boolean		"refl_env_only",	#: shortname "rfleo" default 0
+
+		# Refraction
+		boolean		"en_refr",			#: shortname "enrfr" default 0
+		boolean		"refr_energy_con",	#: shortname "rfrec" default 1
+		scalar		"refr_index",		#: shortname "rfri" default 1.4 min .0 softmax 2.
+		color		"refr_col",			#: shortname "rfrc" default 1. 1. 1.
+		scalar		"refr_0_deg",		#: shortname "rfr0d" default 1. min 0. softmax 1.
+		scalar		"refr_90_deg",		#: shortname "rfr90d" default 1. min 0. softmax 1.
+		scalar		"refr_brdf_curve",	#: shortname "rfrbc" default 5. softmin 0. softmax 10.
+		scalar		"refr_max_dist",	#: shortname "rfrmd" default .0 min .0 softmax 100.
+		scalar		"refr_falloff",		#: shortname "rfrfo" default 1. min .0 softmax 10.
+		boolean		"refr_falloff_to_col",	#: shortname "rfrftc" default 0
+		color		"refr_falloff_col",	#: shortname "rfrfc" default .0 .0 .0
+		scalar		"refr_glossy",		#: shortname "rfrg" default .0 min .0 softmax 1.
+		integer		"refr_samples",		#: shortname "rfrs" default 8 min 0 softmax 32
+		integer		"refr_depth",		#: shortname "rfrd" default 0 min 0 max 10
+		shader		"custom_refr_env",	#: shortname "curfe"
+
+		# Translucency
+		shader		"custom_translucency",	#: shortname "cutrlu"
+
+		# Occlusion
+		boolean		"en_occlusion",		#: shortname "enao" default 1
+		integer		"ao_trans_mode",	#: shortname "aotm" default 0 min 0 max 2 enum "Use Global Defaults=0:Force Transpency On=1:Force Transpency Off=2"
+		integer		"ao_trans_depth",	#: shortname "aotd" default 1 min 1 softmax 4
+		integer		"ao_cache_points",	#: shortname "aocp" default 0
+		scalar		"ambient_occ",		#: shortname "aao" default 1. min .0 max 1.
+		scalar		"diffuse_occ",		#: shortname "dao" default 1. min .0 max 1.
+		scalar		"specular_occ",		#: shortname "sao" default .0 min .0 max 1.
+		scalar		"reflection_occ",	#: shortname "rao" default .0 min .0 max 1.
+		scalar		"subsurface_occ",	#: shortname "ssao" default .5 min .0 max 1.
+		scalar		"translucency_occ",	#: shortname "tao" default .5 min .0 max 1.
+
+		boolean		"ao_enable_overrides",	#: shortname "eaor" default 0
+		scalar		"ao_override_spread",	#: shortname "aorsp" default 88. min .0 softmax 100.
+		integer		"ao_override_samples",	#: shortname "aorsm" default 32 min 0 softmax 128
+		scalar		"ao_override_distance",	#: shortname "aord" default 20. min 0 softmax 100
+		color		"ao_override_colour",	#: shortname "aorc" default .0 .0 .0
+
+		# Indirect
+		boolean		"en_indirect",		#: shortname "eni" default 1
+		color		"indirect_col",		#: shortname "indc" default 1. 1. 1.
+		scalar		"indirect_sat",		#: shortname "inds" default 1. min .0 softmax 2.
+
+		# Shadow
+		boolean		"en_shad_overrides",	#: shortname "enso" default 0
+		color		"shad_col",				#: shortname "shc" default .0 .0 .0
+		scalar		"shad_trans",			#: shortname "sht" default .0 min .0 max 1.
+		scalar		"shad_0_deg",			#: shortname "sh0d" default .2 min .0 max 1.
+		scalar		"shad_90_deg",			#: shortname "sh90d" default 1. min .0 max 1.
+		scalar		"shad_brdf_curve",		#: shortname "shbc" default 5. min .0 softmax 10.
+						   
+		# Bloom
+		scalar		"bloom_scale",		#: shortname "bls" default 1. min .0 softmax 5.
+		color		"bloom_tint",		#: shortname "blt" default 1. 1. 1.
+
+		# Baked Channels
+		boolean		"en_baked_beauty",	#: shortname "enbb" default 0
+		color		"baked_beauty",		#: shortname "bbt" default .0 .0 .0
+		boolean		"en_baked_occlusion",	#: shortname "enbo" default 0
+		color		"baked_occlusion",	#: shortname "boc" default .0 .0 .0
+		boolean		"en_baked_indirect",	#: shortname "enbi" default 0
+		color		"baked_indirect",	#: shortname "bin" default .0 .0 .0
+
+		# Options
+		integer		"output_override",	#: shortname "outo" default 0 min 0 max 3 enum "Normal=0:Primary Holdout=1:Matte=2:Holdout"
+
+		# Colour Management
+		boolean		"en_col_management",	#: shortname "encm" default 1
+		boolean		"cm_colour",		#: shortname "cmc" default 1
+		boolean		"cm_incandesence",	#: shortname "cminc" default 1
+		boolean		"cm_blinn_col",		#: shortname "cmbc" default 1
+		boolean		"cm_phong_col",		#: shortname "cmpc" default 1
+		boolean		"cm_velvet_col",	#: shortname "cmvc" default 1
+		boolean		"cm_glossy_col",	#: shortname "cmgc" default 1
+		boolean		"cm_rspec_col",		#: shortname "cmrsc" default 1
+		boolean		"cm_refl_col",		#: shortname "cmrlc" default 1
+		boolean		"cm_refl_falloff_col",	#: shortname "cmrlfc" default 1
+		boolean		"cm_refr_col",		#: shortname "cmrfc" default 1
+		boolean		"cm_refr_falloff_col",	#: shortname "cmrffc" default 1
+		boolean		"cm_indirect_col",	#: shortname "cmidc" default 1
+		boolean		"cm_shadow_col",	#: shortname "cmshc" default 1
+		boolean		"cm_baked_beauty",	#: shortname "cmbbtc" default 1
+		boolean		"cm_baked_occ",		#: shortname "cmbocc" default 1
+		boolean		"cm_baked_indirect",	#: shortname "cmbidc" default 1
+
+		# Light Linking
+		integer		"mode",			#: shortname "mod" min 0 max 4 default 4 property "lightmode"
+		array light	"lights",		#: shortname "ligh" property "lightlink"
+		
+	)
+	version 1
+	apply material
+	#: nodeid 819001
+end declare
+
+
+###################
+# MentalCore Lens #
+###################
+
+declare shader
+	color "core_lens" (
+			integer		"lens",					#: shortname "lens" min 0 max 1 enum "Standard=0:Spherical=1:Fish Eye=2"
+			scalar		"fe_distortion",		#: shortname "fed" default 1.0 min -1.0 max 1.0
+			boolean		"fe_mask",				#: shortname "fem" default 1
+					   
+			scalar		"exposure",				#: shortname "exp" default 1 min 0 softmax 4
+			scalar		"saturation",			#: shortname "sat" default 1 min 0 softmax 4
+			scalar		"filter_amt",			#: shortname "fila" default .0 min 0 softmax 1
+			color		"filter_col",			#: shortname "filc" default 1. 1. 1.
+			shader		"grade_shader",			#: shortname "grsh"
+			boolean		"affect_env",			#: shortname "aev" default 1
+					   
+			boolean		"en_tonemap",			#: shortname "etm" default 0
+			scalar		"tm_gain",				#: shortname "tmg" default 1 min 0 softmax 4
+			scalar		"tm_exposure",			#: shortname "tme" default 1 min 0 softmax 4
+			scalar		"tm_blend",				#: shortname "tmb" default 1 min 0 max 1
+			
+			integer		"ovr_colprofile",		#: shortname "ocp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+			color		"overlay",				#: shortname "ovr"
+			integer		"bg_colprofile",		#: shortname "bcp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+			color		"background",			#: shortname "bkg"
+		)
+	version 1
+	apply lens
+	#: nodeid 819002
+end declare
+
+
+#############################
+# MentalCore Colour Profile #
+#############################
+
+declare shader
+	color "core_colourprofile" (
+			boolean		"enable",			#: shortname "en" default 1
+			integer		"colprofile",		#: shortname "cp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+			color		"input",			#: shortname "in" 
+			)
+	version 1
+	apply texture
+	#: nodeid 819005
+end declare
+
+
+###########################
+# MentalCore MiaX Wrapper #
+###########################
+
+declare shader
+	color "core_mia_wrapper" (
+			#Mia Material
+			shader		"base_miax",		#: shortname "bmia"
+			shader		"diff_miax",		#: shortname "dmia"
+							  
+			#Base Parameters
+			scalar		"cutout_opacity",	#: shortname "cop" default 1. min .0 max 1.			
+			color		"incandesence",		#: shortname "inc" default .0 .0 .0
+			shader		"subsurface",		#: shortname "sss"
+							  
+			#Normal Map
+			shader		"normal_map",		#: shortname "nrm"
+							  
+			# Ambient
+			scalar		"ambient_contrib",	#: shortname "abc" default 1. min .0 softmax 1.
+			shader		"custom_amb_env",	#: shortname "cae"
+							  
+			# Occlusion
+			boolean		"en_occlusion",		#: shortname "enao" default 1
+			integer		"ao_trans_mode",	#: shortname "aotm" default 0 min 0 max 2 enum "Use Global Defaults=0:Force Transpency On=1:Force Transpency Off=2"
+			integer		"ao_trans_depth",	#: shortname "aotd" default 1 min 1 softmax 4
+			integer		"ao_cache_points",	#: shortname "aocp" default 0
+			scalar		"ambient_occ",		#: shortname "aao" default 1. min .0 max 1.
+			scalar		"diffuse_occ",		#: shortname "dao" default 1. min .0 max 1.
+			scalar		"specular_occ",		#: shortname "sao" default .5 min .0 max 1.
+			scalar		"reflection_occ",	#: shortname "rao" default .5 min .0 max 1.
+			scalar		"subsurface_occ",	#: shortname "ssao" default .5 min .0 max 1.
+			scalar		"translucency_occ",	#: shortname "tao" default .5 min .0 max 1.
+
+			boolean		"ao_enable_overrides",	#: shortname "eaor" default 0
+			scalar		"ao_override_spread",	#: shortname "aorsp" default 88. min .0 softmax 100.
+			integer		"ao_override_samples",	#: shortname "aorsm" default 32 min 0 softmax 128
+			scalar		"ao_override_distance",	#: shortname "aord" default 10. min 0 softmax 100
+			color		"ao_override_colour",	#: shortname "aorc" default .0 .0 .0
+							  
+			# Baked Channels
+			boolean		"en_baked_beauty",		#: shortname "enbb" default 0
+			color		"baked_beauty",			#: shortname "bb" default .0 .0 .0
+			boolean		"en_baked_occlusion",	#: shortname "enbo" default 0
+			color		"baked_occlusion",		#: shortname "boc" default .0 .0 .0
+							  
+			# Bloom
+			scalar		"bloom_scale",		#: shortname "bls" default 1. min .0 softmax 5.
+			color		"bloom_tint",		#: shortname "blt" default 1. 1. 1.
+							  
+			# Options
+			integer		"output_override",	#: shortname "outo" default 0 min 0 max 3 enum "Normal=0:Primary Holdout=1:Matte=2:Holdout"
+
+			# Colour Management
+			boolean		"cm_incandesence",	#: shortname "cmincd" default 1
+			boolean		"cm_baked_beauty",	#: shortname "cmbb" default 1
+			boolean		"cm_baked_occ",		#: shortname "cmbocc" default 1
+			)
+	version 1
+	apply material
+	#: nodeid 819006
+end declare
+
+
+#############################
+# MentalCore Surface Shader #
+#############################
+
+declare shader
+	color "core_surface_shader" (
+		# Surface
+		color		"colour",			#: shortname "col" default 1. 1. 1. 1.
+		scalar		"opacity",			#: shortname "op" default 1. min 0 max 1
+							 
+		# Options
+		integer		"output_override",	#: shortname "outo" default 0 min 0 max 3 enum "Normal=0:Primary Holdout=1:Matte=2:Holdout"
+							 
+		# Colour Management
+		boolean		"cm_colour",		#: shortname "cmcol" default 1
+	)
+	version 1
+	apply material
+	#: nodeid 819007
+end declare
+
+
+############################
+# MentalCore Texture Blend #
+############################
+
+declare shader
+	struct {
+		color		    "outColor",
+		scalar		    "outAlpha"
+	}
+	"core_texture_blend" (
+		# layers
+		array struct "layer" {
+			boolean "enabled", 			#: shortname "en" default 1
+			string "name",				#: shortname "nam"
+			integer "blend_mode",		#: shortname "blm" default 0 min 0 max 21 enum "Normal:Darken:Multiply:Colour Burn:Inverse Colour Burn:Subtract:Add:Lighten:Screen:Colour Dodge:Inverse Colour Dodge:Overlay:Soft Light:Hard Light:Reflect:Glow:Average:Difference:Exclusion:Min:Max:Illuminate"
+			color "colour",				#: shortname "col"
+			scalar "opacity",			#: shortname "op" default 1.0 min 0.0 max 1.0
+			boolean "inv_opacity" 		#: shortname "inv" default 0
+		},
+
+		# Colour Correct
+		scalar		"cc_gain",			#: shortname "gai" default 1. softmin 0 softmax 1
+		scalar		"cc_gamma",			#: shortname "gam" default 1. softmin 0 softmax 4
+		scalar		"cc_offset",		#: shortname "off" default 0. softmin -4 softmax 4
+		scalar		"cc_bias",			#: shortname "bia" default .5 min 0 max 1
+								
+		scalar		"cc_hue",			#: shortname "hue" default 0. softmin -360 softmax 360
+		scalar		"cc_sat",			#: shortname "sat" default 0. softmin -1 softmax 1
+		scalar		"cc_value",			#: shortname "val" default 0. softmin -1 softmax 1
+
+		# Options
+		boolean		"alpha_is_lum",		#: shortname "alm" default 1
+	)
+	version 1
+	apply texture
+	#: nodeid 819008
+end declare
+
+
+#########################
+# MentalCore Randomizer #
+#########################
+
+declare shader
+	color "core_randomizer" (
+		integer		"mode",				#: shortname "m" default 0 min 0 max 1 enum "Random=0:Label=1"
+		color		"default_colour",	#: shortname "dc" default 1.0 0.0 0.0 0.0
+		integer		"seed",				#: shortname "sd" default 1
+							 
+		scalar		"hue_variation",	#: shortname "hue" default 0. min 0 softmax 1
+		scalar		"sat_variation",	#: shortname "sat" default 0. min 0 max 1
+		scalar		"val_variation",	#: shortname "val" default 0. min 0 max 1
+							 
+		array color	"rand_colour",		#: shortname "maps"
+	)
+	version 1
+	apply texture
+	#: nodeid 819009
+end declare
+
+
+
+###################
+# MentalCore Hair #
+###################
+
+declare shader
+	color "core_hair" (
+		# Diffuse
+		color		"overall_col",				#: shortname "oc"    default 1., 1., 1.
+		boolean 	"use_shave_col",			#: shortname "usc"	 default 0
+					   
+		array struct	"colour" {
+			scalar		"col_position",			#: min .0 max 1.
+			color		"col_color",
+			integer		"col_interp"			#: default 2 enum "0:1:2:3"
+		}, 
+					   
+		scalar		"scale",					#: shortname "sca"   default 1. min 0 softmax 1
+		scalar		"back_scale",				#: shortname "bsca"  default 0.5 min 0 softmax 1
+		color		"incandesence",				#: shortname "ic"   default 0. 0. 0.
+					   
+		scalar	"h_variation",			#: shortname "hvar"   default 0. min 0 softmax 1
+		scalar	"s_variation",			#: shortname "svar"   default 0. min 0 softmax 1		
+		scalar	"v_variation",			#: shortname "vvar"   default 0. min 0 softmax 1
+
+		scalar	"r_variation",			#: shortname "rvar"   default 0. min 0 softmax 1
+		scalar	"g_variation",			#: shortname "gvar"   default 0. min 0 softmax 1		
+		scalar	"b_variation",			#: shortname "bvar"   default 0. min 0 softmax 1
+
+		# Ambient
+		scalar		"ambient_contrib",	#: shortname "abc" default 1. min .0 softmax 1.
+		shader		"custom_amb_env",	#: shortname "cae"
+
+		# Specular
+		boolean		"en_spec",				#: shortname "ensp" default 1
+		scalar		"overall_spec",			#: shortname "ospec" default 0.5 min 0.0 softmin 0.0 softmax 1.0
+
+		scalar		"prim_spec",			#: shortname "prisp" default 1, min 0 softmax 1.
+		color		"prim_spec_col",		#: shortname "prispc" default .9 .85 .8
+		scalar		"prim_sharp",			#: shortname "prish" default 40, min 0.0 softmax 100.
+		scalar		"prim_dev",				#: shortname "pridev" default -.15 min -1. max 1.
+					   
+		scalar		"sec_spec",				#: shortname "secsp" default .7, min 0 softmax 1.
+		color		"sec_spec_col",			#: shortname "secspc" default .75 .62 .42
+		scalar		"sec_sharp",			#: shortname "secsh" default 15, min 0.0 softmax 100.
+		scalar		"sec_dev",				#: shortname "secdev" default -.4 min -1. max 1.
+
+		scalar		"trans_spec",			#: shortname "trslspc" default .4, min 0 softmax 1.
+		color		"trans_spec_col", 		#: shortname "trslsp" default .9 .85 .8
+		scalar		"trans_sharp",			#: shortname "trslsh" default 10, min 0.0 softmax 100.
+		scalar		"trans_dev",			#: shortname "trsldev" default -0.35 min -1. max 1.
+
+		scalar		"spec_var",				#: shortname "spvar" default 0.0, min 0.0 max 1.0
+		scalar		"fresnel_amt",			#: shortname "frea" default 0.2, min 0.0 max 1.0
+		scalar		"normal_blend_spec",	#: shortname "norbsp" default 0.1, min 0.0 max 1.0
+		scalar		"directionality",		#: shortname "dirat" default .5, min 0.0 max 1.0
+
+		# Transparency
+		boolean 	"en_fade",				#: shortname "efd" default 0
+		scalar		"fade_root",			#: shortname "rootfd" default 0.0, min 0.0 max 1.
+		scalar		"fade_tip",				#: shortname "tipfd" default 1.0, min 0.0 max 1.
+		scalar		"fade_distance",		#: shortname "fddis" default .8, min 0.0 max 1.
+		scalar		"fade_softness",		#: shortname "fdsft" default .2, min 0.0 max 1.
+		scalar		"fade_edge",			#: shortname "efad" default 0, min 0.0 max 1.
+					   
+		# Occlusion
+		boolean 	"en_occlusion",			#: shortname "enoc" default 0
+		integer		"ao_mode",				#: shortname "aom" default 1 min 0 max 2 enum "Ambient Occlusion=0:Root Occusion=1"
+		color		"ao_colour",			#: shortname "aoc" default .0 .0 .0
+					   
+		scalar		"ao_spread",			#: shortname "aosp" default 88. min .0 softmax 100.
+		integer		"ao_samples",			#: shortname "aosm" default 16 min 0
+		scalar		"ao_distance",			#: shortname "aod" default 10. min 0 softmax 100
+		integer		"ao_cache_points",		#: shortname "aocp" default 0 min 0
+					   
+		scalar		"ro_distance",			#: shortname "rod" default .4 min 0  softmax 2
+		scalar		"ro_falloff",			#: shortname "rodr" default 2. min .0 softmax 4.
+					   
+		scalar		"ambient_occ",			#: shortname "aao" default 1. min .0 max 1.
+		scalar		"diffuse_occ",			#: shortname "dao" default 1. min .0 max 1.
+		scalar		"specular_occ",			#: shortname "sao" default .5 min .0 max 1.
+					   
+		# Indirect
+		integer 	"opaque_in_fg",		#: shortname "ofg" default 1 min 0 max 1 enum "Full=0:Opaque=1"
+		boolean		"en_indirect",		#: shortname "eni" default 1
+		color		"indirect_col",		#: shortname "indc" default 1. 1. 1.
+		scalar		"indirect_sat",		#: shortname "inds" default 1. min .0 softmax 2.
+					   
+		# Bloom
+		scalar		"bloom_scale",		#: shortname "bls" default 1. min .0 softmax 5.
+		color		"bloom_tint",		#: shortname "blt" default 1. 1. 1.
+
+		# Options
+		integer		"output_override",	#: shortname "outo" default 0 min 0 max 3 enum "Normal=0:Primary Holdout=1:Matte=2:Holdout"
+
+		# Colour Management
+		boolean		"en_col_management",	#: shortname "encm" default 1
+		boolean		"cm_overall_col",	#: shortname "cmoac" default 1
+		boolean		"cm_colour",		#: shortname "cmc" default 1
+		boolean		"cm_incandesence",	#: shortname "cmic" default 1
+		boolean		"cm_prim_spec_col",	#: shortname "cmps" default 1
+		boolean		"cm_sec_spec_col",	#: shortname "cmss" default 1
+		boolean		"cm_tran_spec_col",	#: shortname "cmts" default 1
+		boolean		"cm_indirect_col",	#: shortname "cmind" default 1
+					   
+		# Light Linking
+		integer		"mode",			#: shortname "mod" min 0 max 4 default 4 property "lightmode"
+		array light	"lights",		#: shortname "ligh" property "lightlink"
+		)
+	version 1
+	apply material
+	#: nodeid 819010
+end declare
+
+
+########################
+# MentalCore VDisplace #
+########################
+
+declare shader
+	color "core_vdisplace" (
+		integer 	"space",		#: shortname "sp" default 0 min 0 max 0 enum "Object/World=0"
+		scalar		"scale",		#: shortname "sc" default 1
+		color		"vdisp_map",	#: shortname "dm"
+		)
+	version 1
+	apply displace
+	#: nodeid 819011
+end declare
+
+
+################################
+# MentalCore Material Override #
+################################
+
+declare shader
+	geometry "core_material_override" (
+		array struct "override" {
+			geometry	"object", 		#: shortname "obj"
+			material 	"material"		#: shortname "mat"			
+		}, #: shortname "ovr"
+		)
+	version 1
+	apply geometry
+	#: nodeid 819012
+end declare
+
+
+#########################
+# MentalCore SSS Passes #
+#########################
+
+declare shader
+	color "core_pass_sss" (
+		color		"result",			#: shortname "r" default .0 .0 .0
+		color		"result2",			#: shortname "r2" default .0 .0 .0
+		color		"front",			#: shortname "f" default .0 .0 .0
+		color		"mid",				#: shortname "m" default .0 .0 .0
+		color		"back",				#: shortname "b" default .0 .0 .0
+		)
+	version 1
+	apply material
+	#: nodeid 819014
+end declare
+
+
+#############################
+# MentalCore Material Blend #
+#############################
+
+declare shader
+	color "core_blend_materials" (	
+		shader		"base",					#: shortname "b"
+								
+		shader		"coat1",				#: shortname "c1"
+		boolean		"coat1_add",			#: shortname "c1a" default 0
+		scalar		"coat1_blend",			#: shortname "c1b" default 1 min .0 max 1.
+								
+		shader		"coat2",				#: shortname "c2"
+		boolean		"coat2_add",			#: shortname "c2a" default 0
+		scalar		"coat2_blend",			#: shortname "c2b" default 1 min .0 max 1.
+		
+		shader		"coat3",				#: shortname "c3"
+		boolean		"coat3_add",			#: shortname "c3a" default 0
+		scalar		"coat3_blend",			#: shortname "c3b" default 1 min .0 max 1.
+
+		shader		"coat4",				#: shortname "c4"
+		boolean		"coat4_add",			#: shortname "c4a" default 0
+		scalar		"coat4_blend",			#: shortname "c4b" default 1 min .0 max 1.
+		
+		shader		"coat5",				#: shortname "c5"
+		boolean		"coat5_add",			#: shortname "c5a" default 0
+		scalar		"coat5_blend",			#: shortname "c5b" default 1 min .0 max 1.
+		
+		shader		"coat6",				#: shortname "c6"
+		boolean		"coat6_add",			#: shortname "c6a" default 0
+		scalar		"coat6_blend",			#: shortname "c6b" default 1 min .0 max 1.
+		
+		shader		"coat7",				#: shortname "c7"
+		boolean		"coat7_add",			#: shortname "c7a" default 0
+		scalar		"coat7_blend",			#: shortname "c7b" default 1 min .0 max 1.
+		
+		shader		"coat8",				#: shortname "c8"
+		boolean		"coat8_add",			#: shortname "c8a" default 0
+		scalar		"coat8_blend",			#: shortname "c8b" default 1 min .0 max 1.
+
+		shader		"coat9",				#: shortname "c9"
+		boolean		"coat9_add",			#: shortname "c9a" default 0
+		scalar		"coat9_blend",			#: shortname "c9b" default 1 min .0 max 1.
+		)
+	version 1
+	apply material
+	#: nodeid 819015
+end declare
+
+
+#########################
+# MentalCore Normal Map #
+#########################
+
+declare shader
+	vector "core_normalmap" (
+		vector		"input_normals",
+		color		"normal_map",
+		scalar		"blend",		#: default 1. min .0 softmax 1.
+		)
+	version 1
+	apply texture
+	#: nodeid 819017
+end declare
+
+
+############################
+# MentalCore Texture Merge #
+############################
+
+declare shader
+	struct {
+		color		    "outColor",
+		scalar		    "outAlpha"
+	}
+	"core_texture_merge" (
+		integer		"operation",		#: shortname "op" default 0 min 0 max 21 enum "Normal:Darken:Multiply:Colour Burn:Inverse Colour Burn:Subtract:Add:Lighten:Screen:Colour Dodge:Inverse Colour Dodge:Overlay:Soft Light:Hard Light:Reflect:Glow:Average:Difference:Exclusion:Min:Max:Illuminate"
+								
+		color		"input_a",			#: default 1. 0. 0. 0.
+		color		"input_b",			#: default 0. 1. 0. 0.
+								
+		scalar		"gain",				#: default 1. min 0 softmax 4
+		boolean		"black_clamp",		#: shortname "bcl" default 1
+		boolean		"white_clamp",		#: shortname "wcl" default 0
+
+		boolean		"en_mask",			#: shortname "em"
+		scalar		"mask",				#: shortname "m" min 0 max 1
+		boolean		"rev_mask",			#: shortname "rm"
+
+		scalar		"mix",				#: default 1. min 0 max 1
+		)
+	version 1
+	apply texture
+	#: nodeid 819018
+end declare
+
+
+########################
+# MentalCore Geo Light #
+########################
+
+declare shader
+	geometry "core_geo_light" (
+		geometry	"source_geo",
+		integer		"visibility",			#: default 1 min 0 max 2 enum "Source Geo Visible:Light Geo Visible:Invisible"
+		   
+		integer		"high_samples",			#: default 8
+		integer		"high_sample_limit",	#: default 1
+		integer		"low_samples",			#: default 1
+		   
+		shader		"light_shader",
+		shader		"photon_shader",
+		   
+		boolean		"emit_gi",				#: default 0
+		boolean		"emit_caustics",		#: default 0
+		color		"photon_energy",		#: default 1., 1., 1.
+		scalar		"photon_intensity",		#: default 8000 min 0 softmax 10000
+		scalar		"exponent",				#: default 2.
+		integer		"gi_photons",			#: default 10000 min 0
+		integer		"caustic_photons",		#: default 10000 min 0
+		   
+		scalar		"time",					#: default 0
+		)
+	version 1
+	apply geometry
+	#: nodeid 819019
+end declare
+
+
+#######################
+# MentalCore UV Tiles #
+#######################
+
+declare shader
+	struct {
+		color		    "outColor",
+		scalar		    "outAlpha"
+	}
+	"core_uv_tiles" (
+		# tiles
+		array struct "tiles" {
+			boolean "enabled",				#: shortname "en" default 1
+			integer "index_x",				#: shortname "ix" default 0
+			integer "index_y",				#: shortname "iy" default 0
+			color	"texture",				#: shortname "tex"
+			scalar	"alpha"					#: shortname "a"  default 0. min 0. softmax 1.
+		},
+					
+		color			"gain",					#: shortname "g" default 1. 1. 1.
+		color			"offset",				#: shortname "off" default 0. 0. 0.
+		color			"gamma",				#: shortname "gm" default 1. 1. 1.
+
+		boolean			"alpha_is_luminance",	#: shortname "ail" default 0
+		)
+	version 1
+	apply texture
+	#: nodeid 819020
+end declare
+
+
+#############################
+# MentalCore Texture Lookup #
+#############################
+
+declare shader
+	struct {
+		color		    "outColor",
+		scalar		    "outAlpha"
+	}
+	"core_texture_lookup" (
+		color texture	"texture",			#: shortname "tex"
+		boolean			"el_filter",		#: shortname "ef" default 0
+						   
+		vector			"translate",		#: shortname "tr" default 0. 0. 0.
+		vector			"repeat",			#: shortname "rp" default 1. 1. 1.
+		boolean			"mirror_x",			#: shortname "mx" default 0
+		boolean			"mirror_y",			#: shortname "my" default 0
+		boolean			"wrap_x",			#: shortname "wx" default 1
+		boolean			"wrap_y",			#: shortname "wy" default 1
+		vector			"min",				#: shortname "min" default 0. 0. 0.
+		vector			"max",				#: shortname "max" default 1. 1. 1.
+						   
+		scalar			"hue",				#: shortname "h" default 0. softmin -360. softmax 360.
+		scalar			"sat",				#: shortname "s" default 1. min 0. softmax 4.
+		scalar			"val",				#: shortname "v" default 1. min 0. softmax 4.
+
+		color			"gain",					#: shortname "g" default 1. 1. 1.
+		color			"offset",				#: shortname "off" default 0. 0. 0.
+		color			"gamma",				#: shortname "gm" default 1. 1. 1.
+		
+		boolean			"alpha_is_luminance",	#: shortname "ail" default 0
+		boolean			"invert",				#: shortname "in" default 0
+							 
+		boolean			"use_custom_uv",	#: shortname "ucuv" default 0
+		vector			"custom_uv",		#: shortname "cuv" default 0. 0. 0.
+		)
+	version 1
+	apply texture
+	#: nodeid 819021
+end declare
+
+
+###########################
+# MentalCore Colour Grade #
+###########################
+
+declare shader
+	struct {
+		color		    "outColor",
+		scalar		    "outAlpha"
+	}
+	"core_colour_grade" (
+		color		"colour",		#: shortname "in"
+
+		color		"blackpoint",		#: shortname "bp" default .0 .0 .0
+		color		"whitepoint",		#: shortname "wp" default 1. 1. 1.
+		color		"lift",				#: shortname "lf" default .0 .0 .0
+		color		"gain",				#: shortname "ga" default 1. 1. 1.
+		color		"multiply",			#: shortname "ml" default 1. 1. 1.
+		color		"offset",			#: shortname "of" default 0. 0. 0.
+		color		"gamma",			#: shortname "gm" default 1. 1. 1.
+
+		scalar		"hue",				#: shortname "h" default 0. softmin -360. softmax 360.
+		scalar		"sat",				#: shortname "s" default 1. min 0. softmax 4.
+		scalar		"val",				#: shortname "v" default 1. min 0. softmax 4.
+
+		boolean		"black_clamp",			#: shortname "bcl" default 1
+		boolean		"white_clamp",			#: shortname "wcl" default 0
+		boolean		"alpha_is_luminance",	#: shortname "ail" default 0
+
+		boolean		"en_mask",			#: shortname "em"
+		scalar		"mask",				#: shortname "m" min 0 max 1
+		boolean		"rev_mask",			#: shortname "rm"
+
+		scalar		"mix",				#: default 1. min 0 max 1
+		)
+	version 1
+	apply texture
+	#: nodeid 819022
+end declare
+
+
+################################
+# MentalCore Car Paint Wrapper #
+################################
+
+declare shader
+	color "core_carpaint_wrapper" (
+		#Outputs
+		color		"diffuse_lvl",			#: shortname "dfl"
+		color		"diffuse_raw",			#: shortname "fdr"
+		color		"diffuse_raw_no_shad",	#: shortname "dfrns"
+		color		"ambient_lvl",			#: shortname "aml"
+		color		"spec1",				#: shortname "sp1"
+		color		"spec2",				#: shortname "sp2"
+		color		"spec_flake",			#: shortname "spf"
+		color		"reflection",			#: shortname "rfl"
+		color		"flake_reflection",		#: shortname "frfl"
+
+		#Base Parameters
+		color		"refl_color",		#: shortname "rflc"
+		scalar		"cutout_opacity",	#: shortname "cop" default 1. min .0 max 1.			
+
+		#Bump Map
+		shader		"bump_map",			#: shortname "bmp"
+		shader		"normal_map",		#: shortname "nrm"
+
+		# Ambient
+		scalar		"ambient_contrib",	#: shortname "abc" default 1. min .0 softmax 1.
+		shader		"custom_amb_env",	#: shortname "cae"
+
+		# Occlusion
+		boolean		"en_occlusion",		#: shortname "enao" default 1
+		integer		"ao_trans_mode",	#: shortname "aotm" default 0 min 0 max 2 enum "Use Global Defaults=0:Force Transpency On=1:Force Transpency Off=2"
+		integer		"ao_trans_depth",	#: shortname "aotd" default 1 min 1 softmax 4
+		integer		"ao_cache_points",	#: shortname "aocp" default 0
+		scalar		"ambient_occ",		#: shortname "aao" default 1. min .0 max 1.
+		scalar		"diffuse_occ",		#: shortname "dao" default 1. min .0 max 1.
+		scalar		"specular_occ",		#: shortname "sao" default .5 min .0 max 1.
+		scalar		"reflection_occ",	#: shortname "rao" default .5 min .0 max 1.
+
+		boolean		"ao_enable_overrides",	#: shortname "eaor" default 0
+		scalar		"ao_override_spread",	#: shortname "aorsp" default 88. min .0 softmax 100.
+		integer		"ao_override_samples",	#: shortname "aorsm" default 32 min 0 softmax 128
+		scalar		"ao_override_distance",	#: shortname "aord" default 10. min 0 softmax 100
+		color		"ao_override_colour",	#: shortname "aorc" default .0 .0 .0
+								   
+		# Indirect
+		boolean		"en_indirect",		#: shortname "eni" default 1
+		color		"indirect_col",		#: shortname "indc" default 1. 1. 1.
+		scalar		"indirect_sat",		#: shortname "inds" default 1. min .0 softmax 2.
+
+		# Baked Channels
+		boolean		"en_baked_beauty",		#: shortname "enbb" default 0
+		color		"baked_beauty",			#: shortname "bb" default .0 .0 .0
+		boolean		"en_baked_occlusion",	#: shortname "enbo" default 0
+		color		"baked_occlusion",		#: shortname "boc" default .0 .0 .0
+
+		# Bloom
+		scalar		"bloom_scale",		#: shortname "bls" default 1. min .0 softmax 5.
+		color		"bloom_tint",		#: shortname "blt" default 1. 1. 1.
+
+		# Options
+		integer		"output_override",	#: shortname "outo" default 0 min 0 max 3 enum "Normal=0:Primary Holdout=1:Matte=2:Holdout"
+
+		# Colour Management
+		boolean		"cm_indirect_col",	#: shortname "cmidc" default 1
+		boolean		"cm_baked_beauty",	#: shortname "cmbb" default 1
+		boolean		"cm_baked_occ",		#: shortname "cmbocc" default 1
+	)
+	version 1
+	apply material
+	#: nodeid 819023
+end declare
+
+
+###################
+# MentalCore Dirt #
+###################
+
+declare shader
+	struct {
+		color		    "outColor",
+		scalar		    "outAlpha"
+	}
+	"core_dirt" (
+		integer		"samples",				#: shortname "sm" default 32
+		scalar		"spread_vert",			#: shortname "spv" default 90.
+		scalar		"spread_hor",			#: shortname "sph" default 120.
+		scalar		"falloff",				#: shortname "fo" default 1.
+		scalar		"near_clip",			#: shortname "nc" default .0
+		scalar		"far_clip",				#: shortname "fc" default 10.
+		scalar		"dirt_intensity",		#: shortname "di" default 1. min .0 softmax 4.
+		
+		boolean		"inner_dirt",			#: shortname "ind" default 1
+		boolean		"outer_dirt",			#: shortname "otd" default 1
+		integer		"dir_weight",			#: shortname "dw" default 4 min 0 max 6 enum "None:+X:-X:+Y:-Y:+Z:-Z"
+		integer		"dirt_mode",			#: shortname "dm" default 0 min 0 max 2 enum "All Objects=0:Self Dirt Only=1:Non Self Dirt Only=2"
+				 
+		boolean		"mask_py",				#: shortname "mpy" default 0
+		scalar		"mask_py_amount",		#: shortname "pya" default 1. min .0 max 1.
+		scalar		"mask_py_bias",			#: shortname "pyb" default .0 min -1. max 1.
+				 
+		boolean		"mask_ny",				#: shortname "mny" default 0
+		scalar		"mask_ny_amount",		#: shortname "nya" default 1. min .0 max 1.
+		scalar		"mask_ny_bias",			#: shortname "nyb" default .0 min -1. max 1.
+		
+		scalar		"dirt_mask",			#: shortname "dmk" default 1. min .0 max 1.
+				 
+		color		"base_color",			#: shortname "bc" default 1. 1. 1.
+		color		"dirt_color",			#: shortname "dc" default 0. 0. 0.
+		scalar		"streak_texture",		#: shortname "st" default .0 min 0. max 1.
+		boolean		"side_streaks_only",	#: shortname "sso" default 0
+	)
+	version 1
+	apply texture
+	#: nodeid 819024
+end declare
+
+
+########################
+# MentalCore Env Light #
+########################
+
+declare shader
+	color "core_env_light_base" (
+		integer		"mode",				#: shortname "m" default 0 min 0 max 3 enum "Add:Replace:Scale:Tint"
+		integer		"type",				#: shortname "ty" default 0 min 0 max 1 enum "Omni:Directional"
+		integer		"affects",			#: shortname "af" default 0 min 0 max 1 enum "Ambient:Indirect"
+		
+		integer		"colour_mode",		#: shortname "cm" default 0 min 0 max 1 enum "As Colour:As Environment"
+		integer		"colprofile",		#: shortname "cp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"colour",			#: shortname "c" default 1. 1. 1.
+		scalar		"intensity",		#: shortname "i" default 1. min 0. softmax 4.
+		scalar		"dir_blend",		#: shortname "db" default 0. min 0. max 1.
+		scalar		"dir_exp",			#: shortname "de" default 2. min 0. softmax 10.
+		
+		boolean		"falloff",			#: shortname "fo" default 0
+		boolean		"falloff_loc_vis",	#: shortname "flv" default 1
+		scalar		"falloff_start",	#: shortname "fst" default 0. min 0. softmax 100.
+		scalar		"falloff_stop",		#: shortname "fsp" default 10. min 0. softmax 100.
+		scalar		"falloff_speed",	#: shortname "fs" default 2. min 0. softmax 10.
+							
+		scalar		"ao_amount",		#: shortname "aoa" default 1. min 0. max 1.
+		color		"ao_colour",		#: shortname "aoc" default 0. 0. 0.
+								 
+		shader		"env",				#: shortname "ev"
+		)
+	version 1
+	apply light
+	#: nodeid 819028
+end declare
+
+###############################
+# MentalCore Spherical Lookup #
+###############################
+
+declare shader
+	color "core_spherical_lookup" (
+		integer		"colprofile",		#: shortname "cp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"tex",				#: shortname "tx" 
+		scalar		"gain",				#: shortname "gn" default 1. min .0 softmax 4
+		scalar		"rot",				#: shortname "rt" default 0 softmin 0 softmax 360
+		
+		boolean		"en_blur",			#: shortname "eb" default 0
+		integer		"blur_res",			#: shortname "br" default 512 min 32
+		scalar		"blur",				#: shortname "b" default 1. min .0 softmax 4
+		integer		"quality",			#: shortname "q" default 3 min 1
+		)
+	version 1
+	apply environment
+	#: nodeid 819026
+end declare
+
+##########################
+# MentalCore Environment #
+##########################
+
+declare shader
+	color "core_environment" (
+		integer		"env_colprofile",	#: shortname "ecp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"env_tex",			#: shortname "etx" 
+		scalar		"env_rot",			#: shortname "ert" default .0 softmin .0 softmax 360.
+							  
+		boolean		"pri_en",			#: shortname "pen" default 1
+		boolean		"pri_override_tex",	#: shortname "pot" default 0
+		integer		"pri_colprofile",	#: shortname "pcp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"pri_tex",			#: shortname "ptx" 
+		scalar		"pri_gain",			#: shortname "pgn" default 1. min .0 softmax 4.
+		scalar		"pri_rot",			#: shortname "prt" default .0 softmin .0 softmax 360.
+
+		boolean		"envl_en",			#: shortname "elen" default 1
+		boolean		"envl_override_tex",#: shortname "elot" default 0
+		integer		"envl_colprofile",	#: shortname "elcp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"envl_tex",			#: shortname "eltx" 
+		scalar		"envl_gain",		#: shortname "elgn" default 1. min .0 softmax 4.
+		scalar		"envl_rot",			#: shortname "elrt" default .0 softmin .0 softmax 360.
+
+		boolean		"sec_en",			#: shortname "scen" default 1
+		shader		"sec_envblur",		#: shortname "sceb"
+		boolean		"sec_override_tex",	#: shortname "scot" default 0
+		integer		"sec_colprofile",	#: shortname "sccp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"sec_tex",			#: shortname "sctx" 
+		scalar		"sec_gain",			#: shortname "scgn" default 1. min .0 softmax 4.
+        boolean		"sec_en_clamp",		#: shortname "scec" default 0
+        scalar		"sec_clamp",		#: shortname "sccl" default 1.0
+		scalar		"sec_rot",			#: shortname "scrt" default .0 softmin .0 softmax 360.
+		scalar		"sec_blur",			#: shortname "scb"	default 0.0 min 0.0 softmax 10.0
+		boolean		"sec_mat_blur",		#: shortname "scmb" default 0
+		integer		"sec_blur_res",		#: shortname "scbr" default 2048 min 0 softmax 1000
+
+		boolean		"fg_en",			#: shortname "fgen" default 1
+		boolean		"fg_override_tex",	#: shortname "fgot" default 0
+		integer		"fg_colprofile",	#: shortname "fgcp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"fg_tex",			#: shortname "fgtx"
+		scalar		"fg_gain",			#: shortname "fggn" default 1. min .0 softmax 4.
+		scalar		"fg_rot",			#: shortname "fgrt" default .0 softmin .0 softmax 360.
+		scalar		"fg_blur",			#: shortname "fgb"	default 0.0 min 0.0 softmax 4.0	
+		integer		"fg_blur_res",		#: shortname "fgbr" default 512 min 32 softmax 1000
+							  
+		boolean		"ibl_en",			#: shortname "ilen" default 1
+		boolean		"ibl_override_tex",	#: shortname "ilot" default 0
+		integer		"ibl_colprofile",	#: shortname "ilcp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color		"ibl_tex",			#: shortname "iltx" 
+		scalar		"ibl_gain",			#: shortname "ilgn" default 1. min .0 softmax 4.
+		scalar		"ibl_rot",			#: shortname "ilrt" default .0 softmin .0 softmax 360.
+		)
+	version 1
+	apply environment
+	#: nodeid 819004
+end declare
+
+
+###########################
+# MentalCore Texture Blur #
+###########################
+
+declare shader
+	color "core_texture_blur" (
+		color		"tex",				#: shortname "tx"
+		boolean		"interpolate",		#: shortname "i" default 1
+		boolean		"wrap_x",			#: shortname "wx" default 1
+		boolean		"wrap_y",			#: shortname "wy" default 1
+		integer		"blur_res",			#: shortname "br" default 512 min 32
+		scalar		"blur",				#: shortname "b" default 1. min .0 softmax 4
+		integer		"quality",			#: shortname "q" default 3 min 1
+		)
+	version 1
+	apply texture
+	#: nodeid 819027
+end declare
+
+
+#############################
+# MentalCore SSS Irradiance #
+#############################
+
+declare shader
+	color "core_sss_irradiance" (
+		boolean		"indirect",				#: shortname "i" default 0
+		boolean		"envlight",				#: shortname "e" default 1
+								 
+		scalar		"diffuse_intensity",	#: shortname "di" default 1. min .0 softmax 1.
+		scalar		"indirect_intensity",	#: shortname "ii" default 1. min .0 softmax 1.
+		scalar		"amb_intensity",		#: shortname "ai" default 1. min .0 softmax 1.
+							 
+		color		"add",					#: shortname "a"
+								 
+		boolean		"ao",					#: shortname "ao" default 0
+		integer		"ao_samples",			#: shortname "aos" default 32 min 0
+		scalar		"ao_distance",			#: shortname "aod" default 20. min .0 softmax 100.
+		color		"ao_colour",			#: shortname "aoc"
+								 
+		# Light Linking
+		integer		"mode",					#: shortname "mod" min 0 max 4 default 4 property "lightmode"
+		array light	"lights",				#: shortname "ligh" property "lightlink"
+		)
+	version 1
+	apply texture
+	#: nodeid 819029
+end declare
+
+
+########################
+# MentalCore Chameleon #
+########################
+declare shader
+	color "core_chameleon" (
+		integer		"mode",				#: shortname "s" default 0 min 0 max 3 enum "Material Blend:Normals:Mask:UV"
+		integer		"dir_mode",			#: shortname "dir" default 0 min 0 max 1 enum "Normals:Vector"
+		vector		"sample_dir",		#: shortname "sd" default 0. 1. 0.
+		geometry	"target_object",	#: shortname "tobj"
+		shader		"base_material",	#: shortname "bmat"
+		shader		"copy_material",	#: shortname "cmat"
+		scalar		"cutout",			#: shortname "cut" default 1. min .0 max 1.
+		scalar		"min_dist",			#: shortname "min" default 0. min .0
+		scalar		"max_dist",			#: shortname "max" default 10. min .0
+		scalar		"falloff",			#: shortname "fo" default 1. min .0
+		boolean		"reverse_dir",		#: shortname "rev" default 0
+		color		"shadow_col",		#: shortname "sc"
+		boolean		"flip_backface",	#: shortname "fbf" default 0
+		scalar		"backface_ao",		#: shortname "bao" default 1. min .0 max 1.
+		scalar		"mix",				#: shortname "mx" default 1. min .0 max 1.
+	   )
+	version 1
+	apply material
+	#: nodeid 819031
+end declare
+
+
+############################
+# MentalCore Normal Output #
+############################
+declare shader
+	color "core_normaloutput" (
+		shader		"input",			#: shortname "in"
+		)
+	version 1
+	apply texture
+	#: nodeid 819032
+end declare
+
+
+###########################
+# MentalCore Displacement #
+###########################
+declare shader
+	scalar "core_displace" (
+		integer		"input_mode",			#: shortname "in" default 0 min 0 max 1 enum "Color:Scalar"
+		color		"displacement_c",		#: shortname "dp"
+		scalar		"displacement_s",		#: shortname "dps"
+		integer		"range",				#: shortname "ra" default 0 min 0 max 1 enum "Full Range:0-1"
+		scalar		"scale",				#: shortname "sc" default 1.0
+		)
+	version 1
+	apply displace
+	#: nodeid 819036
+end declare
+
+
+##############################
+# MentalCore Color to Scalar #
+##############################
+declare shader	
+	scalar "core_color_to_scalar" (
+		color "color",				#: shortname "col"
+		integer	"mode",				#: shortname "mod" default 4 min 0 max 5 enum "R:G:B:A:Average:Luminosity"
+		scalar "clamp_min",			#: shortname "cmi" default 0.0
+		scalar "clamp_max",			#: shortname "cma" default 1.0
+		boolean	"invert"			#: shortname "inv"
+		)
+	version 1
+	#: nodeid 819038
+end declare
+
+
+##############################
+# MentalCore Scalar to Color #
+##############################
+declare shader
+	struct {
+		color		    "outColor",
+		scalar		    "outAlpha"
+	} 
+	"core_scalar_to_color" (
+		scalar		"colorR",				#: shortname "cor" default 0. softmin 0. softmax 1.
+		scalar		"colorG",				#: shortname "cog" default 0. softmin 0. softmax 1.
+		scalar		"colorB",				#: shortname "cob" default 0. softmin 0. softmax 1.
+		scalar		"colorA",				#: shortname "coa" default 0. softmin 0. softmax 1.
+		boolean		"clamp_black",			#: shortname "clb" default 0
+		boolean		"clamp_white",			#: shortname "clw" default 0
+		boolean		"alpha_is_luminance",	#: shortname "ail" default 0
+		)
+	version 1
+	#: nodeid 819039
+end declare
+
+
+###########################
+# MentalCore Scalar to UV #
+###########################
+declare shader
+	struct {
+		scalar		"outU",			#: shortname "ou"
+		scalar		"outV"			#: shortname "ov"
+	}
+	"core_scalar_to_uv" (
+		scalar		"inputU",		#: shortname "inu"
+		scalar		"inputV"		#: shortname "inv"
+		)
+	version 1
+	#: nodeid 819040
+end declare
+
+
+###############################
+# MentalCore Scalar to Vector #
+###############################
+declare shader
+	vector "core_scalar_to_vector" (
+		scalar		"inputX",		#: shortname "inx"
+		scalar		"inputY",		#: shortname "iny"
+		scalar		"inputZ"		#: shortname "inz"
+		)
+	version 1
+	#: nodeid 819041
+end declare
+
+
+##############################
+# MentalCore Color to Vector #
+##############################
+declare shader
+	vector "core_color_to_vector" (
+		color		"input"			#: shortname "in"
+		)
+	version 1
+	#: nodeid 819042
+end declare
+
+
+##############################
+# MentalCore Vector to Color #
+##############################
+declare shader
+	color "core_vector_to_color" (
+		vector		"input"			#: shortname "in"
+		)
+	version 1
+	#: nodeid 819043
+end declare
+
+
+#############################
+# MentalCore Physical Light #
+#############################
+declare shader
+	color "core_physical_light" (
+		integer	"color_mode",			#: shortname "cmod" default 0 min 0 max 1 enum "Color:Temperature"
+		integer	"colprofile",			#: shortname "cp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color	"color",				#: shortname "col" default 1 1 1
+		integer	"temperature_preset",	#: shortname "tpp" default 0
+		scalar	"temperature",			#: shortname "tmp" default 6500 min 1000
+		scalar	"intensity",			#: shortname "int" default 1000 min 0 softmax 10000
+		scalar	"falloff_exp",			#: shortname "fex" default 2 min 0 softmax 5
+		scalar	"inner_cone",			#: shortname "inc" default 0 min 0 max 180
+		scalar	"dropoff",				#: shortname "drp" default 1 min 0 softmax 5 
+		scalar	"threshold",			#: shortname "thr" default 0.005 min 0 max 1
+		scalar	"cos_exp",				#: shortname "cos" default 1 min 1 softmax 5
+		)
+	version 1
+	apply light
+	#: nodeid 819044
+end declare
+
+
+################################
+# MentalCore Color Temperature #
+################################
+declare shader
+	color "core_color_temperature" (
+		integer	"temperature_model",	#: shortname "tpm" default 0 min 0 max 2 enum "Automatic:CIE_D:Blackbody"
+		integer	"temperature_preset",	#: shortname "tpp" default 0
+		scalar	"temperature",			#: shortname "tmp" default 6500 min 1000
+		scalar	"intensity",			#: shortname "int" default 1 min 0
+		)
+	version 1
+	apply light
+	#: nodeid 819045
+end declare
+
+
+###############################
+# MentalCore Texture Lookup 2 #
+###############################
+
+declare shader
+	struct {
+		color		    "outColor",			#: shortname "outc"
+		scalar		    "outAlpha"			#: shortname "outa"
+	}
+	"core_texture_lookup2" (
+		color texture	"texture",			#: shortname "tex"
+		color texture	"proxy_texture",	#: shortname "pxytex"
+		color texture	"fg_texture",		#: shortname "fgtex"
+		color texture	"gi_texture",		#: shortname "gitex"
+		color texture	"refl_texture",		#: shortname "rfltex"
+		color texture	"refr_texture",		#: shortname "rfrtex"
+							
+		boolean			"el_filter",		#: shortname "ef" default 0
+		scalar			"el_eccmax",		#: shortname "elem" default 4. min 0. softmax 40.
+		scalar			"el_maxminor",		#: shortname "elmm" default 8. min 0. softmax 20.
+
+		vector			"translate",		#: shortname "tr" default 0. 0. 0.
+		vector			"repeat",			#: shortname "rp" default 1. 1. 1.
+		boolean			"mirror_x",			#: shortname "mx" default 0
+		boolean			"mirror_y",			#: shortname "my" default 0
+		boolean			"wrap_x",			#: shortname "wx" default 1
+		boolean			"wrap_y",			#: shortname "wy" default 1
+		vector			"min",				#: shortname "min" default 0. 0. 0.
+		vector			"max",				#: shortname "max" default 1. 1. 1.
+
+		scalar			"hue",				#: shortname "h" default 0. softmin -360. softmax 360.
+		scalar			"sat",				#: shortname "s" default 1. min 0. softmax 4.
+		scalar			"val",				#: shortname "v" default 1. min 0. softmax 4.
+
+		color			"gain",					#: shortname "g" default 1. 1. 1.
+		color			"offset",				#: shortname "off" default 0. 0. 0.
+		color			"gamma",				#: shortname "gm" default 1. 1. 1.
+
+		boolean			"alpha_is_luminance",	#: shortname "ail" default 1
+		boolean			"invert",				#: shortname "in" default 0
+							
+		boolean			"en_blur",				#: shortname "eb" default 0
+		integer			"blur_res",				#: shortname "br" default 512 min 32
+		scalar			"blur_amount",			#: shortname "ba" default 1. min .0 softmax 4
+		integer			"blur_quality",			#: shortname "bq" default 3 min 1
+
+		boolean			"use_custom_uv",	#: shortname "ucuv" default 0
+		vector			"custom_uv",		#: shortname "cuv" default 0. 0. 0.
+		)
+	version 1
+	apply texture
+	#: nodeid 819046
+end declare
+
+
+#########################
+# MentalCore Arch Light #
+#########################
+
+declare shader
+	color													#: shortname "outc"
+	"core_archlight" (
+		integer			"distribution_mode",				#: shortname "dm" default 0 min 0 max 1 enum "Reference Light:Light Profile"
+		lightprofile	"profile",							#: shortname "pf"
+		integer			"rotpreset",						#: shortname "rotp" default 0 min 0 max 5 enum "Default:Custom:Downlight to Spotlight:Downlight to Arealight:Uplight to Spotlight:Uplight to Arealight"
+		scalar			"rotx",								#: shortname "rotx" default 0 softmin -180 softmax 180
+		scalar			"roty",								#: shortname "roty" default 0 softmin -180 softmax 180
+		scalar			"rotz",								#: shortname "rotz" default 0 softmin -180 softmax 180
+		scalar			"reference_light_intensity",		#: shortname "rli" default 1800 min 0 softmax 5000
+		integer			"reference_light_units",			#: shortname "rlu" default 0 min 0 max 7 enum "Candela:Lumen:Lux at Set Distance:Lux at Spotlight Focus:Watts:Watts/Steradian:Watts/M2 at Set Distance:Watts/M2 at Spotlight Focus"
+		scalar			"reference_light_dist",				#: shortname "rld" default 1 min 0 softmax 20
+		scalar			"reference_light_efficacy",			#: shortname "rle" default 17 min 0 softmax 100
+		scalar			"spread",							#: shortname "sp" default 0 min 0 max 180
+		scalar			"dropoff",							#: shortname "drp" default 1 min 0 softmax 5
+		boolean			"spot_angle_profile",				#: shortname "sap" default off
+		boolean			"relative_spread",					#: shortname "rsp" default off
+		integer			"colormode",						#: shortname "cm" default 0 min 0 max 1 enum "Color:Temperature"
+		integer			"colprofile",						#: shortname "cp" default 0 min 0 max 3 enum "Default Input Profile:Linear:sRGB:Rec. 709"
+		color			"color",							#: shortname "col" default 1 1 1 1
+		integer			"colortemppreset",					#: shortname "ctmpp" default 0
+		scalar			"colortemp",						#: shortname "ctmp" default 6500 min 0 softmax 20000
+		integer			"colormodel",						#: shortname "cmdl" default 0 min 0 max 2 enum "Automatic:CIE_D:Blackbody"
+		integer			"intensitymode",					#: shortname "im" default 1 min 0 max 1 enum "Relative:Absolute"
+		scalar			"intensity",						#: shortname "int" default 5000 min 0 softmax 10000
+		scalar			"intensitymultiplier",				#: shortname "intm" default 1 min 0 softmax 2.5
+		scalar			"photonintensitymultiplier",		#: shortname "pintm" default 1 min 0 softmax 2.5
+		integer			"sceneunits",						#: shortname "scu" default 2 min 0 max 5 enum "1 Meter:10 Centimeters:1 Centimeter:1 Millimeter:1 Foot:1 Inch"
+		boolean			"scale_profile",					#: shortname "scp" default off
+		scalar			"scale_profile_intensity",			#: shortname "scpi" default 1800 min 0 softmax 5000
+		integer			"scale_profile_units",				#: shortname "scpu" default 0 min 0 max 7 enum "Candela:Lumen:Lux at Set Distance:Lux at Spotlight Focus:Watts:Watts/Steradian:Watts/M2 at Set Distance:Watts/M2 at Spotlight Focus"
+		scalar			"scale_profile_dist",				#: shortname "scpd" default 1 min 0 softmax 20
+		scalar			"scale_profile_efficacy",			#: shortname "scpe" default 17 min 0 softmax 100
+		integer			"rgb_unit_preset",					#: shortname "rgbp" default 0 min 0 max 2 enum "Physically Correct:Physical Sun/Sky Default:Custom"
+		color			"rgb_unit_conversion",				#: shortname "rgbc" default 0.318 0.318 0.318 1
+		boolean			"preserve_profile_shape",			#: shortname "pps" default on
+		boolean			"cos_distrib",						#: shortname "cosd" default off
+		scalar			"cos_exp",							#: shortname "cose" default 1
+		boolean			"area_back_black",					#: shortname "abb" default on
+		scalar			"visible_area_intensity",			#: shortname "vai" default 1 min 0 softmax 2.5
+		scalar			"visible_area_falloff",				#: shortname "vaf" default 0.0 softmin 0.0 softmax 1.0
+		scalar			"visible_area_exponent",			#: shortname "vae" default 1.0 softmin 0.0 softmax 2.0
+		boolean			"shadow_enable",					#: shortname "she" default on
+		scalar			"shadow_factor",					#: shortname "shf" default 0 min 0 max 1		
+		scalar			"shadow_threshold",					#: shortname "sht" default 0.005 min 0 softmax 1
+		scalar			"exponent",							#: shortname "exp" default 2 min 0 softmax 5
+		boolean			"atten",							#: shortname "atn" default off
+		scalar			"start",							#: shortname "sa" default 0 min 0 softmax 100
+		scalar			"stop",								#: shortname "ea" default 100 min 0 softmax 500
+		scalar			"atten_falloff",					#: shortname "atnf" default 2
+		)
+	version 1
+	apply light, emitter
+	#: nodeid 819047
+end declare
+
+
+#############################
+# MentalCore Distance Blend #
+#############################
+declare shader
+	struct {
+		color		    "outColor",			#: shortname "outc"
+		scalar		    "outAlpha"			#: shortname "outa"
+	}
+    "core_distance_blend" (
+		integer     "interpolation",        #: shortname "in" default 0 min 0 max 1 enum "Linear:Smooth"
+		scalar      "near_dist",			#: shortname "nd" default 0 min 0
+        color       "near_col",				#: shortname "nc" default 0 0 0 0
+		scalar      "far_dist",             #: shortname "fd" default 10 min 0
+        color       "far_col",				#: shortname "fc" default 1 1 1 1
+		)
+	version 1
+	apply texture
+	#: nodeid 819049
+end declare
+
+$endif # if not "MentalCore_mi_included"

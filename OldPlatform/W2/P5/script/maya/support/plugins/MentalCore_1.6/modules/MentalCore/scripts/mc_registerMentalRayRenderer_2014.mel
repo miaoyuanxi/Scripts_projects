@@ -1,0 +1,153 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+// Description: This procedure is called to register the
+// mental ray renderer.
+//
+
+global proc registerMentalRayRenderer()
+{
+	string $iprQuality = getPluginResource("Mayatomr", "kIPRQuality");
+	string $mrUiName = getPluginResource("Mayatomr", "kmrRenderlayerPresMenuMR");
+	if (`about -evalVersion`) {
+		renderer -rendererUIName         $mrUiName
+			-iprRenderProcedure          "mentalrayIprRender"
+			-iprOptionsProcedure         "mentalrayImrOptionsWindow"
+			-isRunningIprProcedure       "mentalrayIsRunningImr"
+			-startIprRenderProcedure     "python(\"import mentalcore; mentalcore.pre_render()\"); mentalrayStartImrRender"
+			-stopIprRenderProcedure      "python(\"import mentalcore; mentalcore.post_render()\"); mentalrayStopImrRender"
+			-refreshIprRenderProcedure   "mentalrayRefreshImr"
+			-pauseIprRenderProcedure     "mentalrayPauseImrRender"
+			-changeIprRegionProcedure    "mentalrayChangeImrRegion"
+			-iprOptionsMenuLabel         $iprQuality
+			-iprOptionsSubMenuProcedure  "mentalrayImrUpdateOptionsSubMenu"
+			-iprRenderSubMenuProcedure   "mentalrayImrUpdateRenderSubMenu"
+			-renderProcedure             "mentalrayRender"
+			-renderOptionsProcedure      "mentalrayRenderOptionWindow"
+			-renderDiagnosticsProcedure  "mentalrayDiagnostic"
+			-commandRenderProcedure      "mentalrayCmdlineRender"
+			-batchRenderProcedure        "mentalrayBatchRender"
+			-batchRenderOptionsProcedure "mentalrayBatchRenderOptionWindow"
+			-batchRenderOptionsStringProcedure   "mentalrayBatchRenderOptionsString"
+			-cancelBatchRenderProcedure  "batchRender"
+			-showBatchRenderProcedure    "batchRender -showImage true"
+			-showRenderLogProcedure      "MentalRayLogfileRender"
+			-showBatchRenderLogProcedure "MentalRayLogfileBatch"
+			-renderRegionProcedure       "mayaRenderRegion"
+			-renderingEditorsSubMenuProcedure    "mentalRayRenderingEditorsSubMenu"
+
+			mentalRay;
+	} else {
+		renderer -rendererUIName         $mrUiName
+			-iprRenderProcedure          "mentalrayIprRender"
+			-iprOptionsProcedure         "mentalrayImrOptionsWindow"
+			-isRunningIprProcedure       "mentalrayIsRunningImr"
+			-startIprRenderProcedure     "python(\"import mentalcore; mentalcore.pre_render()\"); mentalrayStartImrRender"
+			-stopIprRenderProcedure      "python(\"import mentalcore; mentalcore.post_render()\"); mentalrayStopImrRender"
+			-refreshIprRenderProcedure   "mentalrayRefreshImr"
+			-pauseIprRenderProcedure     "mentalrayPauseImrRender"
+			-changeIprRegionProcedure    "mentalrayChangeImrRegion"
+			-iprOptionsMenuLabel         $iprQuality
+			-iprOptionsSubMenuProcedure  "mentalrayImrUpdateOptionsSubMenu"
+			-iprRenderSubMenuProcedure   "mentalrayImrUpdateRenderSubMenu"
+			-renderProcedure             "mentalrayRender"
+			-renderOptionsProcedure      "mentalrayRenderOptionWindow"
+			-renderDiagnosticsProcedure  "mentalrayDiagnostic"
+			-commandRenderProcedure      "mentalrayCmdlineRender"
+			-batchRenderProcedure        "mentalrayBatchRender"
+			-batchRenderOptionsProcedure "mentalrayBatchRenderOptionWindow"
+			-batchRenderOptionsStringProcedure   "mentalrayBatchRenderOptionsString"
+			-cancelBatchRenderProcedure  "batchRender"
+			-showBatchRenderProcedure    "batchRender -showImage true"
+			-showRenderLogProcedure      "MentalRayLogfileRender"
+			-showBatchRenderLogProcedure "MentalRayLogfileBatch"
+			-renderRegionProcedure       "mayaRenderRegion"
+			-textureBakingProcedure      "mrBakeToTexture"
+			-polyPrelightProcedure       "mrBakeToVertices"
+			-renderingEditorsSubMenuProcedure    "mentalRayRenderingEditorsSubMenu"
+
+			mentalRay;
+	}
+
+    evalDeferred mentalrayAddTabs;
+
+    renderer -edit -addGlobalsNode "mentalrayGlobals" mentalRay;
+    renderer -edit -addGlobalsNode "miDefaultFramebuffer" mentalRay;
+    renderer -edit -addGlobalsNode "miDefaultOptions" mentalRay;
+    renderer -edit -addGlobalsNode "defaultRenderGlobals" mentalRay;
+    renderer -edit -addGlobalsNode "defaultResolution" mentalRay;
+    
+    renderer -edit -addGlobalsNode "mentalcoreGlobals" mentalRay;
+	renderer -edit -addGlobalsNode "mentalcoreLens" mentalRay;
+
+    // Create the default presets once all loading is complete
+    evalDeferred miCreateDefaultPresets;
+}
+
+global proc mentalrayAddTabs()
+{
+    // Because mentalrayAddTabs is executed at evalDeferred time
+    // for registerMentalRayRenderer procedure.  For
+    // test-o-matic tests, sometimes, when mentalrayAddTabs is called,
+    // the test is already finished and mentalRay renderer is
+    // already unregistered.  So we need to check if mentalRay
+    // renderer still exists at the begeinning of this
+    // procedure.
+    //
+    if (!`renderer -exists mentalRay`)
+    {
+        return;
+    }
+
+	//
+	//The first argument of the "-addGlobalsTab" flag is used in creating layout names
+	//and should not be localized.
+	//
+
+    renderer -edit
+        -addGlobalsTab               "Common"
+                                     "createMayaSoftwareCommonGlobalsTab"
+                                     "updateMayaSoftwareCommonGlobalsTab"
+        mentalRay;
+        
+    // MENTAL CORE//
+	
+	renderer -edit
+		-addGlobalsTab				 "MentalCore"
+									 "python(\"import mentalcore; mentalcore.renderglobals.build()\")"
+									 "python(\"import mentalcore; mentalcore.renderglobals.update()\")"
+		mentalRay;
+		
+	// END MENTAL CORE//
+
+    renderer -edit
+        -addGlobalsTab               "Passes"
+                                     "createMayaRenderPassTab"
+                                     "updateMayaRenderPassTab"
+        mentalRay;
+
+    renderer -edit
+		-addGlobalsTab               "Features"
+									 "createMentalRayFeaturesTab"
+									 "updateMentalRayFeaturesTab"
+		mentalRay;
+
+	renderer -edit
+		-addGlobalsTab               "Quality"
+									 "createMentalRayQualityTab"
+									 "updateMentalRayQualityTab"
+		mentalRay;
+
+	renderer -edit
+		-addGlobalsTab				 "Indirect Lighting"
+									 "createMentalRayIndirectLightingTab"
+									 "updateMentalRayIndirectLightingTab"
+		mentalRay;
+
+	renderer -edit
+		-addGlobalsTab				 "Options"
+									 "createMentalRayOptionsTab"
+									 "updateMentalRayOptionsTab"
+		mentalRay;
+}

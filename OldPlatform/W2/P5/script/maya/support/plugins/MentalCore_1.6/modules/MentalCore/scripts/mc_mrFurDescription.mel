@@ -1,0 +1,143 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+/////////////////////
+// Shader Override //
+/////////////////////
+
+global proc mc_propagate_fur_shader(string $node)
+{
+	string $envNode[] =
+		`listConnections ($node + ".mc_shaderOverride")`;
+
+	if (size($envNode) && !`about -b`)
+		showEditor $envNode[0];
+		
+	mc_update_fur_shader $node;
+}
+
+global proc mc_update_fur_shader(string $node)
+{
+	int $env = `connectionInfo -id ($node + ".mc_shaderOverride")`;
+	if ($env)
+		button -e -label "Delete"
+			-command ("mc_delete_fur_shader \"" + $node + "\"")
+			core_CreateFurOverrideButton;
+	else
+		button -e
+			-label "Create"
+			-command ("mc_create_fur_shader \"" + $node + "\"")
+			core_CreateFurOverrideButton;
+	control -e -en $env core_OpenFurOverrideButton;
+}
+
+global proc mc_create_fur_shader(string $node)
+{
+	string $shader = `mrCreateCustomNode -asShader "" "core_hair"`;
+	connectAttr ($shader + ".message") ($node + ".mc_shaderOverride");
+	
+	mc_update_fur_shader $node;
+}
+
+global proc mc_delete_fur_shader(string $node)
+{
+	//remove shader and geo
+	string $shader[] = `listConnections ($node + ".mc_shaderOverride")`;
+	if (size($shader))
+	{
+		//remove shader
+		delete $shader[0];
+	}
+	
+	mc_update_fur_shader $node;
+}
+
+global proc AEfur_shader_new(string $attr) 
+{
+	string $node = plugNode($attr);
+	
+	rowLayout -numberOfColumns 3 core_furOverrideLayout;
+		text -label "Custom Shader";
+		button -label "Create"
+			-command ("mc_create_fur_shader \"" + $node + "\"")
+				core_CreateFurOverrideButton;
+		symbolButton -image "inArrow.xpm"
+			-command ("mc_propagate_fur_shader \"" + $node + "\"")
+				core_OpenFurOverrideButton;
+	setParent ..;
+	
+	mc_update_fur_shader $node;
+}
+
+global proc AEfur_shader_replace(string $attr) 
+{	
+	string $node = plugNode($attr);
+	
+	if (!`attributeExists "mc_shaderOverride" $node`)
+		addAttr -at "message" -ln "mc_shaderOverride" $node;
+
+	button -e -command ("mc_create_fur_shader \"" + $node + "\"")
+			core_CreateFurOverrideButton;
+	symbolButton -e -command ("mc_propagate_fur_shader \"" + $node + "\"")
+			core_OpenFurOverrideButton;
+			
+	mc_update_fur_shader $node;
+}
+
+//------------------------
+
+global proc AEmentalrayFurDescriptionMotionBlurChangedCB(string $node)
+{
+	int $isMotion = getAttr($node + ".motionBlur");
+	editorTemplate
+		-dimControl $node "motionRate"
+		(! $isMotion);
+}
+
+global proc AEmentalrayFurDescriptionShadowGridChangedCB(string $node)
+{
+	int $usesGrid = getAttr($node + ".useDensityGrid");
+	editorTemplate
+		-dimControl $node "densityScale"
+		(! $usesGrid);
+}
+
+global proc AEmentalrayFurDescription(string $node)
+{
+	editorTemplate -beginLayout (uiRes("m_AEmentalrayFurDescription.kMentalRay")) -cl true;
+	editorTemplate -beginLayout (uiRes("m_AEmentalrayFurDescription.kVolumeFur")) -cl false;
+
+		editorTemplate
+			-label (uiRes("m_AEmentalrayFurDescription.kSamples"))
+			-addDynamicControl "sampleRate";
+		editorTemplate
+			-label (uiRes("m_AEmentalrayFurDescription.kMotionBlur"))
+			-addDynamicControl "motionBlur"
+			AEmentalrayFurDescriptionMotionBlurChangedCB;
+		editorTemplate
+			-label (uiRes("m_AEmentalrayFurDescription.kMotionSamples"))
+			-addDynamicControl "motionRate";
+		editorTemplate
+			-label (uiRes("m_AEmentalrayFurDescription.kDensityGrid"))
+			-addDynamicControl "useDensityGrid"
+			AEmentalrayFurDescriptionShadowGridChangedCB;
+		editorTemplate
+			-label (uiRes("m_AEmentalrayFurDescription.kDensityScale"))
+			-addDynamicControl "densityScale";
+
+	editorTemplate -endLayout;
+
+	AEmentalrayFrameBufferCommon $node;
+
+	editorTemplate -endLayout;
+	
+	editorTemplate -beginLayout "MentalCore" -cl true;
+	
+	if (!`attributeExists "mc_shaderOverride" $node`)
+		addAttr -at "message" -ln "mc_shaderOverride" $node;
+		
+	editorTemplate -callCustom "AEfur_shader_new" "AEfur_shader_replace" "mc_shaderOverride";
+			
+	editorTemplate -endLayout;
+}

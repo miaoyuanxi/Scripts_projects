@@ -1,0 +1,128 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+source "AEMentalCoreUIRes.mel";
+
+global proc AEmisssSkinMayaBumpNew(string $attr) {
+	attrNavigationControlGrp 
+		-label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBump", "kmisssFastSkinMayaTempBump"))
+		-attribute $attr
+		bumpControl;
+	AEmisssSkinMayaBumpReplace($attr);
+}
+
+global proc AEmisssSkinMayaBumpReplace(string $attr) {
+	attrNavigationControlGrp -edit
+		-attribute $attr
+		bumpControl;
+	scriptJob -replacePrevious
+		-parent bumpControl
+		-connectionChange $attr 
+		("checkMisssSkinBumpConnection " + $attr);
+}
+
+global proc checkMisssSkinBumpConnection(string $attr) {
+	// on disconnect, random values populate the attr, but it needs
+	// to be set to 0,0,0 if no bump node is connected
+	if (!`connectionInfo -id $attr`) {
+		setAttr $attr 0 0 0;
+	}
+}
+
+global proc AEmisssSkinMayaNew(string $map) {
+	string $mapControl = `attrNavigationControlGrp -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kLightmap2", "kmisssFastSkinMayaTempLightMap2")) -attribute $map -createNew ("createAndAssignLightMap " +$map) "mapControl"`;
+}
+
+global proc AEmisssSkinMayaReplace(string $map) {
+	string $mapControl = `attrNavigationControlGrp -e -attribute $map -createNew ("createAndAssignLightMap " +$map) "mapControl"`;
+}
+
+//Main Template
+//
+
+global proc AEcore_sss_color_bleedTemplate(string $nodeName)
+{
+	AECommonStrings();						// Define common strings
+	
+	AEMentalCoreLogo("mc_core_sss_color_bleed_logo.png");
+
+	AEswatchDisplay $nodeName;         
+	editorTemplate -beginScrollLayout;
+			
+	// Scattering
+	editorTemplate -beginLayout "Optical Properties" -collapse 0;
+	
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kOverallColor", "kmisssFastSkinMayaTempOverallColor")) -addControl "overall_color";
+	
+	editorTemplate -as;
+	
+	editorTemplate -label "Fine Scatter Color" -addControl "fine_scatter_color";
+	editorTemplate -label "Fine Scatter Color Mod" -addControl "fine_scatter_color_mod";
+	editorTemplate -label "Fine Scatter Weight" -addControl "fine_scatter_weight";
+	editorTemplate -label "Fine Scatter Radius" -addControl "fine_scatter_radius";
+	
+	editorTemplate -as;
+
+	editorTemplate -label "Mid Scatter Color" -addControl "mid_scatter_color";
+	editorTemplate -label "Mid Scatter Color Mod" -addControl "mid_scatter_color_mod";
+	editorTemplate -label "Mid Scatter Weight" -addControl "mid_scatter_weight";
+	editorTemplate -label "Mid Scatter Radius" -addControl "mid_scatter_radius";
+	
+	editorTemplate -as;
+	
+	editorTemplate -label "Wide Scatter Color" -addControl "wide_scatter_color";
+	editorTemplate -label "Wide Scatter Color Mod" -addControl "wide_scatter_color_mod";
+	editorTemplate -label "Wide Scatter Weight" -addControl "wide_scatter_weight";
+	editorTemplate -label "Wide Scatter Radius" -addControl "wide_scatter_radius";
+
+	editorTemplate -as;
+			
+	editorTemplate -label "Back Scatter Color" -addControl "back_scatter_color";
+	editorTemplate -label "Back Scatter Color Mod" -addControl "back_scatter_color_mod";
+	editorTemplate -label "Back Scatter Weight" -addControl "back_scatter_weight";
+	editorTemplate -label "Back Scatter Radius" -addControl "back_scatter_radius";
+	editorTemplate -label "Back Scatter Depth" -addControl "back_scatter_depth";
+
+	editorTemplate -endLayout;
+		
+	// bump
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBumpShader", "kmisssFastSkinMayaTempBumpShader")) -collapse 1;
+	editorTemplate -callCustom "AEmisssSkinMayaBumpNew" "AEmisssSkinMayaBumpReplace" "normalCamera";
+	editorTemplate -endLayout;
+		
+	// Data
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kLightmap", "kmisssFastSkinMayaTempLightMap")) -collapse 1;
+	editorTemplate -callCustom "AEmisssSkinMayaNew" "AEmisssSkinMayaReplace " "lightmap";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kSamples", "kmisssFastSkinMayaTempSamples"))
+		-addControl "samples";
+	editorTemplate -endLayout;
+
+	// Algorithm Control
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kAlgorithmControl", "kmisssFastSkinMayaTempAlgoControl")) -collapse 1;
+
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kScaleConversion", "kmisssFastSkinMayaTempScaleConverse"))
+		-addControl "scale_conversion";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kFalloff", "kmisssFastSkinMayaTempFalloff"))
+		-addControl "falloff";
+	editorTemplate -endLayout;
+	
+	// colour management
+	editorTemplate -beginLayout "Colour Management" -collapse 1;
+	editorTemplate -label "Overall Colour" -addControl "cm_overall_color";
+	editorTemplate -label "Fine SSS Colour" -addControl "cm_fine_scatter_color";
+	editorTemplate -label "Fine SSS Colour Mod" -addControl "cm_fine_scatter_color_mod";
+	editorTemplate -label "Mid SSS Colour" -addControl "cm_mid_scatter_color";
+	editorTemplate -label "Mid SSS Colour Mod" -addControl "cm_mid_scatter_color_mod";
+	editorTemplate -label "Wide SSS Colour" -addControl "cm_wide_scatter_color";
+	editorTemplate -label "Wide SSS Colour Mod" -addControl "cm_wide_scatter_color_mod";
+	editorTemplate -label "Back SSS Colour" -addControl "cm_back_scatter_color";
+	editorTemplate -label "Back SSS Colour Mod" -addControl "cm_back_scatter_color_mod";
+	editorTemplate -endLayout;
+
+	AEmentalrayBaseTemplate($nodeName);
+	
+	editorTemplate -endScrollLayout; 
+}

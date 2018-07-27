@@ -1,0 +1,31 @@
+//  Copyright (c)2013 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+
+global proc AEcore_distance_blendTemplate ( string $nodeName )
+{
+	AEMentalCoreLogo("mc_core_distance_blend_logo.png");
+
+	editorTemplate -beginScrollLayout;	
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -l "Interpolation" -addControl "interpolation";
+		
+            editorTemplate -addSeparator;
+
+			editorTemplate -l "Near Distance" -addControl "near_dist";
+			editorTemplate -l "Near Color" -addControl "near_col";
+
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Far Distance" -addControl "far_dist";
+			editorTemplate -l "Far Color" -addControl "far_col";
+            
+		editorTemplate -endLayout;	
+	
+		AEmentalrayBaseTemplate($nodeName);
+			
+	editorTemplate -endScrollLayout;
+}

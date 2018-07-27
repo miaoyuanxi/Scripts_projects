@@ -1,0 +1,80 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+//////////////////////////////////////////////////////////////////////
+//
+//  Procedure Name: 
+//		connectNodeToAttrOverride
+//
+//  Description:
+//		This procedure is provided as a hook for customers to allow
+//		you to redefine the behaviour of drag and drop. 
+//		
+//  Input Arguments:
+//		$srcNode - the name of the source (the dragged node)
+//		$dstNodeAndAttr - the name of the destination (the dropped-on attr)
+//
+//  Return Value:
+//		Return 1 if you want Maya continue and perform the operation 
+// 		that would normally result from this connection.
+//		Return 0 if you have chosen to implement a different behaviour
+//		for this connection and don't want the normal operation to 
+//		be performed as well.
+//
+global proc int connectNodeToAttrOverride(
+	string $srcNode, // ie) checker2
+	string $dstNodeAndAttr) // ie) lambert1.normalCamera
+{
+	// By default the return value of this procedure is 1, so that Maya
+	// will perform the normal operation for a connection between these
+	// two nodes.
+	//
+	int $rDoNormalOperation = 1;
+
+	// 
+	// If you wish to change the behaviour of drag and drop of a node
+	// onto an attribute in Maya, you should implement the behaviour you 
+	// wish here. 
+	//
+	// Typically this procedure would get called when a node is dragged onto an
+	// attribute in the attribute editor in Maya or when a node is dragged onto
+	// an object in the 3d view.
+	//
+	// This is one likely procedure that you would want to implement to
+	// change Maya's drag and drop behaviour. For example, if you were a game
+	// developer and you wanted to allow an artist to drag and drop a texture
+	// onto an object in the 3d view with meaningful consequences, you would
+	// implement this method to recognize that action and assign shading
+	// groups/create shading networks/etc as appropriate.
+	//
+
+	// connect mental ray shader to mental ray render globlas "contour store" and "contour contrast"
+	if( $dstNodeAndAttr == "miDefaultOptions.contourStore" ||
+		$dstNodeAndAttr == "miDefaultOptions.contourContrast" )
+	{
+		connectAttr -f ($srcNode + ".message" )  $dstNodeAndAttr;
+		return 0;
+	}
+	
+	// MENTAL CORE //
+	
+	string $dstNode = plugNode($dstNodeAndAttr);
+	
+	if(`nodeType $dstNode` == "core_material" || `nodeType $dstNode` == "core_mia_material" || `nodeType $dstNode` == "core_carpaint2")
+	{
+		if(`nodeType $srcNode` == "bump2d" || `nodeType $srcNode` == "bump3d")
+			return $rDoNormalOperation;
+
+		int $result = mc_connectionOverride($srcNode, $dstNodeAndAttr);
+		
+		if($result == 0)
+			return $rDoNormalOperation;
+		else
+			return 0;
+	}
+	
+	// END MENTAL CORE //
+
+	return $rDoNormalOperation;
+}

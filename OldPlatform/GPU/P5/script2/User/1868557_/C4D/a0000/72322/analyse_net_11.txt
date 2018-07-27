@@ -1,0 +1,40 @@
+------------texture-----------------
+
+(1, 'ramp_01.png')
+
+(2, 'ramp1.png')
+
+(3, 'studio010.hdr')
+
+(4, 'BasketballCourt_Env.hdr')
+
+------------Image Size-----------------
+
+Width:1920
+
+Height:1080
+
+------------Render Frame-----------------
+
+Start frame:0
+
+End frame:75
+
+------------Render Format-----------------
+
+RI_Format:PNG
+
+MP_Format:PNG
+
+------------Multi-Pass-----------------
+
+MultiPassName:Post Effects
+
+------------camera-----------------
+
+cameraName:Camera.5
+
+cameraName:Camera.3
+
+------------RF_name-----------------
+

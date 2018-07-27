@@ -1,0 +1,1199 @@
+global proc string zwAboutVersion()
+{
+// Descritpion:
+//	return maya version in number
+// Note:
+//	Script's from HUAZHONGWEI
+
+	string $version = `about -version`;
+	$version = `match "[0-9]+(\.[0-9]){0,1}" $version`;
+	return $version;
+}
+
+//write error log
+proc outputError(string $txtPath,string $errorTxt)
+{
+	$fileId = `fopen $txtPath "w"`;
+
+	fprint $fileId ("ERROR|" + $errorTxt + "\r\n");
+
+	fclose $fileId;
+
+	quit -f;
+}
+
+//write module log
+proc outputLog(string $txtPath,string $content,string $mode)
+{
+	$fileId = `fopen $txtPath $mode`;
+
+	fprint $fileId ($content + "\r\n");
+
+	fclose $fileId;
+}
+
+//.A ---- customer cannot assign folder
+//.B ---- customer can assign folder
+//.d ---- the item is a folder
+//.f ---- the item is a file
+
+proc string zwGetOverrideAttr(string $layer, string $attr)
+{
+	if ($layer == `editRenderLayerGlobals -query -currentRenderLayer`)
+	{
+		return $attr;
+	}
+
+	string $buf[] = `editRenderLayerAdjustment -layer $layer -query`;
+	int $find = false;
+	for ($i=0; $i<size($buf); $i++)
+	{
+		if ($buf[$i] == $attr)
+		{
+			$find = true;
+			break;
+		}
+	}
+	if (!$find)
+	{
+		$buf = `listConnections "renderLayerManager.renderLayerId[0]"`;
+		$layer = $buf[0];
+	}
+
+	$buf = `listConnections -source false -plugs true -connections true $attr`;
+	for ($i=1; $i<size($buf); $i+=2)
+	{
+		if ($buf[$i] == `match ($layer + "[.]adjustments\\[[0-9]+\\][.]plug") $buf[$i]`)
+		{
+			return (`match ($layer + "[.]adjustments\\[[0-9]+\\]") $buf[$i]` + ".value");
+		}
+	}
+
+	return $attr;
+}
+
+//check textures, output the result into log file if needed
+proc checkTextures(string $txtPath)
+{
+	outputLog($txtPath , "separator----texture.A.f","a");
+
+	string $allFiles[] = `ls -type file`;
+
+	for($item in $allFiles)
+	{
+		if(`getAttr ($item+".useFrameExtension")`)
+		{
+			string $fExt[] = `listConnections ($item+".frameExtension")`;
+
+			string $buffer[];
+			clear $buffer;
+
+			string $filePath = `getAttr ($item+".fileTextureName")`;
+			string $shortName = `match "[^/\\]+$" $filePath`;
+			string $dir = `substitute "[^/\\]+$" $filePath ""`;
+
+			int $flag;
+			int $padding;
+
+			string $underStr = "";
+			$underStr = `match "_[0-9]+[.]" $shortName`;
+
+			if ($underStr != "")
+			{
+				$flag = 2;
+				$padding = size($underStr)-2;
+				tokenize $shortName "_." $buffer;
+			}
+			else
+			{
+				$flag = `tokenize $shortName "." $buffer`;
+				$padding = size($buffer[1]);
+			}
+
+			for($node in $fExt)
+			{
+				if(`nodeType $node` == "animCurveTU")
+				{
+					float $keys[] = `keyframe -q -valueChange $item`;
+					int $offset = `getAttr ($item+".frameOffset")`;
+
+					$keys = sort($keys);
+					float $max = $keys[size($keys)-1];
+					float $min = $keys[0];
+
+					for ($key = $min;$key <= $max;$key++)
+					{
+						int $num = $key + $offset;
+						string $newNum = `python ("'%0" + $padding + "d' % " + $num)`;
+
+						string $aniFile = "";
+						if ($flag == 3)
+							$aniFile = $dir + $buffer[0] + "." + $newNum + "." + $buffer[size($buffer)-1];
+						else if ($flag == 2)
+							$aniFile = $dir + $buffer[0] + "_" + $newNum + "." + $buffer[size($buffer)-1];
+
+						if (`filetest -f $aniFile`)
+							outputLog($txtPath, ($item + "::" + $aniFile + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + "::" + $aniFile + "::0"),"a");
+					}
+				}
+				else
+				{
+					int $start = `getAttr "defaultRenderGlobals.startFrame"`;
+					int $end = `getAttr "defaultRenderGlobals.endFrame"`;
+					int $offset = `getAttr ($item+".frameOffset")`;
+
+					for($i = ($start+$offset);$i <= ($end+$offset);$i++)
+					{
+						string $newNum = `python ("'%0" + $padding + "d' % " + $i)`;
+
+						string $aniFile = "";
+						if ($flag == 3)
+							$aniFile = $buffer[0] + "." + $newNum + "." + $buffer[size($buffer)-1];
+						else if ($flag == 2)
+							$aniFile = $buffer[0] + "_" + $newNum + "." + $buffer[size($buffer)-1];
+
+						if (`filetest -f $aniFile`)
+							outputLog($txtPath, ($item + "::" + $aniFile + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + "::" + $aniFile + "::0"),"a");
+					}
+				}
+			}
+		}
+		else
+		{
+			string $texfile = `getAttr ($item+".fileTextureName")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+
+}
+
+//check mentalrayTexture, output the result into log file if needed
+proc checkMrTextures(string $txtPath)
+{
+	if(`pluginInfo -q -loaded Mayatomr`)
+	{
+		outputLog($txtPath, "separator----MrTexture.A.f","a");
+
+		string $allFiles[] = `ls -type mentalrayTexture`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".fileTextureName")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+
+}
+
+//check mib_ptex_lookup, output the result into log file if needed
+proc checkMibptexs(string $txtPath)
+{
+	if(`pluginInfo -q -loaded Mayatomr`)
+	{
+		outputLog($txtPath, "separator----Mibptex.A.f","a");
+
+		string $allFiles[] = `ls -type mib_ptex_lookup`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".filename")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+
+}
+
+//check mentalrayIblShape, output the result into log file if needed
+proc checkMrIblShape(string $txtPath)
+{
+	if(`pluginInfo -q -loaded Mayatomr`)
+	{
+		outputLog($txtPath, "separator----MrIblShape.A.f","a");
+
+		string $allFiles[] = `ls -type mentalrayIblShape`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".texture")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+
+}
+
+//check cacheFile, output the result into log file if needed
+proc checkCachePath(string $txtPath)
+{
+	outputLog($txtPath, "separator----cache.A.f","a");
+
+	string $allFiles[] = `ls -type cacheFile`;
+
+	for($item in $allFiles)
+	{
+		string $path = `getAttr ($item+".cachePath")`;
+		string $name = `getAttr ($item+".cacheName")`;
+		$path = `substituteAllString $path "\\" "/"`;
+		if(!`gmatch $path "*/"`){
+			$path += "/";
+		}
+		string $texfile = $path +$name + ".xml";
+
+		if(`filetest -f $texfile`)
+		{
+			outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+		}
+		else
+		{
+			outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+		}
+	}
+
+}
+
+//check diskCache, output the result into log file if needed
+proc checkDiskCache(string $txtPath)
+{
+	outputLog($txtPath, "separator----diskCache.A.f","a");
+
+	string $allFiles[] = `ls -type diskCache`;
+	string $rd = `workspace -q -rootDirectory`;
+	$rd = `substituteAllString $rd "\\" "/"`;
+	if(!`gmatch $rd "*/"`){
+		$rd += "/";
+	}
+
+	int $flag = 1;
+	string $mayaV = `zwAboutVersion`;
+	if($mayaV=="2012"||$mayaV=="2013"||$mayaV=="2014"){
+		$flag = 0;
+	}
+
+	for($item in $allFiles)
+	{
+		string $texfile = `getAttr ($item+".cacheName")`;
+		if($flag){
+			$texfile = $rd + "data" + "/" + $texfile;
+		}
+		if(`filetest -f $texfile`)
+		{
+			outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+		}
+		else
+		{
+			outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+		}
+	}
+
+}
+
+//check fur, output the result into log file if needed
+proc checkFur(string $txtPath)
+{
+	if(`pluginInfo -q -loaded Fur`)
+	{
+		outputLog($txtPath, "separator----fur.A.f","a");
+
+		string $allFiles[] = `ls -type FurDescription`;
+
+		for($item in $allFiles)
+		{
+			string $attrs[] = `listAttr -string "*Map" $item`;
+
+			for ($attr in $attrs)
+			{
+				string $maps[] = `listConnections -plugs true -connections true ($item + "." + $attr)`;
+				for ($i=0; $i<size($maps); $i+=2)
+				{
+					string $source = `getAttr $maps[$i]`;
+					if (size($source))
+					{
+						string $texfile = `workspace -expandName $source`;
+						if(`filetest -f $texfile`)
+						{
+							outputLog($txtPath, ($maps[$i] + "::" + $texfile + "::1"),"a");
+						}
+						else
+						{
+							outputLog($txtPath, ($maps[$i] + "::" + $texfile + "::0"),"a");
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//check shaveCache, output the result into log file if needed
+proc checkShaveCache(string $txtPath)
+{
+	if(`pluginInfo -q -loaded shaveNode`)
+	{
+		outputLog($txtPath, "separator----shave.B.d","a");
+
+		string $allFiles[] = `ls -type shaveGlobals`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".tmpDir")`;
+			if(`filetest -d $texfile`)		//- use "d" for it's a folder
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+
+	}
+}
+
+//check dynGlobalsCache, output the result into log file if needed
+proc checkdynGlobalsCache(string $txtPath)
+{
+	outputLog($txtPath, "separator----dynGlobals.A.d","a");
+
+	string $allFiles[] = `ls -type dynGlobals`;
+
+	string $rd = `workspace -q -rootDirectory`;
+
+	for($item in $allFiles)
+	{
+		string $texfile = `getAttr ($item+".cacheDirectory")`;
+		$texfile = $rd + "particles/" + $texfile;
+		if(`filetest -d $texfile`)		//- use "d" for it's a folder
+		{
+			outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+		}
+		else
+		{
+			outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+		}
+	}
+
+}
+
+//check realflow mesh, output the result into log file if needed
+proc checkRealflowMeshCache(string $txtPath)
+{
+	if(`pluginInfo -q -loaded realflow`)
+	{
+		outputLog($txtPath, "separator----realflowMesh.B.f.bin","a");
+
+		string $allFiles[] = `ls -type RealflowMesh`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".Path")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+}
+
+//check realflow mesh, output the result into log file if needed
+proc checkRealflowEmitterCache(string $txtPath)
+{
+	if(`pluginInfo -q -loaded realflow`)
+	{
+		outputLog($txtPath, "separator----realflowEmitter.B.d","a");
+
+		string $allFiles[] = `ls -type RealflowEmitter`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".Paths[0]")`;
+			if(`filetest -d $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+
+	}
+}
+
+//check Vray mesh, output the result into log file if needed
+proc checkVrMesh(string $txtPath)
+{
+	if(`pluginInfo -q -loaded vrayformaya`)
+	{
+		outputLog($txtPath, "separator----VrayMesh.A.f","a");
+
+		string $allFiles[] = `ls -type VRayMesh`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".fileName")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+}
+
+//check Vray IES, output the result into log file if needed
+proc checkVrIES(string $txtPath)
+{
+	if(`pluginInfo -q -loaded vrayformaya`)
+	{
+
+		string $allFiles[] = `ls -type VRayLightIESShape`;
+
+		if (size($allFiles))
+		{
+			outputLog($txtPath, "separator----VrayIES.A.f","a");
+			for($item in $allFiles)
+			{
+				if (`getAttr ($item + ".enabled")`)
+				{
+					string $texfile = `getAttr ($item+".iesFile")`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+					}
+				}
+			}
+		}
+	}
+}
+
+//check Image plane, output the result into log file if needed
+proc checkImagePlane(string $txtPath)
+{
+	string $allFiles[] = `ls -type imagePlane`;
+	if (size($allFiles))
+	{
+		outputLog($txtPath, "separator----ImagePlane.A.f","a");
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".imageName")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+}
+
+//check Arnold Paths, output the result into log file if needed
+proc checkArnoldPaths(string $txtPath)
+{
+	if(`pluginInfo -q -loaded mtoa`)
+	{
+		outputLog($txtPath, "separator----Arnold.B.d","a");
+		//render layers
+		string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+		for ($item in $renderLayers)
+		{
+			int $renderable = `getAttr ($item + ".renderable")`;
+			if ($renderable)
+			{
+				string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+				string $renderer = `getAttr $attr`;
+				if ($renderer == "arnold")
+				{
+					string $attr = zwGetOverrideAttr($item, "defaultArnoldRenderOptions.plugins_path");
+					string $Path = `getAttr $attr`;
+					if ($Path != "")
+					{
+						if(`filetest -d $Path`)
+							outputLog($txtPath, ($item + ".plugins_path" + "::" + $Path + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".plugins_path" + "::" + $Path + "::0"),"a");
+					}
+					string $attr = zwGetOverrideAttr($item, "defaultArnoldRenderOptions.procedural_searchpath");
+					string $Path = `getAttr $attr`;
+					if ($Path != "")
+					{
+						if(`filetest -d $Path`)
+							outputLog($txtPath, ($item + ".procedural_searchpath" + "::" + $Path + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".procedural_searchpath" + "::" + $Path + "::0"),"a");
+					}
+					string $attr = zwGetOverrideAttr($item, "defaultArnoldRenderOptions.shader_searchpath");
+					string $Path = `getAttr $attr`;
+					if ($Path != "")
+					{
+						if(`filetest -d $Path`)
+							outputLog($txtPath, ($item + ".shader_searchpath" + "::" + $Path + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".shader_searchpath" + "::" + $Path + "::0"),"a");
+					}
+					string $attr = zwGetOverrideAttr($item, "defaultArnoldRenderOptions.texture_searchpath");
+					string $Path = `getAttr $attr`;
+					if ($Path != "")
+					{
+						if(`filetest -d $Path`)
+							outputLog($txtPath, ($item + ".texture_searchpath" + "::" + $Path + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".texture_searchpath" + "::" + $Path + "::0"),"a");
+					}
+				}
+			}
+		}
+	}
+}
+
+//check Alembic file, output the result into log file if needed
+proc checkAlembic(string $txtPath)
+{
+	if(`pluginInfo -q -loaded AbcImport`)
+	{
+		string $allFiles[] = `ls -type AlembicNode`;
+		if (size($allFiles))
+		{
+			outputLog($txtPath, "separator----Alembic.A.f","a");
+
+			for($item in $allFiles)
+			{
+				string $texfile = `getAttr ($item+".abc_File")`;
+				if(`filetest -f $texfile`)
+				{
+					outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+				}
+				else
+				{
+					outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+				}
+			}
+		}
+	}
+}
+
+//check maxwell envTexture, output the result into log file if needed
+proc checkMaxwellEnvTexture(string $txtPath)
+{
+	if(`pluginInfo -q -loaded maxwell`)
+	{
+		outputLog($txtPath, "separator----maxwellEnvTexture.A.f","a");
+		//render layers
+		string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+		for ($item in $renderLayers)
+		{
+			int $renderable = `getAttr ($item + ".renderable")`;
+			if ($renderable)
+			{
+				string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+				string $renderer = `getAttr $attr`;
+				if ($renderer == "maxwell")
+				{
+					string $texfile = `getAttr maxwellRenderOptions.environment[0].envTexture`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::0"),"a");
+					}
+
+					string $texfile = `getAttr maxwellRenderOptions.environment[1].envTexture`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::0"),"a");
+					}
+
+					string $texfile = `getAttr maxwellRenderOptions.environment[2].envTexture`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::0"),"a");
+					}
+
+					string $texfile = `getAttr maxwellRenderOptions.environment[3].envTexture`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::0"),"a");
+					}
+
+				}
+			}
+		}
+	}
+}
+
+//check maxwell PointLightGeom, output the result into log file if needed
+proc checkMaxwellPointLightGeom(string $txtPath)
+{
+	if(`pluginInfo -q -loaded maxwell`)
+	{
+		outputLog($txtPath, "separator----maxwellPointLightGeom.A.f","a");
+		//render layers
+		string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+		for ($item in $renderLayers)
+		{
+			int $renderable = `getAttr ($item + ".renderable")`;
+			if ($renderable)
+			{
+				string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+				string $renderer = `getAttr $attr`;
+				if ($renderer == "maxwell")
+				{
+					string $texfile = `getAttr maxwellRenderOptions.pointLightGeom`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::0"),"a");
+					}
+
+				}
+			}
+		}
+	}
+}
+
+//check maxwell SpotLightGeom, output the result into log file if needed
+proc checkMaxwellSpotLightGeom(string $txtPath)
+{
+	if(`pluginInfo -q -loaded maxwell`)
+	{
+		outputLog($txtPath, "separator----maxwellSpotLightGeom.A.f","a");
+		//render layers
+		string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+		for ($item in $renderLayers)
+		{
+			int $renderable = `getAttr ($item + ".renderable")`;
+			if ($renderable)
+			{
+				string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+				string $renderer = `getAttr $attr`;
+				if ($renderer == "maxwell")
+				{
+					string $texfile = `getAttr maxwellRenderOptions.spotLightGeom`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::0"),"a");
+					}
+
+				}
+			}
+		}
+	}
+}
+
+//check maxwell AreaLightGeom, output the result into log file if needed
+proc checkMaxwellAreaLightGeom(string $txtPath)
+{
+	if(`pluginInfo -q -loaded maxwell`)
+	{
+		outputLog($txtPath, "separator----maxwellAreaLightGeom.A.f","a");
+		//render layers
+		string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+		for ($item in $renderLayers)
+		{
+			int $renderable = `getAttr ($item + ".renderable")`;
+			if ($renderable)
+			{
+				string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+				string $renderer = `getAttr $attr`;
+				if ($renderer == "maxwell")
+				{
+					string $texfile = `getAttr maxwellRenderOptions.areaLightGeom`;
+					if(`filetest -f $texfile`)
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::1"),"a");
+					}
+					else
+					{
+						outputLog($txtPath, ("maxwellRenderOptions::" + $texfile + "::0"),"a");
+					}
+
+				}
+			}
+		}
+	}
+}
+
+//check Substance File, output the result into log file if needed
+proc checkSubstanceFile(string $txtPath)
+{
+	if(`pluginInfo -q -loaded Substance`)
+	{
+		outputLog($txtPath, "separator----SubstanceFile.A.f","a");
+
+		string $allFiles[] = `ls -type substance`;
+		for($item in $allFiles)
+		{
+			string $source = `getAttr ($item+".package")`;
+			string $texfile = `workspace -expandName $source`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+}
+
+//check mental ray proxy, output the result into log file if needed
+proc checkMrProxy(string $txtPath)
+{
+	if(`pluginInfo -q -loaded Mayatomr`)
+	{
+		outputLog($txtPath, "separator----MrProxy.A.f","a");
+
+		string $objs[] = `ls -l -geometry`;
+		for ($item in $objs)
+		{
+			int $flag = `objExists ($item + ".miProxyFile")`;
+			if ($flag)
+			{
+				string $map = `getAttr ($item + ".miProxyFile")`;
+				if ($map != "")
+				{
+					if(`filetest -f $map`)
+						outputLog($txtPath, ($item  + "::" + $map + "::1"),"a");
+					else
+						outputLog($txtPath, ($item  + "::" + $map + "::0"),"a");
+				}
+			}
+		}
+	}
+}
+
+//check aiStandIn, output the result into log file if needed
+proc checkaiStandIn(string $txtPath)
+{
+	if(`pluginInfo -q -loaded mtoa`)
+	{
+		outputLog($txtPath, "separator----aiStandIn.A.f","a");
+
+		string $allFiles[] = `ls -type aiStandIn`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".dso")`;
+			if(`filetest -f $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $texfile + "::0"),"a");
+			}
+		}
+	}
+}
+
+//check yetiFur, output the result into log file if needed
+proc checkYetiFur(string $txtPath)
+{
+	if(`pluginInfo -q -loaded pgYetiMaya`)
+	{
+		outputLog($txtPath, "separator----yetiFur.B.d","a");
+
+		string $allFiles[] = `ls -type pgYetiMaya`;
+
+		for($item in $allFiles)
+		{
+			string $texfile = `getAttr ($item+".cacheFileName")`;
+			string $dirname = dirname($texfile);
+			//string $basename = basename( $x,".fur" );
+
+			if(`filetest -d $texfile`)
+			{
+				outputLog($txtPath, ($item + "::" + $dirname + "::1"),"a");
+			}
+			else
+			{
+				outputLog($txtPath, ($item + "::" + $dirname + "::0"),"a");
+			}
+		}
+	}
+}
+
+//check mental ray maps, output the result into log file if needed
+proc checkMrMaps(string $txtPath)
+{
+	outputLog($txtPath, "separator----MrMaps.A.f","a");
+
+	//render layers
+	string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+	for ($item in $renderLayers)
+	{
+		int $renderable = `getAttr ($item + ".renderable")`;
+		if ($renderable)
+		{
+			string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+			string $renderer = `getAttr $attr`;
+			if ($renderer == "mentalRay")
+			{
+				string $attr = zwGetOverrideAttr($item, "miDefaultOptions.photonMapFilename");
+				string $map = `getAttr $attr`;
+				if ($map != "")
+				{
+					if(`filetest -f $map`)
+						outputLog($txtPath, ($item + ".photonMap" + "::" + $map + "::1"),"a");
+					else
+						outputLog($txtPath, ($item + ".photonMap" + "::" + $map + "::0"),"a");
+				}
+				string $attr = zwGetOverrideAttr($item, "miDefaultOptions.finalGatherFilename");
+				string $map = `getAttr $attr`;
+				if ($map != "")
+				{
+					if(`filetest -f $map`)
+						outputLog($txtPath, ($item + ".finalGatherMap" + "::" + $map + "::1"),"a");
+					else
+						outputLog($txtPath, ($item + ".finalGatherMap" + "::" + $map + "::0"),"a");
+				}
+			}
+		}
+	}
+}
+
+//check Vray maps, output the result into log file if needed
+proc checkVrayMaps(string $txtPath)
+{
+	if(`pluginInfo -q -loaded vrayformaya`)
+	{
+		outputLog($txtPath, "separator----VrayMaps.A.f","a");
+
+		//render layers
+		string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+		for ($item in $renderLayers)
+		{
+			int $renderable = `getAttr ($item + ".renderable")`;
+			if ($renderable)
+			{
+				string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+				string $renderer = `getAttr $attr`;
+				if ($renderer == "vray")
+				{
+					string $attr = zwGetOverrideAttr($item, "vraySettings.imap_fileName");
+					string $map = `getAttr $attr`;
+					if ($map != "")
+					{
+						if(`filetest -f $map`)
+							outputLog($txtPath, ($item + ".Irradiance" + "::" + $map + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".Irradiance" + "::" + $map + "::0"),"a");
+					}
+					string $attr = zwGetOverrideAttr($item, "vraySettings.pmap_file");
+					string $map = `getAttr $attr`;
+					if ($map != "")
+					{
+						if(`filetest -f $map`)
+							outputLog($txtPath, ($item + ".Photon" + "::" + $map + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".Photon" + "::" + $map + "::0"),"a");
+					}
+					string $attr = zwGetOverrideAttr($item, "vraySettings.causticsFile");
+					string $map = `getAttr $attr`;
+					if ($map != "")
+					{
+						if(`filetest -f $map`)
+							outputLog($txtPath, ($item + ".Caustics" + "::" + $map + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".Caustics" + "::" + $map + "::0"),"a");
+					}
+					string $attr = zwGetOverrideAttr($item, "vraySettings.shr_file_name");
+					string $map = `getAttr $attr`;
+					if ($map != "")
+					{
+						if(`filetest -f $map`)
+							outputLog($txtPath, ($item + ".SphericalHarmonics" + "::" + $map + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".SphericalHarmonics" + "::" + $map + "::0"),"a");
+					}
+					string $attr = zwGetOverrideAttr($item, "vraySettings.fileName");
+					string $map = `getAttr $attr`;
+					if ($map != "")
+					{
+						if(`filetest -f $map`)
+							outputLog($txtPath, ($item + ".LightCache" + "::" + $map + "::1"),"a");
+						else
+							outputLog($txtPath, ($item + ".LightCache" + "::" + $map + "::0"),"a");
+					}
+				}
+			}
+		}
+	}
+}
+
+//check render settings, output the result into log file if needed
+//always put this to the end of the Log file
+proc string detectRenderer()
+{
+	string $result = "";
+	//render layers
+	string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+	for ($item in $renderLayers)
+	{
+		int $renderable = `getAttr ($item + ".renderable")`;
+		if ($renderable)
+		{
+			string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+			string $renderer = `getAttr $attr`;
+			if ($renderer == "maxwell")
+			{
+				$result = "maxwell";
+				break;
+			}
+			if ($renderer == "_3delight")
+			{
+				$result = "_3delight";
+				break;
+			}
+			if ($renderer == "arnold")
+			{
+				$result = "arnold";
+				break;
+			}
+			// AfterStudios
+			string $fullFileName = `file -q -sceneName`;
+			$fullFileName = `substituteAllString $fullFileName "\\" "/"`;
+			if(`gmatch $fullFileName "*62123*"`){
+				$result = "afterstudios";
+				break;
+			}
+			if(`gmatch $fullFileName "*53*"`){
+				$result = "NULL";
+				break;
+			}
+		}
+	}
+	return $result;
+
+}
+
+//check render settings, output the result into log file if needed
+//always put this to the end of the Log file
+proc checkRenderSettings(string $txtPath)
+{
+	outputLog($txtPath, "separator----RenderSettings.B","a");
+	string $format = `getAttr defaultRenderGlobals.imageFormat`;
+	//outputLog($txtPath, ("format::" + $format),"a");
+
+	//render layers
+	string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+	for ($item in $renderLayers)
+	{
+		int $renderable = `getAttr ($item + ".renderable")`;
+		outputLog($txtPath, ("Render Layer::" + $item + "::" + $renderable),"a");
+	}
+
+	//start and end frame
+	int $st = `getAttr defaultRenderGlobals.startFrame`;
+	outputLog($txtPath, ("Start::" + $st),"a");
+	int $ed = `getAttr defaultRenderGlobals.endFrame`;
+	outputLog($txtPath, ("End::" + $ed),"a");
+
+	//camera
+	string $cams[] = `ls -cameras`;
+	for ($item in $cams)
+	{
+		int $renderable = `getAttr ($item + ".renderable")`;
+		string $camTr = firstParentOf($item);
+		outputLog($txtPath, ("Camera::" + $camTr + "::" + $renderable),"a");
+	}
+
+	//resolution
+	int $width = `getAttr "defaultResolution.width"`;
+	outputLog($txtPath, ("Width::" + $width),"a");
+	int $height = `getAttr "defaultResolution.height"`;
+	outputLog($txtPath, ("Height::" + $height),"a");
+
+	//renderer
+	string $renderer = detectRenderer();
+	if ($renderer != "")
+		outputLog($txtPath, ("renderer::" + $renderer),"a");
+}
+
+//main procedure
+global proc checkNet(string $projPath,string $mayaFile,string $outputPath)
+{
+	string $txtPath = $outputPath;
+	if (!`gmatch $outputPath "*.txt"`)
+		$txtPath = $outputPath + "_net.txt";
+	print("\nMarkder ... 1");
+
+	//Set project
+	if(catch(`setProject $projPath`))
+		outputError(($txtPath+"_err.txt"),"failed to set Project.");
+	print("\nMarker ... 2");
+
+	//Open MAYA file
+	if(catch(`file -open -f $mayaFile`))
+		outputError(($txtPath+"_debug.txt"),"failed to read maya file.");
+
+	outputLog($txtPath, "","w");
+
+	//1.check textures
+	if(catch(checkTextures($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Textures.");
+
+	//2.check mentalrayTextures
+	if(catch(checkMrTextures($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check mentalrayTextures.");
+
+	//3.check mib_ptex_lookup
+	if(catch(checkMibptexs($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check mib_ptex_lookup.");
+
+	//4.check mentalrayIblShape
+	if(catch(checkMrIblShape($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check mentalrayIblShape.");
+
+	//5.check cacheFile
+	if(catch(checkCachePath($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check cacheFile.");
+
+	//6.check diskCache
+	if(catch(checkDiskCache($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check diskCache.");
+
+	//7.check fur
+	if(catch(checkFur($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check fur.");
+
+	//8.check shave cache
+	if(catch(checkShaveCache($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check shave cache.");
+
+	//9.check particle cache
+	if(catch(checkdynGlobalsCache($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check particle cache.");
+
+	//10.check realflow mesh cache
+	if(catch(checkRealflowMeshCache($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check realflow mesh cache.");
+
+	//11.check realflow emitter cache
+	if(catch(checkRealflowEmitterCache($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check realflow emitter cache.");
+
+	//12.check Vray mesh
+	if(catch(checkVrMesh($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Vray mesh.");
+
+	//13.check Vray IES
+	if(catch(checkVrIES($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Vray IES.");
+
+	//14.check Image plane
+	if(catch(checkImagePlane($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Image plane.");
+
+	//15.check Arnold path
+	if(catch(checkArnoldPaths($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Arnold path.");
+
+	//16.check Alembic file
+	if(catch(checkAlembic($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Alembic file.");
+
+	//17.check MaxwellEnvTexture
+	if(catch(checkMaxwellEnvTexture($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Maxwell EnvTexture.");
+
+	//18.check MaxwellPointLightGeom
+	if(catch(checkMaxwellPointLightGeom($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Maxwell PointLightGeom.");
+
+	//19.check MaxwellSpotLightGeom
+	if(catch(checkMaxwellSpotLightGeom($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Maxwell SpotLightGeom.");
+
+	//20.check MaxwellAreaLightGeom
+	if(catch(checkMaxwellAreaLightGeom($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Maxwell AreaLightGeom.");
+
+	//21.check substanceFile
+	if(catch(checkSubstanceFile($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check Substance File.");
+
+
+	if (!`gmatch $projPath "*15103*"`)
+	{
+		//25.check mental ray maps
+		if(catch(checkMrMaps($txtPath)))
+			outputError(($txtPath+"_debug.txt"),"failed to check mental ray maps.");
+
+		//26.check Vray maps
+		if(catch(checkVrayMaps($txtPath)))
+			outputError(($txtPath+"_debug.txt"),"failed to check Vray maps.");
+	}
+
+	//27.check render settings
+	if(catch(checkRenderSettings($txtPath)))
+		outputError(($txtPath+"_debug.txt"),"failed to check render settings.");
+
+	quit -f;
+}

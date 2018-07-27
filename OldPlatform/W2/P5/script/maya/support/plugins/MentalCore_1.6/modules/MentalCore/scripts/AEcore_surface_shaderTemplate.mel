@@ -1,0 +1,29 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+source "AEMentalCoreLogo.mel";
+
+global proc AEcore_surface_shaderTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_surface_shader_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -label "Colour" -addControl "colour";
+			editorTemplate -label "Opacity" -addControl "opacity";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Options" -collapse 1;
+			editorTemplate -label "Output Override" -addControl "output_override";
+			editorTemplate -beginLayout "Colour Management" -collapse 1;
+				editorTemplate -label "Colour" -addControl "cm_colour";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

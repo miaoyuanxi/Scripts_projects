@@ -1,0 +1,118 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_globalsTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_globals_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -addControl "enable";
+		
+		editorTemplate -beginLayout "Output" -collapse 0;
+			editorTemplate -addControl "output_mode";
+			editorTemplate -addControl "preview_pass";
+			editorTemplate -addControl "preview_composite";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "File Output" -collapse 0;
+			editorTemplate -addControl "file_mode";
+			editorTemplate -label "Framebuffer Mode" -addControl "fb_mem_mode";
+			editorTemplate -label "EXR Compression" -addControl "exr_comp";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Primary Buffer" -collapse 1;
+			editorTemplate -label "Channels" -addControl "primary_channels";
+			editorTemplate -label "Bit Depth" -addControl "primary_bit_depth";
+			editorTemplate -label "Pass Group" -addControl "primary_group";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Colour Management" -collapse 0;
+			editorTemplate -label "Enable Colour Management" -addControl "en_colour_management";
+			editorTemplate -label "Input Profile" -addControl "in_cprofile";
+			editorTemplate -label "Output Profile" -addControl "out_cprofile";
+			editorTemplate -label "Preview Profile" -addControl "preview_cprofile";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Settings" -collapse 1;
+			editorTemplate -addControl "output_override";
+			editorTemplate -addControl "disable_baked_textures";
+			editorTemplate -addSeparator;
+			editorTemplate -beginNoOptimize;
+			editorTemplate -label "Enable Beauty Passes" -addControl "en_beauty_passes";
+			editorTemplate -label "Enable Post Passes" -addControl "en_post_passes";
+			editorTemplate -label "Enable Matte Passes" -addControl "en_matte_passes";
+			editorTemplate -label "Enable Custom Passes" -addControl "en_custom_passes";
+			editorTemplate -endNoOptimize;
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Ambient Occlusion" -collapse 1;
+			editorTemplate -label "Enable Occlusion" -addControl "en_ao";
+			editorTemplate -label "Mode" -addControl "ao_mode";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Colour" -addControl "ao_colour";
+			editorTemplate -label "Samples" -addControl "ao_samples";
+			editorTemplate -label "Spread" -addControl "ao_spread";
+			editorTemplate -label "Falloff" -addControl "ao_falloff";
+			editorTemplate -label "Near Clip" -addControl "ao_near_clip";
+			editorTemplate -label "Far Clip" -addControl "ao_far_clip";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Ambient Occlusion" -addControl "ao_amt_amb_occ";
+			editorTemplate -label "Direct Occlusion" -addControl "ao_amt_direct_occ";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Enable Transparency" -addControl "ao_opacity";
+			editorTemplate -beginNoOptimize;
+			editorTemplate -label "Visible in Indirect" -addControl "ao_vis_indirect";
+			editorTemplate -label "Visible in Reflections" -addControl "ao_vis_refl";
+			editorTemplate -label "Visible in Refractions" -addControl "ao_vis_refr";
+			editorTemplate -label "Visible in Transparency" -addControl "ao_vis_trans";
+			editorTemplate -endNoOptimize;
+			editorTemplate -addSeparator;
+			editorTemplate -label "Include/Exclude ID" -addControl "ao_inclexcl_id";
+			editorTemplate -label "Non-self ID" -addControl "ao_nonself_id";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Occlusion Caching" -addControl "ao_caching";
+			editorTemplate -label "Cache Density" -addControl "ao_cache_density";
+			editorTemplate -label "Cache Points" -addControl "ao_cache_points";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Environment Light" -collapse 1;
+			editorTemplate -label "Enable Environment Light" -addControl "en_envl";
+			editorTemplate -label "Scale" -addControl "envl_scale";
+			editorTemplate -label "Blur" -addControl "envl_blur";
+			editorTemplate -label "Blur Resolution" -addControl "envl_blur_res";
+			editorTemplate -label "Enable Flood Colour" -addControl "envl_en_flood_colour";
+			editorTemplate -label "Flood Colour" -addControl "envl_flood_colour";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Indirect Illumination" -collapse 1;
+			editorTemplate -label "Scale" -addControl "indirect_scale";
+			editorTemplate -label "Indirect Occlusion" -addControl "indirect_occlusion";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Light Bloom" -collapse 1;
+			editorTemplate -label "Enable Light Bloom" -addControl "en_bloom";
+			editorTemplate -label "Bloom Source" -addControl "bloom_source";
+			editorTemplate -label "Scale" -addControl "bloom_scale";
+			editorTemplate -label "Threshold" -addControl "bloom_threshold";
+			editorTemplate -label "Saturation" -addControl "bloom_saturation";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Stereo Rendering" -collapse 1;
+			editorTemplate -label "Enable Stereo Rendering" -addControl "en_stereo_rendering";
+			editorTemplate -addControl "stereo_method";
+			editorTemplate -addControl "eye_separation";
+			editorTemplate -addControl "parallax_distance";
+		editorTemplate -endLayout;
+		
+		AEmentalrayBaseTemplate($nodeName);
+		
+		editorTemplate -suppress "renderpasses";
+		editorTemplate -suppress "geoshader";
+		editorTemplate -suppress "env_shader";
+		editorTemplate -suppress "photographic_shader";
+		editorTemplate -suppress "dof_shader";
+		editorTemplate -suppress "metadata";
+
+	editorTemplate -endScrollLayout;
+}

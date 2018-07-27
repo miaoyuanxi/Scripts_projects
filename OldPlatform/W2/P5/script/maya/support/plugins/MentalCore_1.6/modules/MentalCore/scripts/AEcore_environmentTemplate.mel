@@ -1,0 +1,325 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+/////////////////////////
+// Environment Preview //
+/////////////////////////
+
+global proc mc_propagate_env_preview(string $node)
+{
+	string $envNode[] =
+		`listConnections ($node + ".env_preview")`;
+
+	if (size($envNode) && !`about -b`)
+		showEditor $envNode[0];
+		
+	mc_update_env_preview $node;
+}
+
+global proc mc_update_env_preview(string $node)
+{
+	int $env = `connectionInfo -id ($node + ".env_preview")`;
+	if ($env)
+		button -e -label "Delete"
+			-command ("mc_delete_env_preview \"" + $node + "\"")
+			core_CreateEnvPreviewButton;
+	else
+		button -e
+			-label "Create"
+			-command ("mc_create_env_preview \"" + $node + "\"")
+			core_CreateEnvPreviewButton;
+	control -e -en $env core_OpenEnvPreviewButton;
+}
+
+global proc mc_create_env_preview(string $node)
+{
+	python("from mentalcore import mlib; mlib.create_env_preview('" + $node + "')");
+	
+	mc_update_env_preview $node;
+}
+
+global proc mc_delete_env_preview(string $node)
+{
+	//remove shader and geo
+	string $env[] = `listConnections ($node + ".env_preview")`;
+	if (size($env))
+	{
+		//store selection
+		$sel = `ls - sl`;
+	
+		//remove geo
+		select -cl;
+		hyperShade -o $env[0];
+		delete(`ls -sl`);
+
+		//remove shader
+		delete $env[0];
+		
+		//restore selection
+		select -r $sel;
+		evalDeferred("showEditor " + $node);
+	}
+	
+	mc_update_env_preview $node;
+}
+
+global proc AEenv_preview_new(string $attr) 
+{
+	string $node = plugNode($attr);
+	
+	rowLayout -numberOfColumns 3 core_envPreviewLayout;
+		text -label "Environment Preview";
+		button -label "Create"
+			-command ("mc_create_env_preview \"" + $node + "\"")
+				core_CreateEnvPreviewButton;
+		symbolButton -image "inArrow.xpm"
+			-command ("mc_propagate_env_preview \"" + $node + "\"")
+				core_OpenEnvPreviewButton;
+	setParent ..;
+	
+	mc_update_env_preview $node;
+}
+
+global proc AEenv_preview_replace(string $attr) 
+{	
+	string $node = plugNode($attr);
+	
+	if (!`attributeExists "env_preview" $node`)
+		addAttr -at "message" -ln "env_preview" $node;
+
+	button -e -command ("mc_create_env_preview \"" + $node + "\"")
+			core_CreateEnvPreviewButton;
+	symbolButton -e -command ("mc_propagate_env_preview \"" + $node + "\"")
+			core_OpenEnvPreviewButton;
+			
+	mc_update_env_preview $node;
+}
+
+
+/////////////////////
+// Control Dimming //
+/////////////////////
+
+global proc AEcore_environmentCheckPri(string $nodeName) {
+	if (`getAttr($nodeName + ".pri_en")`) {
+		editorTemplate -dimControl $nodeName "pri_override_tex" 0;
+		editorTemplate -dimControl $nodeName "pri_gain" 0;
+		editorTemplate -dimControl $nodeName "pri_rot" 0;
+		
+		if (`getAttr($nodeName + ".pri_override_tex")`) {
+			editorTemplate -dimControl $nodeName "pri_colprofile" 0;
+			editorTemplate -dimControl $nodeName "pri_tex" 0;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "pri_colprofile" 1;
+			editorTemplate -dimControl $nodeName "pri_tex" 1;
+		}
+	}
+	else {
+		editorTemplate -dimControl $nodeName "pri_override_tex" 1;
+		editorTemplate -dimControl $nodeName "pri_colprofile" 1;
+		editorTemplate -dimControl $nodeName "pri_tex" 1;
+		editorTemplate -dimControl $nodeName "pri_gain" 1;
+		editorTemplate -dimControl $nodeName "pri_rot" 1;
+	}
+}
+
+global proc AEcore_environmentCheckEnvl(string $nodeName) {
+	if (`getAttr($nodeName + ".envl_en")`) {
+		editorTemplate -dimControl $nodeName "envl_override_tex" 0;
+		editorTemplate -dimControl $nodeName "envl_gain" 0;
+		editorTemplate -dimControl $nodeName "envl_rot" 0;
+		
+		if (`getAttr($nodeName + ".envl_override_tex")`) {
+			editorTemplate -dimControl $nodeName "envl_colprofile" 0;
+			editorTemplate -dimControl $nodeName "envl_tex" 0;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "envl_colprofile" 1;
+			editorTemplate -dimControl $nodeName "envl_tex" 1;
+		}
+	}
+	else {
+		editorTemplate -dimControl $nodeName "envl_override_tex" 1;
+		editorTemplate -dimControl $nodeName "envl_colprofile" 1;
+		editorTemplate -dimControl $nodeName "envl_tex" 1;
+		editorTemplate -dimControl $nodeName "envl_gain" 1;
+		editorTemplate -dimControl $nodeName "envl_rot" 1;
+	}
+}
+
+global proc AEcore_environmentCheckSec(string $nodeName) {
+	if (`getAttr($nodeName + ".sec_en")`) {
+		editorTemplate -dimControl $nodeName "sec_override_tex" 0;
+		editorTemplate -dimControl $nodeName "sec_gain" 0;
+		editorTemplate -dimControl $nodeName "sec_rot" 0;
+		editorTemplate -dimControl $nodeName "sec_blur" 0;
+		editorTemplate -dimControl $nodeName "sec_mat_blur" 0;
+		editorTemplate -dimControl $nodeName "sec_blur_res" 0;
+        editorTemplate -dimControl $nodeName "sec_en_clamp" 0;
+		
+		if (`getAttr($nodeName + ".sec_override_tex")`) {
+			editorTemplate -dimControl $nodeName "sec_colprofile" 0;
+			editorTemplate -dimControl $nodeName "sec_tex" 0;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "sec_colprofile" 1;
+			editorTemplate -dimControl $nodeName "sec_tex" 1;
+		}
+        
+        $clamp = `getAttr ( $nodeName + ".sec_en_clamp" )`;
+        editorTemplate -dimControl $nodeName "sec_clamp" (1 - $clamp);
+	}
+	else {
+		editorTemplate -dimControl $nodeName "sec_override_tex" 1;
+		editorTemplate -dimControl $nodeName "sec_colprofile" 1;
+		editorTemplate -dimControl $nodeName "sec_tex" 1;
+		editorTemplate -dimControl $nodeName "sec_gain" 1;
+		editorTemplate -dimControl $nodeName "sec_rot" 1;
+		editorTemplate -dimControl $nodeName "sec_blur" 1;
+		editorTemplate -dimControl $nodeName "sec_mat_blur" 1;
+		editorTemplate -dimControl $nodeName "sec_blur_res" 1;
+        editorTemplate -dimControl $nodeName "sec_en_clamp" 1;
+        editorTemplate -dimControl $nodeName "sec_clamp" 1;
+	}
+}
+
+global proc AEcore_environmentCheckFg(string $nodeName) {
+	if (`getAttr($nodeName + ".fg_en")`) {
+		editorTemplate -dimControl $nodeName "fg_override_tex" 0;
+		editorTemplate -dimControl $nodeName "fg_gain" 0;
+		editorTemplate -dimControl $nodeName "fg_rot" 0;
+		editorTemplate -dimControl $nodeName "fg_blur" 0;
+		editorTemplate -dimControl $nodeName "fg_blur_res" 0;
+		
+		if (`getAttr($nodeName + ".fg_override_tex")`) {
+			editorTemplate -dimControl $nodeName "fg_colprofile" 0;
+			editorTemplate -dimControl $nodeName "fg_tex" 0;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "fg_colprofile" 1;
+			editorTemplate -dimControl $nodeName "fg_tex" 1;
+		}
+	}
+	else {
+		editorTemplate -dimControl $nodeName "fg_override_tex" 0;
+		editorTemplate -dimControl $nodeName "fg_colprofile" 1;
+		editorTemplate -dimControl $nodeName "fg_tex" 1;
+		editorTemplate -dimControl $nodeName "fg_gain" 1;
+		editorTemplate -dimControl $nodeName "fg_rot" 1;
+		editorTemplate -dimControl $nodeName "fg_blur" 1;
+		editorTemplate -dimControl $nodeName "fg_blur_res" 1;
+	}
+}
+
+global proc AEcore_environmentCheckIbl(string $nodeName) {
+	if (`getAttr($nodeName + ".ibl_en")`) {
+		editorTemplate -dimControl $nodeName "ibl_override_tex" 0;
+		editorTemplate -dimControl $nodeName "ibl_gain" 0;
+		editorTemplate -dimControl $nodeName "ibl_rot" 0;
+		
+		if (`getAttr($nodeName + ".ibl_override_tex")`) {
+			editorTemplate -dimControl $nodeName "ibl_colprofile" 0;
+			editorTemplate -dimControl $nodeName "ibl_tex" 0;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "ibl_colprofile" 1;
+			editorTemplate -dimControl $nodeName "ibl_tex" 1;
+		}
+	}
+	else {
+		editorTemplate -dimControl $nodeName "ibl_override_tex" 1;
+		editorTemplate -dimControl $nodeName "ibl_colprofile" 1;
+		editorTemplate -dimControl $nodeName "ibl_tex" 1;
+		editorTemplate -dimControl $nodeName "ibl_gain" 1;
+		editorTemplate -dimControl $nodeName "ibl_rot" 1;
+	}
+}
+
+///////////////////////////////
+// Core Environment Template //
+///////////////////////////////
+
+global proc AEcore_environmentTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_environment_logo.png");
+
+	editorTemplate -beginScrollLayout;
+			editorTemplate -label "Colour Profile" -addControl "env_colprofile";
+			editorTemplate -label "Texture" -addControl "env_tex";
+			editorTemplate -label "Rotation" -addControl "env_rot";
+			
+			editorTemplate -addSeparator;
+			
+			if (!`attributeExists "env_preview" $nodeName`)
+				addAttr -at "message" -ln "env_preview" $nodeName;
+			editorTemplate -callCustom "AEenv_preview_new" "AEenv_preview_replace" "env_preview";
+	
+		editorTemplate -beginLayout "Primary Environment (Visible)" -collapse 1;
+			editorTemplate -label "Enable" -addControl "pri_en" "AEcore_environmentCheckPri";
+			editorTemplate -label "Override Texture" -addControl "pri_override_tex" "AEcore_environmentCheckPri";
+			editorTemplate -label "Colour Profile" -addControl "pri_colprofile";
+			editorTemplate -label "Texture" -addControl "pri_tex";
+			editorTemplate -label "Gain" -addControl "pri_gain";
+			editorTemplate -label "Rotation Offset" -addControl "pri_rot";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Environment Lighting" -collapse 1;
+			editorTemplate -label "Enable" -addControl "envl_en" "AEcore_environmentCheckEnvl";
+			editorTemplate -label "Override Texture" -addControl "envl_override_tex" "AEcore_environmentCheckEnvl";
+			editorTemplate -label "Colour Profile" -addControl "envl_colprofile";
+			editorTemplate -label "Texture" -addControl "envl_tex";
+			editorTemplate -label "Gain" -addControl "envl_gain";
+			editorTemplate -label "Rotation Offset" -addControl "envl_rot";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Secondary Environment (Reflect/Refract)" -collapse 1;
+			editorTemplate -label "Enable" -addControl "sec_en" "AEcore_environmentCheckSec";
+			editorTemplate -label "Override Texture" -addControl "sec_override_tex" "AEcore_environmentCheckSec";
+			editorTemplate -label "Colour Profile" -addControl "sec_colprofile";
+			editorTemplate -label "Texture" -addControl "sec_tex";
+			editorTemplate -label "Gain" -addControl "sec_gain";
+			editorTemplate -label "Rotation Offset" -addControl "sec_rot";
+            
+            editorTemplate -addSeparator;
+            
+            editorTemplate -label "Enable Clamp" -addControl "sec_en_clamp" "AEcore_environmentCheckSec";
+			editorTemplate -label "Clamp" -addControl "sec_clamp";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Blur" -addControl "sec_blur";
+			editorTemplate -label "Material Based Blur" -addControl "sec_mat_blur";
+			editorTemplate -label "Blur Resolution" -addControl "sec_blur_res";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Finalgather Environment" -collapse 1;
+			editorTemplate -label "Enable" -addControl "fg_en" "AEcore_environmentCheckFg";
+			editorTemplate -label "Override Texture" -addControl "fg_override_tex" "AEcore_environmentCheckFg";
+			editorTemplate -label "Colour Profile" -addControl "fg_colprofile";
+			editorTemplate -label "Texture" -addControl "fg_tex";
+			editorTemplate -label "Gain" -addControl "fg_gain";
+			editorTemplate -label "Rotation Offset" -addControl "fg_rot";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Blur" -addControl "fg_blur";
+			editorTemplate -label "Blur Resolution" -addControl "fg_blur_res";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Image Based Lighting" -collapse 1;
+			editorTemplate -label "Enable" -addControl "ibl_en" "AEcore_environmentCheckIbl";
+			editorTemplate -label "Override Texture" -addControl "ibl_override_tex" "AEcore_environmentCheckIbl";
+			editorTemplate -label "Colour Profile" -addControl "ibl_colprofile";
+			editorTemplate -label "Texture" -addControl "ibl_tex";
+			editorTemplate -label "Gain" -addControl "ibl_gain";
+			editorTemplate -label "Rotation Offset" -addControl "ibl_rot";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+		
+		editorTemplate -suppress "sec_envblur";
+
+	editorTemplate -endScrollLayout;
+}

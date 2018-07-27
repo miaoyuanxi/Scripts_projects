@@ -1,0 +1,145 @@
+#\\10.60.100.101\p5\script\py\py\1852991\script_2017061301461_0
+G_CG_NAME='MaxClient'
+G_USERID_PARENT='1852500'
+G_USERID='1852991'
+G_TASKID='9321156'
+G_POOL=r'\\10.60.100.101\p5'
+G_CONFIG=r'\\10.60.100.101\p5\temp\9321156_render\cfg\py.cfg'
+G_PLUGINS=r''
+G_RENDEROS=r''
+baseRenderPy=r'\\10.60.100.101\p5\script\py\py\common'
+userRenderPy=r'\\10.60.100.101\p5\script\py\py\1852991'
+#script_param_mark#
+G_JOB_ID = 'frame0000'
+G_CG_START_FRAME = '0'
+G_CG_END_FRAME = '0'
+G_CG_BY_FRAME = '1'
+G_CG_LAYER_NAME = ''
+G_CG_OPTION = ''
+G_CG_TILE = '0'
+G_CG_TILECOUNT = '1'
+nodePyDir=r'c:\script\py'  #not linux
+nodePyDir=r'/root/rayvision/script/py'  #if G_RENDEROS=='Linux':
+inputIp='10.60.100.7'
+paramDict = {'G_JOB_ID':G_JOB_ID,'G_USERID':G_USERID,'G_USERID_PARENT':G_USERID_PARENT,'G_TASKID':G_TASKID,'G_CG_NAME':G_CG_NAME,'G_SYS_ARGVS':sys.argv,'G_POOL':G_POOL,'G_CG_START_FRAME':G_CG_START_FRAME,'G_CG_END_FRAME':G_CG_END_FRAME,'G_CG_BY_FRAME':G_CG_BY_FRAME,'G_CG_LAYER_NAME':G_CG_LAYER_NAME,'G_CG_OPTION':G_CG_OPTION,'G_CONFIG':G_CONFIG,'G_PLUGINS':G_PLUGINS,'G_RENDEROS':G_RENDEROS,'G_CG_TILE':G_CG_TILE,'G_CG_TILECOUNT':G_CG_TILECOUNT}
+
+#RenderAction.py
+cgName=paramDict['G_CG_NAME']
+
+#\\10.60.100.101\p5\script\py\py\1852991\RenderMax.py
+self.G_MAXBAT_NAME='max.bat'
+self.G_RENDERBAT_NAME='crender.bat'        
+self.G_PLUGINBAT_NAME='plugin.bat'
+self.G_SCRIPT_NAME='crender.ms'
+self.G_RENDER_WORK_TASK_MAX=os.path.join(self.G_RENDER_WORK,self.G_TASKID,'max')
+self.G_CG_FILE=self.G_TASKID+'.max'
+self.G_DRIVERC_7Z='c:/7-Zip/7z.exe'
+self.G_JOB_NAME=paramDict['G_JOB_ID']
+self.G_JOB_NAME_STR=self.G_JOB_NAME
+self.G_JOB_NAME=self.G_JOB_NAME.encode(sys.getfilesystemencoding())
+self.HOST='127.0.0.1'#'192.168.0.49'
+self.PORT=10100 
+self.BUFSIZ=1024
+self.ADDR=(self.HOST, self.PORT)
+self.G_MAX_B='B:/plugins/max'
+self.G_MAXSCRIPT=self.G_MAX_B+'/script'
+self.G_MAXSCRIPT_NAME='renderu.ms'#max2013,max2014,max2015
+self.G_CUSTOM_BAT_NAME='custom.bat'
+self.G_USER_HOST_NAME='hosts.txt'
+self.G_PROGRAMFILES='C:/Program Files'
+self.ASSET_WEB_COOLECT_BY_PATH=False
+self.MAX_CMD_RENDER=False
+self.RENDER_MODE='location'
+self.G_CG_TILECOUNT='1'  #if self.G_CG_TILECOUNT==None or self.G_CG_TILECOUNT=='':
+self.G_CG_TILE='0'  #if self.G_CG_TILE==None or self.G_CG_TILE=='':
+self.G_PATH_SMALL=self.argsmap['smallPath']  #argsmap是由\\10.60.1.10\c$\work\render\9321156\cfg\py.cfg做成的字典
+self.G_PATH_USER_OUTPUT=self.argsmap['output']
+self.G_PATH_COST=self.argsmap['pathCost']
+
+#RenderBase.py
+self.G_RENDERTYPE = "cpu"
+self.G_LOG_WORK='C:/log/render'
+self.G_RENDER_WORK='C:/work/render'
+self.G_HELPER_WORK='C:/work/helper'
+self.G_RENDEROS = 'Windows'
+self.G_RENDEROS = paramDict['G_RENDEROS']  #if 'G_RENDEROS' in paramDict:
+self.G_LOG_WORK='/tmp/nzs-data/log/render'  ##if 'G_RENDEROS' in paramDict:  if self.G_RENDEROS=='Linux':
+self.G_RENDER_WORK='/tmp/nzs-data/work/render'  ##if 'G_RENDEROS' in paramDict:  if self.G_RENDEROS=='Linux':
+self.G_HELPER_WORK='/tmp/nzs-data/work/helper'  ##if 'G_RENDEROS' in paramDict:  if self.G_RENDEROS=='Linux':
+self.G_CFG_PY_NAME='py.cfg'
+self.G_CONVERTVBS_NAME='convertNew.vbs'
+self.G_PRE_PYNAME='pre.py'
+self.G_POST_PYNAME='post.py'
+self.G_USERID=paramDict['G_USERID']
+self.G_USERID_PARENT=paramDict['G_USERID_PARENT']
+self.G_TASKID=paramDict['G_TASKID']
+self.G_POOL=paramDict['G_POOL']
+self.G_CG_START_FRAME=paramDict['G_CG_START_FRAME']
+self.G_CG_END_FRAME=paramDict['G_CG_END_FRAME']
+self.G_CG_BY_FRAME=paramDict['G_CG_BY_FRAME']
+self.G_CG_LAYER_NAME=paramDict['G_CG_LAYER_NAME']
+self.G_CG_OPTION=paramDict['G_CG_OPTION']
+self.G_CONFIG = paramDict['G_CONFIG']  #if 'G_CONFIG' in paramDict:
+self.G_CONFIG=self.G_CONFIG.replace("/","\\")#.replace("/mnt/p5","\\\\10.50.244.116\\p5")  #if 'G_CONFIG' in paramDict:
+self.G_PLUGINS = paramDict['G_PLUGINS']  #if 'G_PLUGINS' in paramDict:
+self.G_CG_TILE="0"
+self.G_CG_TILECOUNT="1"
+self.G_CG_TILE=paramDict['G_CG_TILE']  #if 'G_CG_TILE' in paramDict:
+self.G_CG_TILECOUNT=paramDict['G_CG_TILECOUNT']  #if 'G_CG_TILECOUNT' in paramDict:
+self.G_SYS_ARGVS=paramDict['G_SYS_ARGVS']#taskid,jobindex,jobid,nodeid,nodename
+self.G_JOB_NAME=self.G_SYS_ARGVS[3].replace("\"","")
+self.G_NODE_NAME=self.G_SYS_ARGVS[5]
+self.G_POOL_TASK=os.path.join(self.G_POOL,'temp',(self.G_TASKID+'_render'))  #\\10.60.100.101\p5\temp\9321156_render
+self.G_RENDER_WORK_TASK=os.path.join(self.G_RENDER_WORK,self.G_TASKID)  #C:/work/render/9321156
+self.G_RENDER_WORK_TASK_CFG=os.path.join(self.G_RENDER_WORK,self.G_TASKID,'cfg')  #C:/work/render/9321156/cfg
+self.G_RAYVISION_PLUGINSCFG=os.path.join(self.G_RENDER_WORK_TASK_CFG,'plugins.cfg')
+self.G_HELPER_WORK_TASK=os.path.join(self.G_HELPER_WORK,self.G_TASKID)
+self.G_HELPER_WORK_TASK_CFG=os.path.join(self.G_HELPER_WORK,self.G_TASKID,'cfg')
+self.G_CFG_PYNAME=os.path.join(self.G_RENDER_WORK_TASK_CFG,self.G_CFG_PY_NAME) #C:/work/render/9321156/cfg/py.cfg
+self.G_HELPER_CFG_PYNAME=os.path.join(self.G_HELPER_WORK_TASK_CFG,self.G_CFG_PY_NAME)
+self.G_PRE_PY=os.path.join(self.G_RENDER_WORK_TASK_CFG,self.G_PRE_PYNAME)
+self.G_PRE_PY=self.G_PRE_PY.replace('\\','/')
+self.G_POST_PY=os.path.join(self.G_RENDER_WORK_TASK_CFG,self.G_POST_PYNAME)  #C:/work/render/9321156/cfg/post.py
+self.G_POST_PY=self.G_POST_PY.replace('\\','/')
+self.G_SIMPLE_LOG=logging.getLogger('renderlog')
+self.G_PROCESS_LOG=logging.getLogger('processlog')
+self.G_RENDER_LOG=logging.getLogger('maxlog')
+self.G_FEE_LOG=logging.getLogger('feeLog')
+self.G_RENDER_WORK_OUTPUT = os.path.join(self.G_RENDER_WORK_TASK,'output')  #C:/work/render/9321156/output
+self.G_RENDER_WORK_OUTPUTBAK = os.path.join(self.G_RENDER_WORK_TASK,'outputbak')  #C:/work/render/9321156/outputbak
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

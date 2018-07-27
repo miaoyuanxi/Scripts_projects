@@ -1,0 +1,7 @@
+print "delete preMel and postMel\n";
+setAttr -type "string" defaultRenderGlobals.preMel "";
+setAttr -type "string" defaultRenderGlobals.postMel "";
+string $buff[] = `ls "*:*:defaultRenderGlobals" "*:defaultRenderGlobals" "defaultRenderGlobals"`;
+for($each in $buff){
+    catch(`setAttr -type "string" ($each+ ".imageFilePrefix") "<Scene>/<RenderLayer>/<RenderLayer>"`);
+}

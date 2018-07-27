@@ -1,0 +1,26 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_spherical_lookupTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_spherical_lookup_logo.png");
+
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -label "Colour Profile" -addControl "colprofile";
+			editorTemplate -label "Texture" -addControl "tex";
+			editorTemplate -label "Gain" -addControl "gain";
+			editorTemplate -label "Rotation" -addControl "rot";
+			
+		editorTemplate -beginLayout "Blur Parameters" -collapse 0;
+			editorTemplate -label "Enable Blur" -addControl "en_blur";
+			editorTemplate -label "Blur Resolution" -addControl "blur_res";
+			editorTemplate -label "Blur" -addControl "blur";
+			editorTemplate -label "Quality" -addControl "quality";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

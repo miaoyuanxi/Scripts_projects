@@ -1,0 +1,91 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc mib_ptex_browse(string $attr)
+{
+    string $proj_dir = `workspace -q -rd`;
+    string $si_dir = `workspace -q -fileRuleEntry "sourceImages"`;
+    $si_dir = ($proj_dir + $si_dir + "/");
+
+    string $result[] = `fileDialog2 -fileFilter "Ptex Textures (*.ptx)" -dialogStyle 2 -cap "Select Ptex Texture" -fm 1 -dir $si_dir`;
+    
+    if ($result[0] != "")
+    {
+        string $file = $result[0];
+        $file = `substitute "\\\\" $file "/"`;
+        $file = `substitute $proj_dir $file ($proj_dir + "/")`;
+        setAttr -type "string" $attr $file;
+    }
+}
+		
+global proc AEmib_ptex_filenameNew(string $attr) {
+	rowLayout -nc 2 -adj 1 -cw2 200 25;
+    textFieldGrp -label "Filename" -adj 2 "mib_ptex_filename";
+    iconTextButton -w 25 -image "fileOpen.png" -c ("mib_ptex_browse " + $attr) "mib_ptex_filename_open";
+    connectControl -index 2 "mib_ptex_filename" $attr;
+}
+
+global proc AEmib_ptex_filenameReplace(string $attr) {
+	iconTextButton -e -c ("mib_ptex_browse " + $attr) "mib_ptex_filename_open";
+	connectControl -index 2 "mib_ptex_filename" $attr;
+}
+		
+global proc AEmib_ptex_filtertypeNew(string $attr) {
+	attrEnumOptionMenuGrp
+            -l "Filter Type"
+            -at $attr
+            -ei 0 "Point"
+            -ei 1 "Bilinear"
+            -ei 2 "Box"
+            -ei 3 "Gaussian"
+            -ei 4 "Bicubic"
+            -ei 5 "BSpline"
+            -ei 6 "Catmullrom"
+            -ei 7 "Mitchell"
+			mib_ptex_filtertype;
+}
+
+global proc AEmib_ptex_filtertypeReplace(string $attr) {
+	attrEnumOptionMenuGrp
+            -e
+            -at $attr
+			mib_ptex_filtertype;
+}
+
+global proc AEmib_ptex_filtersharpnessNew(string $attr) {
+	attrFieldSliderGrp -l "Filter Sharpness" -min 0.0 -max 1.0 -at $attr "mib_ptex_filtersharpness";
+}
+
+global proc AEmib_ptex_filtersharpnessReplace(string $attr) {
+	attrFieldSliderGrp -e -min 0.0 -max 1.0 -at $attr "mib_ptex_filtersharpness";
+}
+
+global proc AEmib_ptex_filterblurNew(string $attr) {
+	attrFieldSliderGrp -l "Filter Blur" -min 0.0 -max 1.0 -at $attr "mib_ptex_filterblur";
+}
+
+global proc AEmib_ptex_filterblurReplace(string $attr) {
+	attrFieldSliderGrp -e -min 0.0 -max 1.0 -at $attr "mib_ptex_filterblur";
+}
+
+global proc AEmib_ptex_lookupTemplate( string $nodeName )
+{	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Ptex File" -collapse 0;
+			editorTemplate -callCustom "AEmib_ptex_filenameNew" "AEmib_ptex_filenameReplace" "filename";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Filtering" -collapse 0;
+			editorTemplate -label "Interpolate Mipmap Levels" -addControl "interpolate_level";
+			editorTemplate -callCustom "AEmib_ptex_filtertypeNew" "AEmib_ptex_filtertypeReplace" "filtertype";
+			editorTemplate -label "Filter Width" -addControl "width";
+			editorTemplate -callCustom "AEmib_ptex_filtersharpnessNew" "AEmib_ptex_filtersharpnessReplace" "filter_sharpness";
+			editorTemplate -callCustom "AEmib_ptex_filterblurNew" "AEmib_ptex_filterblurReplace" "blur";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

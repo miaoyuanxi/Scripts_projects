@@ -1,0 +1,12 @@
+dirmap -en true;
+
+dirmap -m "//Kt_3d-pc/d" "//10.50.24.10/d/inputdata5/120000/120299";
+
+dirmap -m "c:" "//10.50.24.10/d/inputdata5/120000/120299";
+dirmap -m "C:" "//10.50.24.10/d/inputdata5/120000/120299";
+dirmap -m "d:" "//10.50.24.10/d/inputdata5/120000/120299";
+dirmap -m "D:" "//10.50.24.10/d/inputdata5/120000/120299";
+dirmap -m "e:" "//10.50.24.10/d/inputdata5/120000/120299";
+dirmap -m "E:" "//10.50.24.10/d/inputdata5/120000/120299";
+dirmap -m "f:" "//10.50.24.10/d/inputdata5/120000/120299";
+dirmap -m "F:" "//10.50.24.10/d/inputdata5/120000/120299";

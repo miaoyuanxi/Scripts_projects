@@ -1,0 +1,9 @@
+xcopy /y /v "\\10.50.1.3\d\inputdata\max\163000\163310\KEYFRAMES_PJT_BLU\MAPS\MAPS\BLU_Lighting_Rendering\_BLU_CHR_Assets\Hassan\30_5_2014\BLU_Production\Production\Character\Primary\Hassan\Maps_WIP\Hassan_Body\Final\Hassan_Feet_Rigth_Diff?se.tif" "c:/work/"
+
+
+
+
+
+
+
+xcopy /y /f /v "\\10.50.8.2\p\tools\PNG\3ds Max 2014\png.bmi" "C:\Program Files\Autodesk\3ds Max 2014\stdplugs\"

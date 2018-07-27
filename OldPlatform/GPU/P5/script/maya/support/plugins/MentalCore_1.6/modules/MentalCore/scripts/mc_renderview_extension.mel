@@ -1,0 +1,9 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc mc_renderview_extension(string $editor)
+{
+	python("import mentalcore; mentalcore.renderview_extension('" + $editor + "')");
+}

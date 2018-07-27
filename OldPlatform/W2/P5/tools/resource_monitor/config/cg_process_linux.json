@@ -1,0 +1,7 @@
+{
+"Maya":["maya.bin","maya","Render"],
+"MayaClient":["maya.bin","maya","Render"],
+"Houdini":["mantra","hython"],
+"Katana":["katanaBin"],
+"Clarisse":["cnode","clarisse"]
+}

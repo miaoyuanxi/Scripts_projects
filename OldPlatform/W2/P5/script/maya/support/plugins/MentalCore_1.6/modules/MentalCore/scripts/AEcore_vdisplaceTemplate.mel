@@ -1,0 +1,20 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_vdisplaceTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_vdisplace_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Properties" -collapse 0;
+			editorTemplate -label "Vector Displacement Map" -addControl "vdisp_map";
+			editorTemplate -label "Scale" -addControl "scale";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+		
+		editorTemplate -suppress "space";
+
+	editorTemplate -endScrollLayout;
+}

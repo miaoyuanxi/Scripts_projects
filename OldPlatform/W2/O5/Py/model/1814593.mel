@@ -1,0 +1,8 @@
+setAttr -l false "renderManRISGlobals.rman__torattr___defaultRiOptionsScript";
+setAttr -l false "renderManRISGlobals.rman__torattr___preShapeScript";
+setAttr -l false "renderManRISGlobals.rman__torattr___cacheShapeScript";
+setAttr -type "string" renderManRISGlobals.rman__torattr___defaultRiOptionsScript "";
+setAttr -type "string" renderManRISGlobals.rman__torattr___preShapeScript "";
+setAttr -type "string" renderManRISGlobals.rman__torattr___cacheShapeScript "";
+setAttr -l false "defaultRenderGlobals.postMel";
+setAttr -type "string" defaultRenderGlobals.postMel "";

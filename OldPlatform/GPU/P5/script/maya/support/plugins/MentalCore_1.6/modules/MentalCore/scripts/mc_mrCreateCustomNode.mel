@@ -1,0 +1,124 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc string mrCreateCustomNode(	string $runtimeClassification, 
+										string $postCommand , string $nodeType)
+//
+//	Function:	mrCreateCustomNode
+//	Purpose:	Callback routine to create a mental ray custom node.
+//	Arguments:
+//				$runtimeClassification - the runtime classification to be
+//										 assigned to the node
+//				$nodeType - the type of node to be created.
+//				$postCommand - command to be executed after node creation
+//
+//	Returns:	The name of the newly created node.
+//
+{
+	// Use the shadingNode command to create the node and assign its 
+	// runtime classification.
+	//
+	string $node = `shadingNode $runtimeClassification $nodeType`;
+
+	select $node;
+
+	if ($postCommand != "") {
+		string $cmd = substitute("%node", $postCommand, $node);
+		$cmd = substitute("%type", $cmd, ("\"" + $nodeType + "\""));
+		evalEcho $cmd;
+	}
+
+	// attach shading group if the it is material shader and surface shader.
+	if( isClassified($node, "rendernode/mentalray/material") && isClassified($node, "shader/surface"))
+	{
+		string $cmd = "sets -renderable true -noSurfaceShader true -empty -name "+$node+"SG";
+		string $group = `evalEcho $cmd`;
+
+		string $outAttr = $node;
+		if (attributeExists("outValue", $node)) {
+			$outAttr += ".outValue ";
+		} else {
+			$outAttr += ".message ";
+		}
+		
+		$cmd = "connectAttr " + $outAttr + $group + ".miMaterialShader";
+		evalEcho $cmd;
+
+		// hook up extra shading group connections for appropriate materials
+		if (isClassified($node, "connection/mentalray/photon")) {
+			$cmd = "connectAttr " + $outAttr + $group + ".miPhotonShader";
+			evalEcho $cmd;
+		}
+		if (isClassified($node, "connection/mentalray/shadow")) {
+			$cmd = "connectAttr " + $outAttr + $group + ".miShadowShader";
+			evalEcho $cmd;
+		}
+	}
+
+	if ($nodeType=="misss_fast_simple_maya" ||
+		$nodeType=="misss_fast_skin_maya" ||
+		$nodeType=="misss_fast_shader" ||
+		$nodeType=="misss_fast_shader_x" ||
+		$nodeType=="misss_fast_shader_x_passes" ||
+		$nodeType=="core_simple_sss" ||
+		$nodeType=="core_skin_sss" ||
+		$nodeType=="core_simple_sss2" ||
+		$nodeType=="core_skin_sss2" ||
+		$nodeType=="core_sss_color_bleed")
+	{
+		createAndAssignLightMap($node +".lightmap");
+		select $node;
+	}
+
+	return $node;
+}
+
+
+global proc misssCreateNewLMTex(string $attr){
+	mentalrayTextureNodeCreate($attr);
+	string $texture[] = listConnections($attr);
+	
+	string $sss_shader = plugNode($attr);
+	string $sss_type = nodeType($sss_shader);
+	
+	setAttr ($texture[0] +".miWritable") 1;
+	expression -s ($texture[0] +".miWidth  = defaultResolution.width * 2");
+	expression -s ($texture[0] +".miHeight = defaultResolution.height");
+	setAttr ($texture[0] +".miDepth") 4; 
+	
+	string $shadingGrp = misssGetAndSetSG($attr);
+	string $lightMap[];
+	$lightMap = `listConnections  ($shadingGrp +".miLightMapShader")`;
+	if(!size($lightMap)){
+		if ($sss_type == "core_skin_sss" || $sss_type == "core_simple_sss" || 
+			$sss_type == "core_simple_sss2" || $sss_type == "core_skin_sss2" ||
+			$sss_type == "core_sss_color_bleed")
+			$lightMap[0] = createNode("core_fast_lmap");
+		else
+			$lightMap[0] = createNode("misss_fast_lmap_maya");
+		connectAttr -force ($lightMap[0] +".message") ($shadingGrp +".miLightMapShader");
+	}	
+	connectAttr -f ($texture[0] +".message") ($lightMap[0] +".lightmap");
+}
+
+global proc string[] getConnectedLMs(string $texture) {
+	string $lightMap[];
+	string $connection[] = `listConnections -source false $texture`;
+	
+	for($conn in $connection){
+        if (nodeType($conn) == "core_fast_lmap")
+            $lightMap[size($lightMap)] = $conn;
+        else {
+    		string $buffer[];
+    		tokenize $conn "_" $buffer;
+    		for($token in $buffer){
+    			if(($token == "lmap")||($token == "lightmap")) {
+    				$lightMap[size($lightMap)] = $conn;
+    			}
+    		}
+		}	
+	}
+	return $lightMap;
+}

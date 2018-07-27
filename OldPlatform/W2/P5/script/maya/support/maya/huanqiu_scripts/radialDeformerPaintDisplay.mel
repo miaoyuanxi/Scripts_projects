@@ -1,0 +1,341 @@
+////////////////////////////////
+//toolName:radialDeformerPaint
+//programmer:edward(long) edo(short)
+//finishTime:2010/05/18
+//toolCmd:radialDeformerPaintDisplay()
+//deleteUI radialDeformerPaintCtx;
+//artAttrTool -remove radialDeformerPaint;
+//////////////////////////////
+
+//remenmber all radialDeformerNodeName from selectedMesh
+global string $allradialDeformer[];
+
+global proc string radialDeformerPaintDisplay()
+{
+       global string $allradialDeformer[];
+	string $context = "radialDeformerPaintCtx";
+	if( ! `artAttrCtx -exists $context` ) 
+       {
+          string $tool = "radialDeformerPaint";
+          if ( ! `artAttrTool -exists $tool` ) 
+          {
+		artAttrTool -add $tool;
+	   };
+	   string $cmd = "artAttrCtx -whichTool \""+$tool+"\" "+$context;
+          rememberCtxSettings `eval( $cmd )`;
+          artAttrCtx 
+          -edit
+          -history true
+          -dragSlider "radius"
+          -opacity 1.0
+          -accopacity false
+          -radius 1.0
+          -lowerradius 0.1
+          -stampProfile "solid"
+          -brushalignment true
+          -outline true
+          -outwhilepaint true
+          -brushfeedback true
+          -showactive true
+          -paintmode "tangent"
+          -projective false
+          -reflection false
+          -reflectionaxis "x"
+          -surfaceConformedBrushVertices false
+          -tangentOutline true
+          -value 0.0
+          -minvalue -2.0 
+          -maxvalue 2.0 
+          -clamp "both"
+          -clamplower -2.0
+          -clampupper 2.0
+          -dataTypeIndex 1
+          -colorfeedback true
+          -disablelighting true
+          -colorrangelower 0.0
+          -colorrangeupper 1.0
+          -interactiveUpdate true
+          -activeListChangedProc "radialDeformerPaintToolOn()"
+          -toolOnProc "radialDeformerPaintToolOn()"
+          -toolOffProc "radialDeformerPaintToolOff()"
+          -n $context
+          $context;
+	};
+
+       string $meshs[] = `ls -sl -dag -objectsOnly -ni -type mesh`;
+       int $nummesh = size($meshs);
+       string $mesh = "";
+	string $node = "";
+       int $i=0;
+	int $radialDeformernum = 0;
+       clear($allradialDeformer);
+       for ( $i = 0; $i < $nummesh ; $i++ ) 
+       {
+		$node = $meshs[$i];
+		if (`nodeType $node`=="mesh"&&0==`getAttr ($node+".io")`) 
+              {
+			$mesh = $node;
+                     string $hiss[]=`listHistory $mesh`;
+                     string $radialDeformers[]=`ls -type "radialDeformer" $hiss`;
+                     if (size($radialDeformers)!=0)
+                     {
+                         $radialDeformernum+=size($radialDeformers);
+                         appendStringArray($allradialDeformer,$radialDeformers,size($radialDeformers));
+                         print ($mesh+" :this Is Radial Deformer Mesh,there is "+$radialDeformernum+" radialDeformerNode\n");
+                     };
+		}
+              else
+              {
+                     print ($node+" :this is not radialDeformerMesh\n");
+              };
+	};
+       print ($mesh+"\n");
+       print $allradialDeformer;
+
+       if (size($allradialDeformer)>0) 
+       {
+	    setToolTo $context;
+	    toolPropertyWindow;
+       }
+       else
+       {
+           confirmDialog -title "错误" -message "请选择带有的radialDeformer变形历史信息的物体再运行权重笔刷！"
+            -button "好的" -defaultButton "好的"
+            -cancelButton "好的" -dismissString "好的";
+       };
+
+	return( $context );
+};
+
+
+global proc	radialDeformerPaintToolOn()
+{      print "radialDeformerPaintToolOn()..........\n";
+       global string $allradialDeformer[];
+       global string $currentPaintRadialInfluence[];
+	string $meshs[] = `ls -sl -dag -objectsOnly -ni -type mesh`;
+	int $nummesh = size($meshs);
+	string $mesh = "";
+	string $node = "";
+	int $i=0;
+	int $radialDeformernum = 0;
+       clear($allradialDeformer);
+	for ( $i = 0; $i < $nummesh ; $i++ ) 
+       {
+		$node = $meshs[$i];
+		if (`nodeType $node`=="mesh"&&0==`getAttr ($node+".io")`) 
+              {
+			$mesh = $node;
+                     string $hiss[]=`listHistory $mesh`;
+                     string $radialDeformers[]=`ls -type "radialDeformer" $hiss`;
+                     if (size($radialDeformers)!=0)
+                     {
+                         $radialDeformernum+=size($radialDeformers);
+                         appendStringArray($allradialDeformer,$radialDeformers,size($radialDeformers));
+                         print ($mesh+" :this Is Radial Deformer Mesh,there is "+$radialDeformernum+" radialDeformerNode\n");
+                     };
+		}
+              else
+              {
+                     print ($node+" :this is not radialDeformerMesh\n");
+              };
+	};
+       print ($mesh+"\n");
+       print $allradialDeformer;
+	if (size($allradialDeformer)==0) 
+       {
+		print( "ERROR: radialDeformerPaint expects exactly one poly mesh have radialDeformerNode history\n" );
+		return;
+	};
+       string $currentRadialDeformer=$allradialDeformer[size($allradialDeformer)-1];
+	string $attrName ="weights";
+       print $attrName;
+       makePaintable -attrType "multiFloat" -sm "deformer" "weightGeometryFilter" $attrName;
+       artAttrPaintInstSelectAllDN( "radialDeformer",$currentRadialDeformer+"."+$attrName );
+       //添加变形节点名称到列表
+        if(`textScrollList -ex "paintAttrtextScrollList"`) 
+        {
+           textScrollList -e -ra "paintAttrtextScrollList";
+           for ($radialNode in $allradialDeformer)
+           {
+               //string $radialNode = $allradialDeformer[0];
+               textScrollList -e -a $radialNode "paintAttrtextScrollList";
+           };
+           textScrollList -e -si $currentRadialDeformer "paintAttrtextScrollList";
+          radialDeformerPaintTextListSelectCmd();
+          if (stringArrayContains($currentPaintRadialInfluence[0],$allradialDeformer))
+          {
+              textScrollList -e -si $currentPaintRadialInfluence[0] "paintAttrtextScrollList";
+              radialDeformerPaintTextListSelectCmd();
+          };
+	};
+};
+
+global proc radialDeformerPaintTextListSelectCmd()
+{
+    string $attrName ="weights";
+    string $selectTexts[]=`textScrollList -q -si "paintAttrtextScrollList"`;
+    string $paintDeformer=$selectTexts[0];
+    artAttrPaintInstSelectAllDN( "radialDeformer",$paintDeformer+"."+$attrName );
+};
+
+global proc	radialDeformerPaintProperties()
+{
+       global string $allradialDeformer[];
+	string  $currContext = `currentCtx`;
+	string  $currTool    = `contextInfo -c $currContext`;
+	setUITemplate -pushTemplate DefaultTemplate;
+	string $parent =`toolPropertyWindow -q -location`;
+	setParent $parent;
+       //deleteUI radialDeformerPaint;
+	columnLayout -adj true radialDeformerPaint;
+		columnLayout -adj true artAttrradialDeformer;
+		frameLayout -label "radialDeformer Paint Brush"
+			-collapsable true -collapse false
+			artAttrradialDeformerBrushFrame;
+			artisanCreateBrushFrame( "artAttrradialDeformerBrushFrame", $currTool );
+		setParent ..;
+
+		// Operations framelayout.
+		frameLayout -l "radialDeformer Paint Settings "
+			-collapsable true -collapse false
+			artCommonOperationFrame;
+			setUITemplate -pushTemplate OptionsTemplate;
+			setParent artCommonOperationFrame;
+			columnLayout;
+
+			// User interface definitions specific to the attribute(s) this
+			// tool is capable of painting.
+			columnLayout paintAttrColLayout;
+                            //deleteUI "radialDeformerPaintColorMenuGrp";
+                            //setParent paintAttrColLayout;
+                     rowLayout -numberOfColumns 2 -columnWidth2 130 200  -columnAlign 1 "right" "paintAttrRowLayout";
+                        columnLayout paintAttrTextColumnLayout;
+                        text -l "   paint To Which Node:" "paintAttrText";
+                        setParent ..;
+                            textScrollList -ams 0 -nr 8 -sc "radialDeformerPaintTextListSelectCmd()" -w 200 "paintAttrtextScrollList";
+                            for ($currentRadialDeformer in $allradialDeformer)
+                            {
+                                textScrollList -e -a $currentRadialDeformer "paintAttrtextScrollList";
+                            };
+                            textScrollList -e -sii 1 "paintAttrtextScrollList";
+			setParent ..;
+                     setParent ..;
+			separator -h 10 -width 1 -style "none";
+
+			artAttrCreateCommonProperties();
+
+			setParent ..;
+			setUITemplate -popTemplate;
+		setParent ..;
+
+		// Stroke options.
+		frameLayout -l "radialDeformer Paint Stroke "
+			-collapsable true -collapse true
+			artAttrradialDeformerStrokeFrame;
+
+			// Create stroke options.
+			artisanCreateStrokeFrame( "artAttrradialDeformerStrokeFrame", $currTool );
+		setParent ..;
+
+		// Stylus Pressure options.
+		frameLayout -l "radialDeformer Paint Stylus Pressure "
+			-collapsable true -collapse true
+			artAttrradialDeformerPressureFrame;
+
+			// Create stroke options.
+			artisanCreatePressureFrame( "artAttrradialDeformerPressureFrame", $currTool );
+		setParent ..;
+
+		// Attribute Maps options.
+		frameLayout -l "radialDeformer Paint Attribute Maps "
+			-collapsable true -collapse true
+			artAttrAttrMapFrame;
+
+			// Create Attribute Map option menu.
+			artisanCreateAttrMapFrame( "artAttrAttrMapFrame", $currTool );
+		setParent ..;
+
+		// Display options.
+		frameLayout -l "radialDeformer Paint Display "
+			-collapsable true -collapse true
+			artAttrradialDeformerDisplayFrame;
+
+			// Create Display options.
+			artisanCreateDisplayFrame( "artAttrradialDeformerDisplayFrame", $currTool );
+		setParent ..;
+	setParent ..;
+
+	setUITemplate -popTemplate;
+
+	// Set the callbacks and various global functions.
+	string $artCommand = "artAttrCtx";
+
+    // Basic Brush frameLayout.
+    artisanBrushCallback( $artCommand, $currTool );
+
+    // Operations layout.
+    artAttrCommonCallback( $artCommand, $currTool );
+
+    // Stroke frameLayout.
+    artisanStrokeCallback( $artCommand, $currTool );
+
+    // Pressure frameLayout.
+    artisanPressureCallback( $artCommand, $currTool );
+
+    // Attribute Maps frameLayout.
+    artisanAttrMapCallback( $artCommand, $currTool );
+
+    // Display frameLayout.
+    artisanDisplayCallback( $artCommand, $currTool );
+};
+
+global proc	radialDeformerPaintValues(string $toolName)
+{
+    //string $toolName="radialDeformerPaint";
+    source "artisanCallback.mel";
+    source "artisanValues.mel";
+    source "artAttrValues.mel";
+    string  $artCommand  = "artAttrCtx";
+    string  $currContext = `currentCtx`;
+    string  $currTool    = `contextInfo -c $currContext`;
+
+    string $parent = (`toolPropertyWindow -q -location` + "|radialDeformerPaint");
+    setParent $parent;
+
+    //Assign common tool property values.
+    string $icon = "attrPaint.xpm";		
+    //You can use a custom icon here.
+    string $helpTag = "radialDeformerPaintTool";
+    toolPropertySetCommon $toolName $icon $helpTag;
+
+    // Brush frameLayout values.
+    artisanBrushValues($artCommand,$currTool);
+    // Common Attribute Paint UI.
+    artAttrCommonValues( $artCommand, $currTool );
+
+    //Stroke frameLayout values.
+    artisanStrokeValues( $artCommand, $currTool );
+                                                                                
+    //Stylus Pressure frameLayout values.
+    artisanPressureValues( $artCommand, $currTool );
+
+    //Attribute Maps frameLayout values.
+    artisanAttrMapValues( $artCommand, $currTool );
+
+    //Display frameLayout values.
+    artisanDisplayValues( $artCommand, $currTool );
+
+    toolPropertySelect radialDeformerPaint;
+};
+
+global proc	radialDeformerPaintToolOff()
+{
+       global string $currentPaintRadialInfluence[];
+       if(`textScrollList -ex "paintAttrtextScrollList"`) 
+       {
+           $currentPaintRadialInfluence=`textScrollList -q -si "paintAttrtextScrollList"`;
+	};
+        string $attrName ="weights";
+       makePaintable -remove "deformer" $attrName;
+        textScrollList -e -ra "paintAttrtextScrollList";
+};

@@ -1,0 +1,33 @@
+
+C:\EnFuzion\Temp\.atcnode.3288.1201004a\manager.0\__run.0000007193__\__job.frame0001__>dir K: 
+
+C:\EnFuzion\Temp\.atcnode.3288.1201004a\manager.0\__run.0000007193__\__job.frame0001__>dir c: 
+ Volume in drive C has no label.
+ Volume Serial Number is 845D-6190
+
+ Directory of C:\EnFuzion\Temp\.atcnode.3288.1201004a\manager.0\__run.0000007193__\__job.frame0001__
+
+2013-09-05  16:40    <DIR>          .
+2013-09-05  16:40    <DIR>          ..
+2013-09-05  16:40                 0 stderr
+2013-09-05  16:40                 0 stdout
+               2 File(s)              0 bytes
+               2 Dir(s)  137,719,865,344 bytes free
+
+C:\EnFuzion\Temp\.atcnode.3288.1201004a\manager.0\__run.0000007193__\__job.frame0001__>dir a: 
+
+C:\EnFuzion\Temp\.atcnode.3288.1201004a\manager.0\__run.0000007193__\__job.frame0001__>dir o: 
+
+C:\EnFuzion\Temp\.atcnode.3288.1201004a\manager.0\__run.0000007193__\__job.frame0001__>dir c: 
+ Volume in drive C has no label.
+ Volume Serial Number is 845D-6190
+
+ Directory of C:\EnFuzion\Temp\.atcnode.3288.1201004a\manager.0\__run.0000007193__\__job.frame0001__
+
+2013-09-05  16:40    <DIR>          .
+2013-09-05  16:40    <DIR>          ..
+2013-09-05  16:40                 0 stderr
+2013-09-05  16:40                 0 stdout
+               2 File(s)              0 bytes
+               2 Dir(s)  137,719,865,344 bytes free
+0  

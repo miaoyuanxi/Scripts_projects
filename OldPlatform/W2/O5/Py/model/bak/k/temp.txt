@@ -1,0 +1,9 @@
+Mapping O: to \\10.30.100.101\d\inputdata5\962000\962276\O;Mapping B: to \\10.30.100.151\td01
+
+'mappings': {u'//10.99.1.2/digital/film_project': 'O:', u'O:': 'O:'},
+
+962276
+
+130009700
+
+O:/MaLiuJiaFengYun/MLJFY_03_SC01a/Render/ZZ/MLJFY_ZZ_03_sc01a/scenes/MLJFY_ZZ_03_sc01a_zhangyu_V0102.mb

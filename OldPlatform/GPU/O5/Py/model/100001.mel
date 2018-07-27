@@ -1,0 +1,2 @@
+python "import os";
+python "print 'cwd: ' + os.getcwd()";

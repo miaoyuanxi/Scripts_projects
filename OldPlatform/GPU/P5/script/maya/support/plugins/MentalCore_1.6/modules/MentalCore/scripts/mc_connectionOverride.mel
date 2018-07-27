@@ -1,0 +1,152 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc int mc_connectionOverride(string $srcNode, string $dstNodeAndAttr)
+{
+	//print $srcNode;
+	//print $dstNodeAndAttr;
+
+	string $plug = plugAttr($dstNodeAndAttr);
+	
+	string $srcType = `nodeType $srcNode`;
+	
+	string $dstNode = plugNode($dstNodeAndAttr);
+	string $dstType = `nodeType $dstNode`;
+	
+	switch($plug)
+	{
+	case "standard_bump":
+		if($srcType == "mia_roundcorners")
+			setAttr ($srcNode + ".bump_mode") 5;
+		else
+		{
+			if($srcType != "bump2d" && $srcType != "bump3d") {
+				if(isClassified( $srcNode, "texture/3d")) {
+					string $bump = `shadingNode -asUtility bump3d`;
+					defaultNavigation -ce -source $srcNode -destination ($bump + ".bumpValue");
+					
+					if ($dstType == "core_mia_material")
+						connectAttr -f ($bump + ".outNormal") $dstNodeAndAttr;
+					else
+						connectAttr -f ($bump + ".message") $dstNodeAndAttr;
+						
+					return 1;
+				}
+				else {
+					string $bump = `shadingNode -asUtility bump2d`;
+					defaultNavigation -ce -source $srcNode -destination ($bump + ".bumpValue");				
+					
+					if ($dstType == "core_mia_material")
+						connectAttr -f ($bump + ".outNormal") $dstNodeAndAttr;
+					else
+						connectAttr -f ($bump + ".message") $dstNodeAndAttr;
+						
+					return 1;
+				}			
+			}
+		}
+		break;
+		
+	case "overall_bump":		
+		if($srcType == "mia_roundcorners")
+			setAttr ($srcNode + ".bump_mode") 5;
+		else
+		{
+			if($srcType != "bump2d" && $srcType != "bump3d") {
+				if(isClassified( $srcNode, "texture/3d")) {
+					string $bump = `shadingNode -asUtility bump3d`;
+					defaultNavigation -ce -source $srcNode -destination ($bump + ".bumpValue");
+					
+					if ($dstType == "core_mia_material")
+						connectAttr -f ($bump + ".outNormal") $dstNodeAndAttr;
+					else
+						connectAttr -f ($bump + ".message") $dstNodeAndAttr;
+						
+					return 1;
+				}
+				else {
+					string $bump = `shadingNode -asUtility bump2d`;
+					defaultNavigation -ce -source $srcNode -destination ($bump + ".bumpValue");				
+					
+					if ($dstType == "core_mia_material")
+						connectAttr -f ($bump + ".outNormal") $dstNodeAndAttr;
+					else
+						connectAttr -f ($bump + ".message") $dstNodeAndAttr;
+						
+					return 1;
+				}
+			}
+		}		
+		break;
+	
+	case "normal_map":		
+		if($srcType != "bump2d" && $srcType != "bump3d" && $srcType != "core_normalmap") {
+			string $nm = `shadingNode -asUtility core_normalmap`;
+			defaultNavigation -ce -source $srcNode -destination ($nm + ".normal_map");				
+			connectAttr -f ($nm + ".message") $dstNodeAndAttr;
+			return 1;			
+		}
+		break;
+		
+	case "bump_map":
+		if($srcType == "mia_roundcorners")
+			setAttr ($srcNode + ".bump_mode") 5;
+		else
+		{
+			if($srcType != "bump2d" && $srcType != "bump3d") {
+				if(isClassified( $srcNode, "texture/3d")) {
+					string $bump = `shadingNode -asUtility bump3d`;
+					defaultNavigation -ce -source $srcNode -destination ($bump + ".bumpValue");
+					
+					if ($dstType == "core_mia_material")
+						connectAttr -f ($bump + ".outNormal") $dstNodeAndAttr;
+					else
+						connectAttr -f ($bump + ".message") $dstNodeAndAttr;
+						
+					return 1;
+				}
+				else {
+					string $bump = `shadingNode -asUtility bump2d`;
+					defaultNavigation -ce -source $srcNode -destination ($bump + ".bumpValue");				
+					
+					if ($dstType == "core_mia_material")
+						connectAttr -f ($bump + ".outNormal") $dstNodeAndAttr;
+					else
+						connectAttr -f ($bump + ".message") $dstNodeAndAttr;
+						
+					return 1;
+				}			
+			}
+		}
+		break;
+		
+	case "subsurface":
+		string $SGs[] = `listConnections -d 1 -s 0 -type "shadingEngine" $srcNode`;
+		
+		if(`objExists $SGs[0]`)
+		{
+			string $lightmapA[] = `listConnections -type "misss_fast_lmap_maya" $SGs[0]`;
+			string $lightmapB[] = `listConnections -type "core_fast_lmap" $SGs[0]`;
+			string $lightmap[] = stringArrayCatenate($lightmapA, $lightmapB);
+			
+			if(`objExists $lightmap[0]`)
+			{
+				string $dstNode = plugNode($dstNodeAndAttr);
+				string $DestSGs[] = `listConnections -d 1 -s 0 -type "shadingEngine" $dstNode`;
+				if(`objExists $DestSGs[0]`)
+				{
+					connectAttr -f ($lightmap[0] + ".message") ($DestSGs[0] + ".miLightMapShader");
+					if(`objExists ($srcNode + ".output_sss_only")`)
+						setAttr ($srcNode + ".output_sss_only") 1;
+					return 0;
+				}
+			}
+		}
+		break;
+	}
+	
+	return 0;
+}
+

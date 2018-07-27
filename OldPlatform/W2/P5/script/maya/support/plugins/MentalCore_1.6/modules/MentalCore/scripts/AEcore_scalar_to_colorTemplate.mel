@@ -1,0 +1,27 @@
+//  Copyright (c)2012 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_scalar_to_colorTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_scalar_to_color_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -addControl "colorR";
+			editorTemplate -addControl "colorG";
+			editorTemplate -addControl "colorB";
+			editorTemplate -addControl "colorA";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -addControl "clamp_black";
+			editorTemplate -addControl "clamp_white";
+			editorTemplate -addControl "alpha_is_luminance";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

@@ -1,0 +1,116 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+source "AEMentalCoreUIRes.mel";
+
+global proc AEmisssSimpleMayaBumpNew(string $attr) {
+	attrNavigationControlGrp 
+		-label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kBump", "kmisssFastSimpMayaTempBump"))
+		-attribute $attr
+		bumpControl;
+	AEmisssSimpleMayaBumpReplace($attr);
+}
+
+global proc AEmisssSimpleMayaBumpReplace(string $attr) {
+	attrNavigationControlGrp -edit
+		-attribute $attr
+		bumpControl;
+	scriptJob -replacePrevious
+		-parent bumpControl
+		-connectionChange $attr 
+		("checkMisssSimpleBumpConnection " + $attr);
+}
+
+global proc checkMisssSimpleBumpConnection(string $attr) {
+	// on disconnect, random values populate the attr, but it needs
+	// to be set to 0,0,0 if no bump node is connected
+	if (!`connectionInfo -id $attr`) {
+		setAttr $attr 0 0 0;
+	}
+}
+
+global proc AEmisssSimpleMayaNew(string $map) {
+	string $mapControl 	= `attrNavigationControlGrp -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kLightmap2", "kLightmap2")) -createNew ("createAndAssignLightMap " +$map) -attribute $map "mapControl"`;
+}
+
+global proc AEmisssSimpleMayaReplace(string $map) {
+	string $mapControl 	= `attrNavigationControlGrp -e -attribute $map -createNew ("createAndAssignLightMap " +$map) "mapControl"`;
+}
+
+
+// MAIN TEMPLATE
+//
+global proc AEcore_simple_sss2Template (string $nodeName)
+{
+	AECommonStrings();						// Define common strings
+
+	AEMentalCoreLogo("mc_core_simple_sss_logo.png");
+	
+	AEswatchDisplay $nodeName;   
+	editorTemplate -beginScrollLayout;
+	      		
+	//Optical properties	
+	editorTemplate -beginLayout "Optical Properties" -collapse 0;
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kOverallColor", "kOverallColor"))
+		-addControl "overall_color";
+	editorTemplate -as;
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kFrontSSSColor", "kmisssFastSimpMayaTempFrontSSSColor"))
+		-addControl "front_sss_color";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kFrontSSSWeight", "kmisssFastSimpMayaTempFrontSSSWeight"))
+		-addControl "front_sss_weight";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kFrontSSSRadius", "kmisssFastSimpMayaTempFrontSSSRad")) 
+		-addControl "front_sss_radius";
+	editorTemplate -label "Front SSS Radius Mod" 
+		-addControl "front_sss_radius_mod";
+			
+	editorTemplate -as;
+			
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kBackSSSColor", "kmisssFastSimpMayaTempBackSSSColor")) 
+		-addControl "back_sss_color";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kBackSSSWeight", "kmisssFastSimpMayaTempBackSSSWeight")) 
+		-addControl "back_sss_weight";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kBackSSSRadius", "kmisssFastSimpMayaTempBackSSSrad")) 
+		-addControl "back_sss_radius";
+	editorTemplate -label "Back SSS Radius Mod" 
+		-addControl "back_sss_radius_mod";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kBackSSSDepth", "kmisssFastSimpMayaTempBackSSSDepth"))
+		-addControl "back_sss_depth";
+
+	editorTemplate -endLayout;
+			
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kBumpShader", "kBumpShader")) -collapse 1;
+	editorTemplate -callCustom "AEmisssSimpleMayaBumpNew" "AEmisssSimpleMayaBumpReplace" "normalCamera";
+	editorTemplate -endLayout;
+					
+	// Data
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kLightmap", "kmisssFastSimpMayaTempLightmap")) -collapse 1;
+	editorTemplate -callCustom "AEmisssSimpleMayaNew" "AEmisssSimpleMayaReplace" "lightmap";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kSamples", "kmisssFastSimpMayaTempSamples")) -addControl "samples";
+	editorTemplate -endLayout;
+
+	// Algorithm control
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kAlgorithmControl", "kmisssFastSimpMayaTempAlgoControl")) -collapse 1;
+
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_simple_mayaTemplate.kScaleConversion", "kmisssFastSimpMayaTempScaleConverse"))
+		-addControl "scale_conversion";
+	editorTemplate -label "Sampling Radius Multiplier"
+		-addControl "sampling_radius_mult";
+
+	editorTemplate -endLayout;
+	
+	// colour management
+	editorTemplate -beginLayout "Colour Management" -collapse 1;
+	editorTemplate -label "Overall Colour" -addControl "cm_overall_color";
+	editorTemplate -label "Front SSS Colour" -addControl "cm_front_sss_color";
+	editorTemplate -label "Front SSS Radius Mod" -addControl "cm_front_sss_radius_mod";
+	editorTemplate -label "Back SSS Colour" -addControl "cm_back_sss_color";
+	editorTemplate -label "Back SSS Radius Mod" -addControl "cm_back_sss_radius_mod";
+	editorTemplate -endLayout;
+	
+	AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout; 
+}

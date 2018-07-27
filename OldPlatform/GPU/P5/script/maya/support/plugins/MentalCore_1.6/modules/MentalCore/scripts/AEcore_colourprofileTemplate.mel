@@ -1,0 +1,22 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_colourprofileTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_colourprofile_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Properties" -collapse 0;
+			editorTemplate -label "Enable" -addControl "enable";
+			editorTemplate -label "Colour Profile" -addControl "colprofile";
+			editorTemplate -label "Input" -addControl "input";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

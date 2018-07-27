@@ -1,0 +1,1 @@
+c:\\fcopy\\FastCopy.exe /cmd=diff /speed=full /force_close  /no_confirm_stop /force_start \\10.50.1.3\pool\plugins\*.*  /to=c:\PLUGINS\

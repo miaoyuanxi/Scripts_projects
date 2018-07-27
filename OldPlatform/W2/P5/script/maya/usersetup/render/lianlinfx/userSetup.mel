@@ -1,0 +1,13 @@
+dirmap -en true;
+
+dirmap -m "//sds/render" "//10.50.24.10/d/inputdata5/120000/120268/o";
+dirmap -m "//win-pc0tqist13z/f" "//10.50.24.10/d/inputdata5/120000/120268/z";
+
+dirmap -m "c:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/c";
+dirmap -m "C:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/c";
+dirmap -m "d:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/d";
+dirmap -m "D:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/d";
+dirmap -m "e:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/e";
+dirmap -m "E:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/e";
+dirmap -m "f:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/f";
+dirmap -m "F:" "//10.50.24.10/d/inputdata5/120000/120268/uploads/f";

@@ -1,0 +1,170 @@
+﻿<xml>
+
+<max name="3ds Max 2014">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.40.04</item>
+		<item>vray2.40.03</item>
+		<item>vray2.30.01</item>
+		
+	</vray>
+	
+	<multiscatter>
+		<item>选择multiscatter</item>
+	</multiscatter>
+
+</max>
+
+<max name="3ds Max 2013">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.40.04</item>
+		<item>vray2.40.03</item>
+		<item>vray2.30.01</item>
+		
+	</vray>
+	
+	<multiscatter>
+		<item>选择multiscatter</item>
+		<item>multiscatter1.2.03</item>
+		<item>multiscatter1.1.09d</item>
+		<item>multiscatter1.1.09c</item>
+	</multiscatter>
+
+</max>
+
+
+<max name="3ds Max 2012">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.40.03</item>
+		<item>vray2.30.01</item>
+		<item>vray2.20.03</item>
+		<item>vray2.20.02</item>
+		<item>vray2.10.01</item>
+		<item>vray2.00.03</item>
+	</vray>
+	<multiscatter>
+		<item>选择multiscatter</item>
+		<item>multiscatter1.2.03</item>
+		<item>multiscatter1.1.09d</item>
+		<item>multiscatter1.1.09c</item>
+		<item>multiscatter1.1.09</item>
+		<item>multiscatter1.1.08b</item>
+		<item>multiscatter1.1.07a</item>
+	</multiscatter>
+
+</max>
+
+
+<max name="3ds Max 2011">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.40.03</item>
+		<item>vray2.20.03</item>
+		<item>vray2.20.02</item>
+		<item>vray2.10.01</item>
+		<item>vray2.00.02</item>
+		<item>vray2.00.01</item>
+		<item>vray1.50.sp5</item>
+	</vray>
+	<multiscatter>
+		<item>选择multiscatter</item>
+		<item>multiscatter1.2.03</item>
+		<item>multiscatter1.1.09d</item>
+		<item>multiscatter1.1.09c</item>
+		<item>multiscatter1.1.09</item>
+		<item>multiscatter1.1.08b</item>
+		<item>multiscatter1.1.07a</item>
+		<item>multiscatter1.1.05a</item>
+		<item>multiscatter1.1.05</item>
+		<item>multiscatter1.0.18a</item>
+	</multiscatter>
+
+</max>
+
+<max name="3ds Max 2010">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.40.03</item>
+		<item>vray2.20.02</item>
+		<item>vray2.10.01</item>
+		<item>vray2.00.02</item>		
+		<item>vray1.50.sp5</item>
+		<item>vray1.50.sp4</item>
+	</vray>
+	<multiscatter>		
+		<item>选择multiscatter</item>
+		<item>multiscatter1.1.09d</item>
+		<item>multiscatter1.1.09c</item>
+		<item>multiscatter1.1.09</item>
+		<item>multiscatter1.1.08b</item>
+		<item>multiscatter1.1.07a</item>
+		<item>multiscatter1.1.05a</item>
+		<item>multiscatter1.1.05</item>
+		<item>multiscatter1.0.18a</item>
+	</multiscatter>
+
+</max>
+
+
+<max name="3ds Max 2009">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.40.03</item>		
+		<item>vray2.20.02</item>
+		<item>vray2.10.01</item>
+		<item>vray2.00.02</item>
+		<item>vray1.50.sp5</item>
+		<item>vray1.50.sp4</item>
+		<item>vray1.50.sp2</item>
+	</vray>
+	<multiscatter>
+		<item>选择multiscatter</item>
+		<item>multiscatter1.1.09d</item>
+		<item>multiscatter1.1.09c</item>
+		<item>multiscatter1.1.09</item>
+		<item>multiscatter1.1.08b</item>
+		<item>multiscatter1.1.07a</item>
+		<item>multiscatter1.1.05a</item>
+		<item>multiscatter1.1.05</item>
+		<item>multiscatter1.0.18a</item>		
+	</multiscatter>
+
+</max>
+
+<max name="3ds Max 2008">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.10.01</item>
+		<item>vray2.00.02</item>
+		<item>vray1.50.17</item>
+	</vray>
+	<multiscatter>
+		<item>选择multiscatter</item>
+		<item>multiscatter1.1.09c</item>
+		<item>multiscatter1.1.09</item>		
+		<item>multiscatter1.1.05</item>
+		<item>multiscatter1.0.18a</item>	
+	</multiscatter>
+
+</max>
+
+
+<max name="3ds Max 9">
+	<vray>
+		<item>选择Vray</item>
+		<item>vray2.10.01</item>
+		<item>vray2.00.02</item>
+		<item>vray1.50.sp1</item>
+		<item>vray1.50.17</item>
+		<item>vray1.5_rc3</item>
+	</vray>
+	<multiscatter>
+		<item>选择multiscatter</item>
+	</multiscatter>
+
+</max>
+
+
+</xml>

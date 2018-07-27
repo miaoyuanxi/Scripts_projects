@@ -1,0 +1,398 @@
+////////////////////////////////
+//toolName:radialSkinDeformerPaint
+//programmer:edward(long) edo(short)
+//finishTime:2010/05/18
+//toolCmd:radialSkinDeformerPaintDisplay()
+//deleteUI radialSkinDeformerPaintCtx;
+//artAttrTool -remove radialSkinDeformerPaint;
+//cmdOrder:
+//1:radialSkinDeformerPaintDisplay();
+//2:radialSkinDeformerPaintToolOn();
+//3:radialSkinDeformerPaintProperties();
+//4:radialSkinDeformerPaintValues();
+//5:radialSkinDeformerPaintToolOff();
+//////////////////////////////
+
+//remenmber all radialDeformerNodeName from selectedMesh
+global string $allradialSkinDeformer[];
+global string $handles[];
+global string $currentSelectPaintInfluence[];
+global proc string radialSkinDeformerPaintDisplay()
+{
+       global string $allradialSkinDeformer[];
+	string $context = "radialSkinDeformerPaintCtx";
+	if( ! `artAttrCtx -exists $context` ) 
+       {
+          string $tool = "radialSkinDeformerPaint";
+          if ( ! `artAttrTool -exists $tool` ) 
+          {
+		artAttrTool -add $tool;
+	   };
+	   string $cmd = "artAttrCtx -whichTool \""+$tool+"\" "+$context;
+          rememberCtxSettings `eval( $cmd )`;
+          artAttrCtx 
+          -edit
+          -history true
+          -dragSlider "radius"
+          -opacity 1.0
+          -accopacity false
+          -radius 1.0
+          -lowerradius 0.1
+          -stampProfile "solid"
+          -brushalignment true
+          -outline true
+          -outwhilepaint true
+          -brushfeedback true
+          -showactive true
+          -paintmode "tangent"
+          -projective false
+          -reflection false
+          -reflectionaxis "x"
+          -surfaceConformedBrushVertices false
+          -tangentOutline true
+          -value 0.0
+          -minvalue -2.0 
+          -maxvalue 2.0 
+          -clamp "both"
+          -clamplower -2.0
+          -clampupper 2.0
+          -dataTypeIndex 1
+          -colorfeedback true
+          -disablelighting true
+          -colorrangelower 0.0
+          -colorrangeupper 1.0
+          -interactiveUpdate true
+          -activeListChangedProc "radialSkinDeformerPaintToolOn()"
+          -toolOnProc "radialSkinDeformerPaintToolOn()"
+          -toolOffProc "radialSkinDeformerPaintToolOff()"
+          -n $context
+          $context;
+	};
+
+       string $meshs[] = `ls -sl -dag -objectsOnly -ni -type mesh`;
+	int $nummesh = size($meshs);
+	string $mesh = "";
+	string $node = "";
+	int $i=0;
+	int $radialSkinDeformernum = 0;
+        clear($allradialSkinDeformer);
+	for ( $i = 0; $i < $nummesh ; $i++ ) 
+       {
+		$node = $meshs[$i];
+		if (`nodeType $node`=="mesh"&&0==`getAttr ($node+".io")`) 
+              {
+			$mesh = $node;
+                     string $hiss[]=`listHistory $mesh`;
+                     string $radialSkinDeformers[]=`ls -type "radialSkinDeformer" $hiss`;
+                     if (size($radialSkinDeformers)!=0)
+                     {
+                         $radialSkinDeformernum+=size($radialSkinDeformers);
+                         appendStringArray($allradialSkinDeformer,$radialSkinDeformers,size($radialSkinDeformers));
+                         print ($mesh+" :this Is Radial Deformer Mesh,there is "+$radialSkinDeformernum+" radialSkinDeformerNode\n");
+                     };
+		}
+              else
+              {
+                     print ($node+" :this is not radialDeformerMesh\n");
+              };
+	};
+        print ($mesh+"\n");
+        print $allradialSkinDeformer;
+	if (size($allradialSkinDeformer)>0) 
+       {
+	    setToolTo $context;
+	    toolPropertyWindow;
+	}
+        else
+        {
+            confirmDialog -title "错误" -message "请选择带有的radialSkinDeformer变形历史的物体再运新笔刷！"
+              -button "好的" -defaultButton "好的"
+              -cancelButton "好的" -dismissString "好的";
+        };
+
+	return( $context );
+};
+
+
+global proc	radialSkinDeformerPaintToolOn()
+{      print "radialSkinDeformerPaintToolOn()..........\n";
+       global string $allradialSkinDeformer[];
+       global string $handles[];
+      global string $currentSelectPaintInfluence[];
+	string $meshs[] = `ls -sl -dag -objectsOnly -ni -type mesh`;
+	int $nummesh = size($meshs);
+	string $mesh = "";
+	string $node = "";
+	int $i=0;
+	int $radialSkinDeformernum = 0;
+       clear($allradialSkinDeformer);
+	for ( $i = 0; $i < $nummesh ; $i++ ) 
+       {
+		$node = $meshs[$i];
+		if (`nodeType $node`=="mesh"&&0==`getAttr ($node+".io")`) 
+              {
+			$mesh = $node;
+                     string $hiss[]=`listHistory $mesh`;
+                     string $radialSkinDeformers[]=`ls -type "radialSkinDeformer" $hiss`;
+                     if (size($radialSkinDeformers)!=0)
+                     {
+                         $radialSkinDeformernum+=size($radialSkinDeformers);
+                         appendStringArray($allradialSkinDeformer,$radialSkinDeformers,size($radialSkinDeformers));
+                         print ($mesh+" :this Is Radial Deformer Mesh,there is "+$radialSkinDeformernum+" radialSkinDeformerNode\n");
+                     };
+		}
+              else
+              {
+                     print ($node+" :this is not radialDeformerMesh\n");
+              };
+	};
+       print ($mesh+"\n");
+       print $allradialSkinDeformer;
+	if (size($allradialSkinDeformer)==0) 
+       {
+	    print( "ERROR: radialDeformerPaint expects exactly one poly mesh have radialDeformerNode history\n" );
+	    return;
+	};
+       string $currentRadialSkinDeformer=$allradialSkinDeformer[size($allradialSkinDeformer)-1];
+       //获取变型期的影响体
+       clear($handles);
+       string $connects[]=`listConnections -s 1 -sh 1 -type "radialSkinDeformerHandle" $currentRadialSkinDeformer`;
+       for ($connect in $connects)
+       {
+           //$connect = $connects[0];
+           if (!stringArrayContains($connect,$handles))
+           {
+               $handles[size($handles)]=$connect;
+           };
+       };
+       print $handles;
+
+      string $attrName ="paintRadialWeight";
+       if (`radioCollection -q -ex "paintTypeOfWeightCollection"`)
+       {
+           $attrName=`radioCollection -q -select "paintTypeOfWeightCollection"`;
+       };
+       print $attrName;
+       makePaintable -attrType "doubleArray" "radialSkinDeformer" "paintRadialWeight";
+       makePaintable -attrType "doubleArray" "radialSkinDeformer" "paintNormalWeight";
+       artAttrPaintInstSelectAllDN( "radialSkinDeformer",$currentRadialSkinDeformer+"."+$attrName );
+       //添加变形节点名称到列表
+        if(`textScrollList -ex "paintAttrtextScrollList"`) 
+        {
+           textScrollList -e -ra "paintAttrtextScrollList";
+           for ($handle in $handles)
+           {
+               //string $handle = $handles[0];
+               textScrollList -e -a $handle "paintAttrtextScrollList";
+           };
+           textScrollList -e -si $handles[0] "paintAttrtextScrollList";
+           radialSkinDeformerPaintTextListSelectCmd();
+         if (stringArrayContains($currentSelectPaintInfluence[0], $handles))
+         {
+             textScrollList -e -si $currentSelectPaintInfluence[0] "paintAttrtextScrollList";
+             radialSkinDeformerPaintTextListSelectCmd();
+         };
+	};
+};
+
+global proc radialSkinDeformerPaintTextListSelectCmd()
+{
+    print "radialSkinDeformerPaintTextListSelectCmd()...\n";
+    global string $allradialSkinDeformer[];
+    string $selectTexts[]=`textScrollList -q -si "paintAttrtextScrollList"`;
+    string $paintDeformer=$selectTexts[0];
+    string $sourse[]=`listConnections -s 1 - p 1 ($allradialSkinDeformer[size($allradialSkinDeformer)-1]+".paintTrans")`;
+    if (size($sourse)>0)
+    {
+        disconnectAttr $sourse[0] ($allradialSkinDeformer[size($allradialSkinDeformer)-1]+".paintTrans");
+    };
+    connectAttr -f ($paintDeformer+".message") ($allradialSkinDeformer[size($allradialSkinDeformer)-1]+".paintTrans");
+};
+
+global proc radialSkinDeformerPaintRadioCollectionSelectCmd()
+{
+    print "radialSkinDeformerPaintRadioCollectionSelectCmd()...\n";
+    global string $allradialSkinDeformer[];
+    string $attrName=`radioCollection -q -select "paintTypeOfWeightCollection"`;
+    string $paintRadialSkinDeformer=$allradialSkinDeformer[size($allradialSkinDeformer)-1];
+    artAttrPaintInstSelectAllDN( "radialSkinDeformer",$paintRadialSkinDeformer+"."+$attrName );
+};
+
+global proc radialSkinDeformerPaintProperties()
+{
+       global string $allradialSkinDeformer[];
+       global string $handles[];
+	string  $currContext = `currentCtx`;
+	string  $currTool    = `contextInfo -c $currContext`;
+	setUITemplate -pushTemplate DefaultTemplate;
+	string $parent =`toolPropertyWindow -q -location`;
+	setParent $parent;
+       //deleteUI radialSkinDeformerPaint;
+	columnLayout -adj true radialSkinDeformerPaint;
+		columnLayout -adj true artAttrradialSkinDeformer;
+		frameLayout -label "radialSkinDeformer Paint Brush"
+			-collapsable true -collapse false
+			artAttrradialSkinDeformerBrushFrame;
+			artisanCreateBrushFrame( "artAttrradialSkinDeformerBrushFrame", $currTool );
+		setParent ..;
+
+		// Operations framelayout.
+		frameLayout -l "radialSkinDeformer Paint Settings "
+			-collapsable true -collapse false
+			artCommonOperationFrame;
+			setUITemplate -pushTemplate OptionsTemplate;
+			setParent artCommonOperationFrame;
+			columnLayout;
+
+			// User interface definitions specific to the attribute(s) this
+			// tool is capable of painting.
+			columnLayout paintAttrColLayout;
+                            //deleteUI "radialDeformerPaintColorMenuGrp";
+                            //setParent paintAttrColLayout;
+                     columnLayout paintWeightTypeLayout;
+                     text -l "    paint To Which type of Weight  [raidal or normal]:" "paintAttrText0";
+                separator -h 5 -width 1 -style "none";
+                  rowLayout -numberOfColumns 3 -columnWidth3 80 100 100  -columnAlign 1 "center" "paintTypeOfWeightRowLayout";
+                text -l "which One : " "paintAttrText1";
+                  string $paintTypeOfWeightCollection = `radioCollection "paintTypeOfWeightCollection"`;
+                  radioButton -label "radialWeight" -cc "radialSkinDeformerPaintRadioCollectionSelectCmd" "paintRadialWeight";
+                  radioButton -label "normalWeight" -cc "radialSkinDeformerPaintRadioCollectionSelectCmd" "paintNormalWeight";
+                radioCollection -edit -select "paintRadialWeight" "paintTypeOfWeightCollection";
+                  setParent ..;
+                  separator -h 20 -width 1 -style "none";
+                     setParent ..;
+                     rowLayout -numberOfColumns 2 -columnWidth2 130 200  -columnAlign 1 "right" "paintAttrRowLayout";
+                        columnLayout paintAttrTextColumnLayout;
+                                                
+
+                        text -l "   paint To Which Influence:" "paintAttrText2";
+                        setParent ..;
+                            textScrollList -ams 0 -nr 8 -sc "radialSkinDeformerPaintTextListSelectCmd()" -w 200 "paintAttrtextScrollList";
+                            for ($handle in $handles)
+                            {
+                                textScrollList -e -a $handle "paintAttrtextScrollList";
+                            };
+                            textScrollList -e -sii 1 "paintAttrtextScrollList";
+			setParent ..;
+                     setParent ..;
+			separator -h 10 -width 1 -style "none";
+
+			artAttrCreateCommonProperties();
+
+			setParent ..;
+			setUITemplate -popTemplate;
+		setParent ..;
+
+		// Stroke options.
+		frameLayout -l "radialSkinDeformer Paint Stroke "
+			-collapsable true -collapse true
+			artAttrradialSkinDeformerStrokeFrame;
+
+			// Create stroke options.
+			artisanCreateStrokeFrame( "artAttrradialSkinDeformerStrokeFrame", $currTool );
+		setParent ..;
+
+		// Stylus Pressure options.
+		frameLayout -l "radialSkinDeformer Paint Stylus Pressure "
+			-collapsable true -collapse true
+			artAttrradialSkinDeformerPressureFrame;
+
+			// Create stroke options.
+			artisanCreatePressureFrame( "artAttrradialSkinDeformerPressureFrame", $currTool );
+		setParent ..;
+
+		// Attribute Maps options.
+		frameLayout -l "radialSkinDeformer Paint Attribute Maps "
+			-collapsable true -collapse true
+			artAttrAttrMapFrame;
+
+			// Create Attribute Map option menu.
+			artisanCreateAttrMapFrame( "artAttrAttrMapFrame", $currTool );
+		setParent ..;
+
+		// Display options.
+		frameLayout -l "radialSkinDeformer Paint Display "
+			-collapsable true -collapse true
+			artAttrradialSkinDeformerDisplayFrame;
+
+			// Create Display options.
+			artisanCreateDisplayFrame( "artAttrradialSkinDeformerDisplayFrame", $currTool );
+		setParent ..;
+	setParent ..;
+
+	setUITemplate -popTemplate;
+
+	// Set the callbacks and various global functions.
+	string $artCommand = "artAttrCtx";
+
+    // Basic Brush frameLayout.
+    artisanBrushCallback( $artCommand, $currTool );
+
+    // Operations layout.
+    artAttrCommonCallback( $artCommand, $currTool );
+
+    // Stroke frameLayout.
+    artisanStrokeCallback( $artCommand, $currTool );
+
+    // Pressure frameLayout.
+    artisanPressureCallback( $artCommand, $currTool );
+
+    // Attribute Maps frameLayout.
+    artisanAttrMapCallback( $artCommand, $currTool );
+
+    // Display frameLayout.
+    artisanDisplayCallback( $artCommand, $currTool );
+};
+
+global proc radialSkinDeformerPaintValues(string $toolName)
+{
+    //string $toolName="radialSkinDeformerPaint";
+    source "artisanCallback.mel";
+    source "artisanValues.mel";
+    source "artAttrValues.mel";
+    string  $artCommand  = "artAttrCtx";
+    string  $currContext = `currentCtx`;
+    string  $currTool    = `contextInfo -c $currContext`;
+
+    string $parent = (`toolPropertyWindow -q -location` + "|radialSkinDeformerPaint");
+    setParent $parent;
+
+    //Assign common tool property values.
+    string $icon = "attrPaint.xpm";		
+    //You can use a custom icon here.
+    string $helpTag = "radialSkinDeformerPaintTool";
+    toolPropertySetCommon $toolName $icon $helpTag;
+
+    // Brush frameLayout values.
+    artisanBrushValues($artCommand,$currTool);
+    // Common Attribute Paint UI.
+    artAttrCommonValues( $artCommand, $currTool );
+
+    //Stroke frameLayout values.
+    artisanStrokeValues( $artCommand, $currTool );
+                                                                                
+    //Stylus Pressure frameLayout values.
+    artisanPressureValues( $artCommand, $currTool );
+
+    //Attribute Maps frameLayout values.
+    artisanAttrMapValues( $artCommand, $currTool );
+
+    //Display frameLayout values.
+    artisanDisplayValues( $artCommand, $currTool );
+
+    toolPropertySelect radialSkinDeformerPaint;
+};
+
+global proc	radialSkinDeformerPaintToolOff()
+{
+     global string $currentSelectPaintInfluence[];
+     if(`textScrollList -ex "paintAttrtextScrollList"`) 
+     {
+         $currentSelectPaintInfluence=`textScrollList -q -si "paintAttrtextScrollList"`;
+         print $currentSelectPaintInfluence;
+     };
+      makePaintable -remove "radialSkinDeformer" "paintRadialWeight";
+      makePaintable -remove "radialSkinDeformer" "paintNormalWeight";
+      textScrollList -e -ra "paintAttrtextScrollList";
+};
+

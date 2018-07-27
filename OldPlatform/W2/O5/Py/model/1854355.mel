@@ -1,0 +1,18 @@
+print "prerender start";
+delete `ls -type unknown`;
+setAttr "mentalrayGlobals.optimizeAnimateDetection" 0;
+//addAttr -ln miAnimated -at bool YLJM_S00401Sea_mo;
+//addAttr -ln miAnimated -at bool YLJM_Cam:nurbsCircle1;
+//addAttr -ln miAnimated -at bool YLJM_004_001_fx_PosiRender_c002:ShiTou_WanZheng;
+//delete "YLJM_004_001_fx_PosiRender_c002:ShiTou_posui";
+string $filemaya[] = `ls -type "file"`;
+int $filemaya_size = size($filemaya);
+
+if($filemaya_size >0){
+    
+    for($ii in $filemaya){
+        
+        setAttr ($ii+".useCache") 0;
+    }
+}
+print "prerender end";

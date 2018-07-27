@@ -1,0 +1,64 @@
+{
+    "system_info": {
+        "common": {
+            "user_id": "100002", 
+            "zone": "1", 
+            "config_path": "//10.60.100.104/new_render_data/input/p/config/100000/100002/111/cfg", 
+            "output_user_path": "//10.60.100.104/new_render_data/output/d/render_data/100000/100002/111_c4d", 
+            "userId": 100002, 
+            "temp_path": "//10.60.100.102/d/temp/111", 
+            "tiles_path": "", 
+            "platform": "2", 
+            "input_user_path": "//10.60.100.104/new_render_data/input/d/render_data/100000/100002", 
+            "taskId": "111", 
+            "input_project_path": "//10.60.100.104/new_render_data/input/d/render_data/100000/100002/F", 
+            "input_cg_file": "//10.60.100.104/new_render_data/input/d/render_data/100000/100002/F/R18_test.c4d", 
+            "plugin_path": "//10.60.100.151//td", 
+            "channel": "1", 
+            "small_Path": "//10.60.100.104/new_render_data/input/d/small_pic/100000/100002/111"
+        }, 
+        "mnt_map": {
+            "F:": "//10.60.100.104/new_render_data/input/d/render_data/100000/100002/F", 
+            "B:": "//10.60.100.151/td"
+        }
+    }, 
+    "miscellaneous": {
+        "sub_from": "web", 
+        "render_type": "cpu"
+    }, 
+    "software_config": {
+        "cg_version": "R18", 
+        "cg_name": "CINEMA 4D", 
+        "plugins": {
+            "vray": "3.4"
+        }
+    }, 
+    "scene_info": {
+        "common": {
+            "render_format": {
+                "regular_image_format": "TIFF(PSD Layers)", 
+                "multi-pass_format": "Photoshop(PSD)"
+            }, 
+            "save_options": {
+                "save_click": 1, 
+                "saveimage_path": ""
+            }, 
+            "all_camera": [], 
+            "multi_pass": {}, 
+            "render_frame": {
+                "frame_rate": 30, 
+                "end_frame": 0, 
+                "start_frame": 0, 
+                "fps": 30
+            }, 
+            "image_size": {
+                "width": 800, 
+                "height": 600
+            }
+        }
+    }, 
+    "scene_info_render": {
+        "renderer": {}, 
+        "common": {}
+    }
+}

@@ -1,0 +1,51 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc abcimport_browse(string $attr)
+{
+    string $proj_dir = `workspace -q -rd`;
+    string $ac_dir = `workspace -q -fileRuleEntry "alembicCache"`;
+    $ac_dir = ($proj_dir + $ac_dir + "/");
+
+    string $result[] = `fileDialog2 -fileFilter "Alembic Files (*.abc)" -dialogStyle 2 -cap "Select Alembic Files" -fm 1 -dir $ac_dir`;
+    
+    if ($result[0] != "")
+    {
+        string $file = $result[0];
+        $file = `substitute "\\\\" $file "/"`;
+        $file = `substitute $proj_dir $file ($proj_dir + "/")`;
+        setAttr -type "string" $attr $file;
+    }
+}
+		
+global proc AEabcimport_filenameNew(string $attr) {
+	rowLayout -nc 2 -adj 1 -cw2 200 25;
+    textFieldGrp -label "Alembic Filename" -adj 2 "abcimport_filename";
+    iconTextButton -w 25 -image "fileOpen.png" -c ("abcimport_browse " + $attr) "abcimport_filename_open";
+    connectControl -index 2 "abcimport_filename" $attr;
+}
+
+global proc AEabcimport_filenameReplace(string $attr) {
+	iconTextButton -e -c ("abcimport_browse " + $attr) "abcimport_filename_open";
+	connectControl -index 2 "abcimport_filename" $attr;
+}
+
+global proc AEabcimportTemplate( string $nodeName )
+{	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Alembic File" -collapse 0;
+			editorTemplate -callCustom "AEabcimport_filenameNew" "AEabcimport_filenameReplace" "filename";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -label "Create Assembly" -addControl "assembly";
+			editorTemplate -label "Time" -addControl "time";
+			editorTemplate -label "Geometry Path" -addControl "select";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

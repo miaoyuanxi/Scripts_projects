@@ -1,0 +1,15 @@
+//  Copyright (c)2013 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc string MC_UIRes(string $oldStyle, string $newStyle) {		
+	$ver = int(`about -f`);
+	
+	if ($ver >= 2014) {
+	    return getPluginResource("Mayatomr", $newStyle);
+	}
+	else {
+	    return uiRes($oldStyle);
+	}
+}

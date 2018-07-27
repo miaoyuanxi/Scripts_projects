@@ -1,0 +1,5 @@
+//pgYetiPreRender; pgYetiVRayPreRender;
+if (`attributeExists "srdml" "vraySettings"`)
+{
+	setAttr "vraySettings.srdml" 16000;
+}

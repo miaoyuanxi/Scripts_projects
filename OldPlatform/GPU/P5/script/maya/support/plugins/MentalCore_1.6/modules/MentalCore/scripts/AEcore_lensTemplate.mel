@@ -1,0 +1,46 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_lensTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_lens_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Lens" -collapse 0;
+			editorTemplate -label "Lens Type" -addControl "lens";
+			editorTemplate -label "Fish Eye Distortion" -addControl "fe_distortion";
+			editorTemplate -label "Fish Eye Mask" -addControl "fe_mask";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Background/Overlay" -collapse 0;
+			editorTemplate -label "Colour Profile" -addControl "bg_colprofile";
+			editorTemplate -label "Background" -addControl "background";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Colour Profile" -addControl "ovr_colprofile";
+			editorTemplate -label "Overlay" -addControl "overlay";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Adjustments" -collapse 0;
+			editorTemplate -label "Affect Environment" -addControl "affect_env";
+			editorTemplate -label "Exposure" -addControl "exposure";
+			editorTemplate -label "Saturation" -addControl "saturation";
+			editorTemplate -label "Filter Amount" -addControl "filter_amt";
+			editorTemplate -label "Filter Colour" -addControl "filter_col";
+			editorTemplate -label "Grade Shader" -addControl "grade_shader";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Tonemapping" -collapse 0;
+			editorTemplate -label "Enable Exponential Tonemapper" -addControl "en_tonemap";
+			editorTemplate -label "Tonemap Gain" -addControl "tm_gain";
+			editorTemplate -label "Tonemap Exposure" -addControl "tm_exposure";
+			editorTemplate -label "Tonemap Blend" -addControl "tm_blend";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

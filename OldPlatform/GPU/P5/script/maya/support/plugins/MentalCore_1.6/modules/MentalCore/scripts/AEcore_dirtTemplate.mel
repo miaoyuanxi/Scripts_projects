@@ -1,0 +1,72 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_dirtCheckMask(string $nodeName) {
+	if (`getAttr($nodeName + ".mask_py")`) {
+		editorTemplate -dimControl $nodeName "mask_py_amount" 0;
+		editorTemplate -dimControl $nodeName "mask_py_bias" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "mask_py_amount" 1;
+		editorTemplate -dimControl $nodeName "mask_py_bias" 1;
+	}
+	
+	if (`getAttr($nodeName + ".mask_ny")`) {
+		editorTemplate -dimControl $nodeName "mask_ny_amount" 0;
+		editorTemplate -dimControl $nodeName "mask_ny_bias" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "mask_ny_amount" 1;
+		editorTemplate -dimControl $nodeName "mask_ny_bias" 1;
+	}
+}
+
+global proc AEcore_dirtTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_dirt_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Dirt Parameters" -collapse 0;
+			editorTemplate -label "Min Distance" -addControl "near_clip";
+			editorTemplate -label "Max Distance" -addControl "far_clip";
+			editorTemplate -label "Falloff" -addControl "falloff";
+			editorTemplate -label "Intensity" -addControl "dirt_intensity";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Samples" -addControl "samples";
+			editorTemplate -label "Vertical Spread" -addControl "spread_vert";
+			editorTemplate -label "Horizontal Spread" -addControl "spread_hor";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Inner Dirt" -addControl "inner_dirt";
+			editorTemplate -label "Outer Dirt" -addControl "outer_dirt";
+			editorTemplate -label "Directional Weight" -addControl "dir_weight";
+			editorTemplate -label "Dirt Mode" -addControl "dirt_mode";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Dirt Colours" -collapse 0;
+			editorTemplate -label "Dirt Colour" -addControl "dirt_color";
+			editorTemplate -label "Base Colour" -addControl "base_color";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Streaking" -collapse 0;
+			editorTemplate -label "Streak Texure" -addControl "streak_texture";
+			editorTemplate -label "Streak Sides Only" -addControl "side_streaks_only";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Masking" -collapse 0;
+			editorTemplate -label "Dirt Mask" -addControl "dirt_mask";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Mask Up Facing Surfaces" -addControl "mask_py" "AEcore_dirtCheckMask";
+			editorTemplate -label "Amount" -addControl "mask_py_amount";
+			editorTemplate -label "Bias" -addControl "mask_py_bias";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Mask Down Facing Surfaces" -addControl "mask_ny" "AEcore_dirtCheckMask";
+			editorTemplate -label "Amount" -addControl "mask_ny_amount";
+			editorTemplate -label "Bias" -addControl "mask_ny_bias";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

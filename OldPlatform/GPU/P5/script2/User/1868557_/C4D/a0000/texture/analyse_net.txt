@@ -1,0 +1,90 @@
+------------texture-----------------
+
+(1, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\sand_02_normal.jpg')
+
+(2, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\logo_F_02.jpg')
+
+(3, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\preview_unlock_0.jpg')
+
+(4, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\sand_02_specular.jpg')
+
+(5, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\sand_02_normal.jpg')
+
+(6, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-27-97.jpg')
+
+(7, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-26-97_1.jpg')
+
+(8, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-20-97.jpg')
+
+(9, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-22-97.jpg')
+
+(10, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-21-97.jpg')
+
+(11, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-15-97.jpg')
+
+(12, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-13-97.jpg')
+
+(13, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-12-97_1.jpg')
+
+(14, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-14-97.jpg')
+
+(15, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-11-97.jpg')
+
+(16, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-10-97.jpg')
+
+(17, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-6-97.jpg')
+
+(18, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-5-97.jpg')
+
+(19, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-1-97.jpg')
+
+(20, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-3-97.jpg')
+
+(21, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-2-97_1.jpg')
+
+(22, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-9-97_1.jpg')
+
+(23, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-8-97.jpg')
+
+(24, 'T:\\195_NOVA\\_mg\\Jason\\for_renderbus\\Green_v008\\tex\\3d66Model-364628-4-97.jpg')
+
+(25, 'ramp_01.png')
+
+(26, 'ramp1.png')
+
+(27, 'studio010.hdr')
+
+(28, 'BasketballCourt_Env.hdr')
+
+------------Image Size-----------------
+
+Width:1920
+
+Height:1080
+
+------------Render Frame-----------------
+
+Start frame:0
+
+End frame:75
+
+------------Render Format-----------------
+
+RI_Format:PNG
+
+MP_Format:PNG
+
+------------Multi-Pass-----------------
+
+MultiPassName:Post Effects
+
+------------camera-----------------
+
+cameraName:Camera.5
+
+cameraName:Camera.3
+
+------------RFMesh_name_path-----------------
+
+------------RFParticle_name_path-----------------
+

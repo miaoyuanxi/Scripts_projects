@@ -1,0 +1,59 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+		
+global proc AEuser_ibl_env_modeNew(string $attr) {
+	attrEnumOptionMenuGrp
+            -l "Shadow Mode"
+            -at $attr
+            -ei 0 "No Shadow"
+            -ei 1 "Opaque"
+            -ei 2 "Transparent"
+			user_ibl_env_mode;
+}
+
+global proc AEuser_ibl_env_modeReplace(string $attr) {
+	attrEnumOptionMenuGrp
+            -e
+            -at $attr
+			user_ibl_env_mode;
+}
+
+global proc AEuser_ibl_env_intensityNew(string $attr) {
+	attrFieldSliderGrp -l "Intensity" -min 0.0 -max 1.0 -fmx 999999 -at $attr "user_ibl_env_intensity";
+}
+
+global proc AEuser_ibl_env_intensityReplace(string $attr) {
+	attrFieldSliderGrp -e -at $attr "user_ibl_env_intensity";
+}
+
+global proc AEuser_ibl_env_rotateNew(string $attr) {
+	attrFieldSliderGrp -l "Rotate" -min 0.0 -max 360.0 -fmx 999999 -at $attr "user_ibl_env_rotate";
+}
+
+global proc AEuser_ibl_env_rotateReplace(string $attr) {
+	attrFieldSliderGrp -e -at $attr "user_ibl_env_rotate";
+}
+
+global proc AEuser_ibl_envTemplate( string $nodeName )
+{	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Texture" -collapse 0;
+			editorTemplate -label "Texture" -addControl "texture";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Light Parameters" -collapse 0;
+			editorTemplate -callCustom "AEuser_ibl_env_modeNew" "AEuser_ibl_env_modeReplace" "shadow_mode";
+			editorTemplate -label "Sample Limit" -addControl "samples";
+			editorTemplate -label "Color" -addControl "color";
+			editorTemplate -callCustom "AEuser_ibl_env_intensityNew" "AEuser_ibl_env_intensityReplace" "intensity";
+			editorTemplate -callCustom "AEuser_ibl_env_rotateNew" "AEuser_ibl_env_rotateReplace" "rotate";
+			editorTemplate -label "As Reflection" -addControl "as_reflection";
+			editorTemplate -label "Primary" -addControl "primary";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

@@ -1,0 +1,3 @@
+dirmap -en true;
+dirmap -m "x:" "//10.50.24.10/d/inputdata5/119000/119875/x";
+dirmap -m "X:" "//10.50.24.10/d/inputdata5/119000/119875/x";

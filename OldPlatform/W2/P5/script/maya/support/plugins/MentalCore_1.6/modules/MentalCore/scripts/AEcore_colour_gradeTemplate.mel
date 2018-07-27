@@ -1,0 +1,51 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_colour_gradeTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_colour_grade_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Input" -collapse 0;
+			editorTemplate -label "Colour" -addControl "colour";
+		editorTemplate -endLayout;
+			
+		editorTemplate -beginLayout "Grading" -collapse 0;
+			editorTemplate -label "Blackpoint" -addControl "blackpoint";
+			editorTemplate -label "Whitepoint" -addControl "whitepoint";
+			editorTemplate -label "Lift"-addControl "lift";
+			editorTemplate -label "Gain" -addControl "gain";
+			editorTemplate -label "Multiply" -addControl "multiply";
+			editorTemplate -label "Offset" -addControl "offset";
+			editorTemplate -label "Gamma" -addControl "gamma";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Hue" -addControl "hue";
+			editorTemplate -label "Value" -addControl "val";
+			editorTemplate -label "Saturation" -addControl "sat";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Black Clamp" -addControl "black_clamp";
+			editorTemplate -label "White Clamp" -addControl "white_clamp";
+			editorTemplate -label "Alpha Is Luminance" -addControl "alpha_is_luminance";
+		editorTemplate -endLayout;
+
+		editorTemplate -beginLayout "Masking" -collapse 0;
+			editorTemplate -label "Enable Mask" -addControl "en_mask";
+			editorTemplate -label "Reverse" -addControl "rev_mask";
+			editorTemplate -label "Mask" -addControl "mask";
+		editorTemplate -endLayout;
+			
+		editorTemplate -beginLayout "Output" -collapse 0;
+			editorTemplate -label "Mix" -addControl "mix";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

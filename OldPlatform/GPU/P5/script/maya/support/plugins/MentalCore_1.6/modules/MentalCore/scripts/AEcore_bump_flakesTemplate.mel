@@ -1,0 +1,20 @@
+//  Copyright (c)2012 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_bump_flakesTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_bump_flakes_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -addControl "flake_density";
+			editorTemplate -addControl "flake_strength";
+			editorTemplate -addControl "flake_scale";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

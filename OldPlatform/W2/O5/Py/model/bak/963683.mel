@@ -1,0 +1,3 @@
+print "delete preMel and postMel\n";
+setAttr -type "string" defaultRenderGlobals.preMel "";
+setAttr -type "string" defaultRenderGlobals.postMel "";

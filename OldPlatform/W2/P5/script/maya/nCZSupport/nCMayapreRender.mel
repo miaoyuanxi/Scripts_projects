@@ -1,0 +1,29 @@
+global proc nCMayapreRender(string $projPath, string $rd)
+{	
+	print("\nScript - nCMayapreRender Start...\n");
+	source "//10.50.1.3/pool/script/maya/nCZSupport/nCMainScripts.mel";
+
+	// AfterStudios
+	if(`gmatch $projPath "*62123*"`){
+		print("\nScript - Switching to - render_62123\n");
+		source "shaveUI.mel";
+		string $str = `file -q -sceneName -shortName`;
+		if(!`gmatch $str "sp05_sq001_sc031_001_0250_bg_fog_v01*"`&&!`gmatch $str "sp5_sq003_sh100_001_084_bg_fog_v01*"`&&!`gmatch $str "sp5_sq007_sc015_001_258_bg_fog_v01*"`){
+			render_62123 $projPath $rd;
+		}
+	}
+	if(`gmatch $projPath "*53*"`){
+		print("\nScript - Switching to - render_53\n");
+		source "shaveUI.mel";
+		render_53 $projPath $rd;
+	}
+	if(`gmatch $projPath "*53*"`){
+		print("\nScript - Switching to - render_53\n");
+		source "shaveUI.mel";
+		render_53 $projPath $rd;
+	}
+
+	if(`gmatch $projPath "*161141*"`){
+		print("\nScript - Switching to - render_161141\n");
+	}	
+}

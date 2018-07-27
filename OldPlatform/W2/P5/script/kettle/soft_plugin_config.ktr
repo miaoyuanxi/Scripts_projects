@@ -1,0 +1,3215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>&#x9879;&#x76ee;&#x914d;&#x7f6e;&#x8f6f;&#x4ef6;&#x63d2;&#x4ef6;</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
+    <directory>&#x2f;</directory>
+    <parameters>
+    </parameters>
+    <log>
+<trans-log-table><connection/>
+<schema/>
+<table/>
+<size_limit_lines/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STATUS</id><enabled>Y</enabled><name>STATUS</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name><subject/></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name><subject/></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name><subject/></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name><subject/></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name><subject/></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name><subject/></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>STARTDATE</id><enabled>Y</enabled><name>STARTDATE</name></field><field><id>ENDDATE</id><enabled>Y</enabled><name>ENDDATE</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>DEPDATE</id><enabled>Y</enabled><name>DEPDATE</name></field><field><id>REPLAYDATE</id><enabled>Y</enabled><name>REPLAYDATE</name></field><field><id>LOG_FIELD</id><enabled>Y</enabled><name>LOG_FIELD</name></field><field><id>EXECUTING_SERVER</id><enabled>N</enabled><name>EXECUTING_SERVER</name></field><field><id>EXECUTING_USER</id><enabled>N</enabled><name>EXECUTING_USER</name></field><field><id>CLIENT</id><enabled>N</enabled><name>CLIENT</name></field></trans-log-table>
+<perf-log-table><connection/>
+<schema/>
+<table/>
+<interval/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>SEQ_NR</id><enabled>Y</enabled><name>SEQ_NR</name></field><field><id>LOGDATE</id><enabled>Y</enabled><name>LOGDATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>INPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>INPUT_BUFFER_ROWS</name></field><field><id>OUTPUT_BUFFER_ROWS</id><enabled>Y</enabled><name>OUTPUT_BUFFER_ROWS</name></field></perf-log-table>
+<channel-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>LOGGING_OBJECT_TYPE</id><enabled>Y</enabled><name>LOGGING_OBJECT_TYPE</name></field><field><id>OBJECT_NAME</id><enabled>Y</enabled><name>OBJECT_NAME</name></field><field><id>OBJECT_COPY</id><enabled>Y</enabled><name>OBJECT_COPY</name></field><field><id>REPOSITORY_DIRECTORY</id><enabled>Y</enabled><name>REPOSITORY_DIRECTORY</name></field><field><id>FILENAME</id><enabled>Y</enabled><name>FILENAME</name></field><field><id>OBJECT_ID</id><enabled>Y</enabled><name>OBJECT_ID</name></field><field><id>OBJECT_REVISION</id><enabled>Y</enabled><name>OBJECT_REVISION</name></field><field><id>PARENT_CHANNEL_ID</id><enabled>Y</enabled><name>PARENT_CHANNEL_ID</name></field><field><id>ROOT_CHANNEL_ID</id><enabled>Y</enabled><name>ROOT_CHANNEL_ID</name></field></channel-log-table>
+<step-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>TRANSNAME</id><enabled>Y</enabled><name>TRANSNAME</name></field><field><id>STEPNAME</id><enabled>Y</enabled><name>STEPNAME</name></field><field><id>STEP_COPY</id><enabled>Y</enabled><name>STEP_COPY</name></field><field><id>LINES_READ</id><enabled>Y</enabled><name>LINES_READ</name></field><field><id>LINES_WRITTEN</id><enabled>Y</enabled><name>LINES_WRITTEN</name></field><field><id>LINES_UPDATED</id><enabled>Y</enabled><name>LINES_UPDATED</name></field><field><id>LINES_INPUT</id><enabled>Y</enabled><name>LINES_INPUT</name></field><field><id>LINES_OUTPUT</id><enabled>Y</enabled><name>LINES_OUTPUT</name></field><field><id>LINES_REJECTED</id><enabled>Y</enabled><name>LINES_REJECTED</name></field><field><id>ERRORS</id><enabled>Y</enabled><name>ERRORS</name></field><field><id>LOG_FIELD</id><enabled>N</enabled><name>LOG_FIELD</name></field></step-log-table>
+<metrics-log-table><connection/>
+<schema/>
+<table/>
+<timeout_days/>
+<field><id>ID_BATCH</id><enabled>Y</enabled><name>ID_BATCH</name></field><field><id>CHANNEL_ID</id><enabled>Y</enabled><name>CHANNEL_ID</name></field><field><id>LOG_DATE</id><enabled>Y</enabled><name>LOG_DATE</name></field><field><id>METRICS_DATE</id><enabled>Y</enabled><name>METRICS_DATE</name></field><field><id>METRICS_CODE</id><enabled>Y</enabled><name>METRICS_CODE</name></field><field><id>METRICS_DESCRIPTION</id><enabled>Y</enabled><name>METRICS_DESCRIPTION</name></field><field><id>METRICS_SUBJECT</id><enabled>Y</enabled><name>METRICS_SUBJECT</name></field><field><id>METRICS_TYPE</id><enabled>Y</enabled><name>METRICS_TYPE</name></field><field><id>METRICS_VALUE</id><enabled>Y</enabled><name>METRICS_VALUE</name></field></metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <created_user>-</created_user>
+  <created_date>2017&#x2f;10&#x2f;10 20&#x3a;38&#x3a;27.444</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2017&#x2f;10&#x2f;10 20&#x3a;38&#x3a;27.444</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+    <notepad>
+      <note>&#x4e0a;&#x9762;&#x662f;&#x7edf;&#x8ba1;&#x8f6f;&#x4ef6;&#x7684;&#x603b;&#x5e27;&#x6570;&#x3001;&#x603b;&#x65f6;&#x95f4;&#x3001;&#x603b;&#x4efb;&#x52a1;&#x6570;</note>
+      <xloc>784</xloc>
+      <yloc>160</yloc>
+      <width>250</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>&#x4e0b;&#x9762;&#x662f;&#x7edf;&#x8ba1;&#x63d2;&#x4ef6;&#x7684;&#x603b;&#x5e27;&#x6570;&#x3001;&#x603b;&#x65f6;&#x95f4;&#x3001;&#x603b;&#x4efb;&#x52a1;&#x6570;</note>
+      <xloc>752</xloc>
+      <yloc>640</yloc>
+      <width>250</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>&#x5408;&#x5e76;&#x6240;&#x6709;&#x5e73;&#x53f0;&#x7684;task&#x8868;</note>
+      <xloc>64</xloc>
+      <yloc>32</yloc>
+      <width>130</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>&#x5408;&#x5e76;&#x6240;&#x6709;&#x5e73;&#x53f0;&#x7684;task_consume&#x8868;</note>
+      <xloc>48</xloc>
+      <yloc>560</yloc>
+      <width>187</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>&#x5c06;task&#x4e0e;mude&#x7684;task_consume&#x8fde;&#x63a5;&#x8ba1;&#x7b97;&#x6bcf;&#x4e2a;&#x4efb;&#x52a1;&#x7684;&#x603b;&#x6d88;&#x8017;&#x673a;&#x65f6;</note>
+      <xloc>416</xloc>
+      <yloc>288</yloc>
+      <width>352</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>&#x5408;&#x5e76;&#x6240;&#x6709;&#x5e73;&#x53f0;&#x7684;&#x8f6f;&#x4ef6;&#x53ca;&#x63d2;&#x4ef6;&#x914d;&#x7f6e;</note>
+      <xloc>1344</xloc>
+      <yloc>192</yloc>
+      <width>178</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>&#x8ba1;&#x7b97;&#x63d2;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;&#x5e76;&#x8fde;&#x63a5;t_plugin&#x5f97;&#x5230;&#x63d2;&#x4ef6;&#x540d;&#x79f0;</note>
+      <xloc>1200</xloc>
+      <yloc>672</yloc>
+      <width>271</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>&#x8ba1;&#x7b97;&#x8f6f;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</note>
+      <xloc>1200</xloc>
+      <yloc>160</yloc>
+      <width>118</width>
+      <heigth>26</heigth>
+      <fontname>&#x5fae;&#x8f6f;&#x96c5;&#x9ed1;</fontname>
+      <fontsize>9</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>gpu</name>
+    <server>10.90.96.199</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>rdbus</database>
+    <port>3306</port>
+    <username>mydb</username>
+    <password>Encrypted 2be98afc80fc99483a313a57c88c3fedb</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>gpumunu</name>
+    <server>10.90.96.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>munu</database>
+    <port>3306</port>
+    <username>munu</username>
+    <password>Encrypted 75c9ef81ba0bde848db810a17e9091a0d7</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rdbus_prs</name>
+    <server>119.23.137.218</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>prd-rdbus</database>
+    <port>6306</port>
+    <username>rayvision_dev</username>
+    <password>Encrypted 2be98fda913d19b97a216a0508cc2fe8d</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>6306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w0-rdbus</name>
+    <server>10.60.96.248</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>rdbus</database>
+    <port>3306</port>
+    <username>mydb</username>
+    <password>Encrypted 2be98afc80fc99483a313a57c88c3fedb</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.characterEncoding</code><attribute>utf-8</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.failOverReadOnly</code><attribute>false</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useUnicode</code><attribute>true</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.zeroDateTimeBehavior</code><attribute>convertToNull</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w0-rdbus_prs</name>
+    <server>10.60.96.248</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>rdbus_prs</database>
+    <port>3306</port>
+    <username>mydb</username>
+    <password>Encrypted 2be98afc80fc99483a313a57c88c3fedb</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w0munu</name>
+    <server>10.60.96.199</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>munu</database>
+    <port>3306</port>
+    <username>munu</username>
+    <password>Encrypted 75c9ef81ba0bde848db810a17e9091a0d7</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w0new</name>
+    <server>10.60.96.142</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>analysis</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted 2be98d8f835f5878db20ca0508cc2fe8c</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w2</name>
+    <server>10.60.96.221</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>rdbus</database>
+    <port>3306</port>
+    <username>mydb</username>
+    <password>Encrypted 2be98afc80fc99483a313a57c88c3fedb</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w2-rdbus_analyze</name>
+    <server>10.60.96.221</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>rdbus_analyze</database>
+    <port>3306</port>
+    <username>mydb</username>
+    <password>Encrypted 2be98afc80fc99483a313a57c88c3fedb</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w2munu</name>
+    <server>10.60.96.200</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>munu</database>
+    <port>3306</port>
+    <username>munu</username>
+    <password>Encrypted 75c9ef81ba0bde848db810a17e9091a0d7</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w8munu</name>
+    <server>10.70.242.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>munu</database>
+    <port>3306</port>
+    <username>munu</username>
+    <password>Encrypted 75c9ef81ba0bde848db810a17e9091a0d7</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w9</name>
+    <server>10.80.244.202</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>rdbus</database>
+    <port>3306</port>
+    <username>mydb</username>
+    <password>Encrypted 2be98afc80fc99483a313a57c88c3fedb</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>w9-munu</name>
+    <server>10.80.243.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>munu</database>
+    <port>3306</port>
+    <username>munu</username>
+    <password>Encrypted 75c9ef81ba0bde848db810a17e9091a0d7</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>PRESERVE_RESERVED_WORD_CASE</code><attribute>Y</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>SUPPORTS_TIMESTAMP_DATA_TYPE</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>&#x6392;&#x5e8f; 5</from><to>&#x6309;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;&#x7edf;&#x8ba1;&#x603b;&#x65f6;&#x95f4;&#x548c;&#x603b;&#x5e27;&#x6570;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6309;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;&#x7edf;&#x8ba1;&#x603b;&#x65f6;&#x95f4;&#x548c;&#x603b;&#x5e27;&#x6570;</from><to>&#x6392;&#x5e8f; 6</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 6</from><to>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6309;&#x63d2;&#x4ef6;&#x7edf;&#x8ba1;&#x603b;&#x65f6;&#x95f4;&#x548c;&#x603b;&#x5e27;&#x6570;</from><to>&#x6392;&#x5e8f; 16</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 15</from><to>&#x6309;&#x63d2;&#x4ef6;&#x7edf;&#x8ba1;&#x603b;&#x65f6;&#x95f4;&#x548c;&#x603b;&#x5e27;&#x6570;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 16</from><to>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 10</from><to>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 3</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5c06;&#x63d2;&#x4ef6;&#x6309;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c;</from><to>PLUGIN_ID&#x53d8;&#x4e3a;Integer&#x7c7b;&#x578b;</to><enabled>Y</enabled> </hop>
+  <hop> <from>PLUGIN_ID&#x53d8;&#x4e3a;Integer&#x7c7b;&#x578b;</from><to>&#x6392;&#x5e8f; 11</to><enabled>Y</enabled> </hop>
+  <hop> <from>w2-rdbus-t_task</from><to>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2</to><enabled>Y</enabled> </hop>
+  <hop> <from>w9-rdbus-t_task</from><to>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2</from><to>&#x5408;&#x5e76;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9</from><to>&#x5408;&#x5e76;</to><enabled>Y</enabled> </hop>
+  <hop> <from>w2-munu-t_task_consume</from><to>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>w9-munu-t_task_consume</from><to>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2 2</from><to>&#x5408;&#x5e76; 3</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9 2</from><to>&#x5408;&#x5e76; 3</to><enabled>Y</enabled> </hop>
+  <hop> <from>w2-rdbus-t_project_plugins</from><to>&#x5408;&#x5e76; 5</to><enabled>Y</enabled> </hop>
+  <hop> <from>w9-rdbus-t_project_plugins</from><to>&#x5408;&#x5e76; 5</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 2</from><to>&#x6392;&#x5e8f; 17</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 17</from><to>&#x8fde;&#x63a5;&#x63d2;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</to><enabled>N</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 17</from><to>&#x8fde;&#x63a5;&#x63d2;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 14</from><to>&#x8fde;&#x63a5;&#x63d2;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</to><enabled>Y</enabled> </hop>
+  <hop> <from>rdbus_analyze-t_plugin</from><to>&#x6392;&#x5e8f; 12</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 11</from><to>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 12</from><to>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;</from><to>&#x6392;&#x5e8f; 13</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 13</from><to>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 5</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 5</from><to>&#x6392;&#x5e8f; 14</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x8ba1;&#x7b97;&#x603b;&#x673a;&#x65f6;</from><to>&#x6392;&#x5e8f; 4</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 3</from><to>&#x6392;&#x5e8f; 9</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55;</from><to>&#x6392;&#x5e8f; 7</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 9</from><to>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 7</from><to>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5f97;&#x5230;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;&#x548c;&#x603b;&#x5e27;&#x6570;&#x4ee5;&#x53ca;&#x6240;&#x6709;&#x7684;RUN_ID</from><to>&#x5c06;RUNID&#x6309;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c; 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x8fde;&#x63a5;task&#x4e0e;task_consume</from><to>&#x6392;&#x5e8f; 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x7edf;&#x8ba1;&#x603b;&#x673a;&#x65f6;</from><to>&#x6392;&#x5e8f; 3</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 2</from><to>&#x7edf;&#x8ba1;&#x603b;&#x673a;&#x65f6;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 3</from><to>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 4</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 4</from><to>&#x8fde;&#x63a5;task&#x4e0e;task_consume</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f;</from><to>&#x8fde;&#x63a5;task&#x4e0e;task_consume</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5c06;RUNID&#x6309;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c; 2</from><to>&#x4fee;&#x6539;RUN_ID&#x7c7b;&#x578b;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x4fee;&#x6539;RUN_ID&#x7c7b;&#x578b;</from><to>&#x6392;&#x5e8f;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5408;&#x5e76;</from><to>&#x79fb;&#x9664;&#x65e0;&#x6548;&#x5b57;&#x6bb5;</to><enabled>Y</enabled> </hop>
+  <hop> <from>gpu-rdbus-t_task</from><to>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x79fb;&#x9664;&#x65e0;&#x6548;&#x5b57;&#x6bb5;</from><to>&#x5408;&#x5e76; 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu</from><to>&#x5408;&#x5e76; 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5408;&#x5e76; 2</from><to>&#x5f97;&#x5230;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;&#x548c;&#x603b;&#x5e27;&#x6570;&#x4ee5;&#x53ca;&#x6240;&#x6709;&#x7684;RUN_ID</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5408;&#x5e76; 3</from><to>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>gpu-munu-t_task_consume 2</from><to>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2</from><to>&#x5408;&#x5e76; 4</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu 2</from><to>&#x5408;&#x5e76; 4</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5408;&#x5e76; 4</from><to>&#x8ba1;&#x7b97;&#x603b;&#x673a;&#x65f6;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5408;&#x5e76; 5</from><to>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2 2</from><to>&#x5408;&#x5e76; 6</to><enabled>Y</enabled> </hop>
+  <hop> <from>gpu-rdbus-t_project_plugins 3 2</from><to>&#x5408;&#x5e76; 6</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5408;&#x5e76; 6</from><to>&#x6392;&#x5e8f; 10</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5408;&#x5e76; 6</from><to>&#x5c06;&#x63d2;&#x4ef6;&#x6309;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x5c06;&#x63d2;&#x4ef6;&#x6309;&#x3b;&#x548c;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c;</from><to>&#x6392;&#x5e8f; 15</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 4</from><to>&#x6392;&#x5e8f; 5</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 4</from><to>&#x5c06;&#x63d2;&#x4ef6;&#x6309;&#x3b;&#x548c;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x8fde;&#x63a5;&#x63d2;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</from><to>&#x4fee;&#x6539;&#x5b57;&#x6bb5;&#x7c7b;&#x578b; 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</from><to>&#x4fee;&#x6539;&#x5b57;&#x6bb5;&#x7c7b;&#x578b;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x4fee;&#x6539;&#x5b57;&#x6bb5;&#x7c7b;&#x578b;</from><to>&#x66ff;&#x6362;NULL&#x503c;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x66ff;&#x6362;NULL&#x503c;</from><to>&#x6392;&#x5e8f; 8</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x4fee;&#x6539;&#x5b57;&#x6bb5;&#x7c7b;&#x578b; 2</from><to>&#x66ff;&#x6362;NULL&#x503c; 2</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x66ff;&#x6362;NULL&#x503c; 2</from><to>&#x6392;&#x5e8f; 18</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 8</from><to>&#x63d2;&#x5165; &#x2f; &#x66f4;&#x65b0;</to><enabled>Y</enabled> </hop>
+  <hop> <from>&#x6392;&#x5e8f; 18</from><to>&#x63d2;&#x5165; &#x2f; &#x66f4;&#x65b0; 2</to><enabled>Y</enabled> </hop>
+  </order>
+  <step>
+    <name>PLUGIN_ID&#x53d8;&#x4e3a;Integer&#x7c7b;&#x578b;</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>PLUGIN_ID</name>
+        <rename>PLUGIN_ID</rename>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>416</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>gpu-munu-t_task_consume 2</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>gpumunu</connection>
+    <sql>SELECT&#xa;	task_id,&#xa;	sum&#x28;task_success_time&#x29; task_success_time,&#xa;	sum&#x28;task_failure_time&#x29; task_failure_time,&#xa;	sum&#x28;task_aborted_time&#x29; task_aborted_time&#xa;FROM&#xa;	t_task_consume&#xa;GROUP BY&#xa;	task_id&#xa;ORDER BY&#xa;	task_id DESC</sql>
+    <limit/>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>240</xloc>
+      <yloc>656</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>gpu-rdbus-t_project_plugins 3 2</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>gpu</connection>
+    <sql>SELECT&#xa;  PLUGIN_IDS&#xa;, SOFT_NAME&#xa;FROM t_project_plugins&#xa;WHERE SOFT_NAME is not null and SOFT_NAME &#x21;&#x3d;&#x27;&#x27;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1488</xloc>
+      <yloc>448</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>gpu-rdbus-t_task</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>gpu</connection>
+    <sql>SELECT&#xa;	ID,&#xa;	CG_VERSION,&#xa;	CG_SOFT_NAME,&#xa;	CG_PLUGIN,&#xa;	FROM_WHERE,&#xa;	DONE,&#xa;	FAILED,&#xa;	ABORT,&#xa;	RESCHEDULED,&#xa;	RUN_ID,&#xa;	H_RUN_ID&#xa;FROM&#xa;	t_task&#xa;WHERE&#xa;	STATUS &#x3d; &#x27;System_Done&#x27; and RUN_ID &#x21;&#x3d;&#x27;job-000000&#x27; &#xa;ORDER BY&#xa;	RUN_ID DESC</sql>
+    <limit/>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>32</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>rdbus_analyze-t_plugin</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w2-rdbus_analyze</connection>
+    <sql>SELECT&#xa;  ID&#xa;, PLUGIN_VERSION&#xa;FROM t_plugin&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1488</xloc>
+      <yloc>544</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>w2-munu-t_task_consume</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w2munu</connection>
+    <sql>SELECT&#xa;	task_id,&#xa;	sum&#x28;task_success_time&#x29; task_success_time,&#xa;	sum&#x28;task_failure_time&#x29; task_failure_time,&#xa;	sum&#x28;task_aborted_time&#x29; task_aborted_time&#xa;FROM&#xa;	t_task_consume&#xa;GROUP BY&#xa;	task_id&#xa;ORDER BY&#xa;	task_id DESC</sql>
+    <limit/>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>240</xloc>
+      <yloc>448</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>w2-rdbus-t_project_plugins</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w2</connection>
+    <sql>SELECT&#xa;  PLUGIN_IDS&#xa;, SOFT_NAME&#xa;FROM t_project_plugins&#xa;WHERE SOFT_NAME is not null and SOFT_NAME &#x21;&#x3d;&#x27;&#x27;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1488</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>w2-rdbus-t_task</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w2</connection>
+    <sql>SELECT&#xa;	ID,&#xa;	CG_VERSION,&#xa;	CG_SOFT_NAME,&#xa;	CG_PLUGIN,&#xa;	FROM_WHERE,&#xa;	DONE,&#xa;	FAILED,&#xa;	ABORT,&#xa;	RESCHEDULED,&#xa;	RUN_ID,&#xa;	H_RUN_ID&#xa;FROM&#xa;	t_task&#xa;WHERE&#xa;	STATUS &#x3d; &#x27;System_Done&#x27; and RUN_ID &#x21;&#x3d;&#x27;job-000000&#x27;&#xa;ORDER BY&#xa;	RUN_ID DESC</sql>
+    <limit/>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>32</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>w9-munu-t_task_consume</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w9-munu</connection>
+    <sql>SELECT&#xa;	task_id,&#xa;	sum&#x28;task_success_time&#x29; task_success_time,&#xa;	sum&#x28;task_failure_time&#x29; task_failure_time,&#xa;	sum&#x28;task_aborted_time&#x29; task_aborted_time&#xa;FROM&#xa;	t_task_consume&#xa;GROUP BY&#xa;	task_id&#xa;ORDER BY&#xa;	task_id DESC</sql>
+    <limit/>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>240</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>w9-rdbus-t_project_plugins</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w9</connection>
+    <sql>SELECT&#xa;  PLUGIN_IDS&#xa;, SOFT_NAME&#xa;FROM t_project_plugins&#xa;WHERE SOFT_NAME is not null and SOFT_NAME &#x21;&#x3d;&#x27;&#x27;&#xa;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1488</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>w9-rdbus-t_task</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w9</connection>
+    <sql>SELECT&#xa;	ID,&#xa;	CG_VERSION,&#xa;	CG_SOFT_NAME,&#xa;	CG_PLUGIN,&#xa;	FROM_WHERE,&#xa;	DONE,&#xa;	FAILED,&#xa;	ABORT,&#xa;	RESCHEDULED,&#xa;	RUN_ID,&#xa;	H_RUN_ID&#xa;FROM&#xa;	t_task&#xa;WHERE&#xa;	STATUS &#x3d; &#x27;System_Done&#x27; and RUN_ID &#x21;&#x3d;&#x27;job-000000&#x27;&#xa;ORDER BY&#xa;	RUN_ID DESC</sql>
+    <limit/>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>32</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x4fee;&#x6539;RUN_ID&#x7c7b;&#x578b;</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>RUN_ID_NEW</name>
+        <rename>RUN_ID_NEW</rename>
+        <type>BigNumber</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>416</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x4fee;&#x6539;&#x5b57;&#x6bb5;&#x7c7b;&#x578b;</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>PLUGIN_IDS</name>
+      </remove>      <remove>        <name>flagfield</name>
+      </remove>      <remove>        <name>ID</name>
+      </remove>      <remove>        <name>CG_VERSION</name>
+      </remove>      <remove>        <name>CG_SOFT_NAME</name>
+      </remove>      <remove>        <name>CG_PLUGIN</name>
+      </remove>      <remove>        <name>FROM_WHERE</name>
+      </remove>      <remove>        <name>DONE</name>
+      </remove>      <remove>        <name>FAILED</name>
+      </remove>      <remove>        <name>ABORT</name>
+      </remove>      <remove>        <name>RESCHEDULED</name>
+      </remove>      <remove>        <name>RUN_ID</name>
+      </remove>      <remove>        <name>H_RUN_ID</name>
+      </remove>      <remove>        <name>TASK_PLATFORM</name>
+      </remove>      <remove>        <name>flagfield_1</name>
+      </remove>      <remove>        <name>TASK_TOTAL_FRAME</name>
+      </remove>      <remove>        <name>MUNU_RUN_ID</name>
+      </remove>      <remove>        <name>RUN_ID_NEW</name>
+      </remove>      <remove>        <name>task_id</name>
+      </remove>      <remove>        <name>task_success_time</name>
+      </remove>      <remove>        <name>task_failure_time</name>
+      </remove>      <remove>        <name>task_aborted_time</name>
+      </remove>      <remove>        <name>munu_platform</name>
+      </remove>      <remove>        <name>flagfield_1_1</name>
+      </remove>      <remove>        <name>task_time</name>
+      </remove>      <remove>        <name>task_total_time</name>
+      </remove>      <meta>        <name>total_task</name>
+        <rename>total_task</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>total_time</name>
+        <rename>total_time</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>TOTAL_FRAME</name>
+        <rename>TOTAL_FRAME</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>TOTAL_SOFT_CONFIG</name>
+        <rename>TOTAL_SOFT_CONFIG</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1216</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x4fee;&#x6539;&#x5b57;&#x6bb5;&#x7c7b;&#x578b; 2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>PLUGIN_IDS</name>
+      </remove>      <remove>        <name>SOFT_NAME</name>
+      </remove>      <remove>        <name>flagfield</name>
+      </remove>      <remove>        <name>PLUGIN_ID</name>
+      </remove>      <remove>        <name>ID</name>
+      </remove>      <remove>        <name>ID_1</name>
+      </remove>      <remove>        <name>CG_VERSION</name>
+      </remove>      <remove>        <name>CG_SOFT_NAME</name>
+      </remove>      <remove>        <name>CG_PLUGIN</name>
+      </remove>      <remove>        <name>FROM_WHERE</name>
+      </remove>      <remove>        <name>DONE</name>
+      </remove>      <remove>        <name>FAILED</name>
+      </remove>      <remove>        <name>ABORT</name>
+      </remove>      <remove>        <name>RESCHEDULED</name>
+      </remove>      <remove>        <name>RUN_ID</name>
+      </remove>      <remove>        <name>H_RUN_ID</name>
+      </remove>      <remove>        <name>TASK_PLATFORM</name>
+      </remove>      <remove>        <name>flagfield_1</name>
+      </remove>      <remove>        <name>TASK_TOTAL_FRAME</name>
+      </remove>      <remove>        <name>MUNU_RUN_ID</name>
+      </remove>      <remove>        <name>RUN_ID_NEW</name>
+      </remove>      <remove>        <name>task_id</name>
+      </remove>      <remove>        <name>task_success_time</name>
+      </remove>      <remove>        <name>task_failure_time</name>
+      </remove>      <remove>        <name>task_aborted_time</name>
+      </remove>      <remove>        <name>munu_platform</name>
+      </remove>      <remove>        <name>flagfield_1_1</name>
+      </remove>      <remove>        <name>task_time</name>
+      </remove>      <remove>        <name>task_total_time</name>
+      </remove>      <remove>        <name>CG_PLUGIN_NEW</name>
+      </remove>      <meta>        <name>TOTAL_PLUGIN_CONFIG</name>
+        <rename>TOTAL_PLUGIN_CONFIG</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>0</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>TOTAL_FRAME</name>
+        <rename>TOTAL_FRAME</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>0</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>total_task</name>
+        <rename>total_task</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>0</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>total_time</name>
+        <rename>total_time</rename>
+        <type>Integer</type>
+        <length>-2</length>
+        <precision>0</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1216</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55;</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>Y</count_rows>
+      <count_field>total_task</count_field>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      <field>        <name>CG_SOFT_NAME</name>
+        <case_insensitive>N</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>848</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 2</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>Y</count_rows>
+      <count_field>total_task</count_field>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      <field>        <name>CG_PLUGIN_NEW</name>
+        <case_insensitive>N</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>944</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 3</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>Y</count_rows>
+      <count_field>TOTAL_SOFT_CONFIG</count_field>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      <field>        <name>SOFT_NAME</name>
+        <case_insensitive>N</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>160</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 4</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>N</count_rows>
+      <count_field>total_task</count_field>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      <field>        <name>ID</name>
+        <case_insensitive>N</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>960</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x53bb;&#x9664;&#x91cd;&#x590d;&#x8bb0;&#x5f55; 5</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>Y</count_rows>
+      <count_field>TOTAL_PLUGIN_CONFIG</count_field>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      <field>        <name>PLUGIN_VERSION</name>
+        <case_insensitive>N</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>672</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5408;&#x5e76;</name>
+    <type>MergeRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <keys>
+      <key>ID</key>
+      <key>CG_VERSION</key>
+      <key>CG_SOFT_NAME</key>
+      <key>CG_PLUGIN</key>
+      <key>FROM_WHERE</key>
+      <key>DONE</key>
+      <key>FAILED</key>
+      <key>ABORT</key>
+      <key>RESCHEDULED</key>
+      <key>RUN_ID</key>
+      <key>H_RUN_ID</key>
+      <key>TASK_PLATFORM</key>
+    </keys>
+    <values>
+      <value>ID</value>
+      <value>CG_VERSION</value>
+      <value>CG_SOFT_NAME</value>
+      <value>CG_PLUGIN</value>
+      <value>FROM_WHERE</value>
+      <value>DONE</value>
+      <value>FAILED</value>
+      <value>ABORT</value>
+      <value>RESCHEDULED</value>
+      <value>RUN_ID</value>
+      <value>H_RUN_ID</value>
+      <value>TASK_PLATFORM</value>
+    </values>
+<flag_field>flagfield</flag_field>
+<reference>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2</reference>
+<compare>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9</compare>
+    <compare>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>176</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5408;&#x5e76; 2</name>
+    <type>MergeRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <keys>
+      <key>ID</key>
+      <key>CG_VERSION</key>
+      <key>CG_SOFT_NAME</key>
+      <key>CG_PLUGIN</key>
+      <key>FROM_WHERE</key>
+      <key>DONE</key>
+      <key>FAILED</key>
+      <key>ABORT</key>
+      <key>RESCHEDULED</key>
+      <key>RUN_ID</key>
+      <key>H_RUN_ID</key>
+      <key>TASK_PLATFORM</key>
+    </keys>
+    <values>
+      <value>ID</value>
+      <value>CG_VERSION</value>
+      <value>CG_SOFT_NAME</value>
+      <value>CG_PLUGIN</value>
+      <value>FROM_WHERE</value>
+      <value>DONE</value>
+      <value>FAILED</value>
+      <value>ABORT</value>
+      <value>RESCHEDULED</value>
+      <value>RUN_ID</value>
+      <value>H_RUN_ID</value>
+      <value>TASK_PLATFORM</value>
+    </values>
+<flag_field>flagfield</flag_field>
+<reference>&#x79fb;&#x9664;&#x65e0;&#x6548;&#x5b57;&#x6bb5;</reference>
+<compare>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu</compare>
+    <compare>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>240</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5408;&#x5e76; 3</name>
+    <type>MergeRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <keys>
+      <key>task_id</key>
+      <key>task_success_time</key>
+      <key>task_failure_time</key>
+      <key>task_aborted_time</key>
+      <key>munu_platform</key>
+    </keys>
+    <values>
+      <value>task_id</value>
+      <value>task_success_time</value>
+      <value>task_failure_time</value>
+      <value>task_aborted_time</value>
+      <value>munu_platform</value>
+    </values>
+<flag_field>flagfield</flag_field>
+<reference>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2 2</reference>
+<compare>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9 2</compare>
+    <compare>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>432</xloc>
+      <yloc>496</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5408;&#x5e76; 4</name>
+    <type>MergeRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <keys>
+      <key>task_id</key>
+      <key>task_success_time</key>
+      <key>task_failure_time</key>
+      <key>task_aborted_time</key>
+      <key>munu_platform</key>
+    </keys>
+    <values>
+      <value>task_id</value>
+      <value>task_success_time</value>
+      <value>task_failure_time</value>
+      <value>task_aborted_time</value>
+      <value>munu_platform</value>
+    </values>
+<flag_field>flagfield</flag_field>
+<reference>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2</reference>
+<compare>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu 2</compare>
+    <compare>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>480</xloc>
+      <yloc>656</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5408;&#x5e76; 5</name>
+    <type>MergeRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <keys>
+      <key>PLUGIN_IDS</key>
+      <key>SOFT_NAME</key>
+    </keys>
+    <values>
+      <value>PLUGIN_IDS</value>
+      <value>SOFT_NAME</value>
+    </values>
+<flag_field>flagfield</flag_field>
+<reference>w2-rdbus-t_project_plugins</reference>
+<compare>w9-rdbus-t_project_plugins</compare>
+    <compare>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1392</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5408;&#x5e76; 6</name>
+    <type>MergeRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <keys>
+      <key>PLUGIN_IDS</key>
+      <key>SOFT_NAME</key>
+    </keys>
+    <values>
+      <value>PLUGIN_IDS</value>
+      <value>SOFT_NAME</value>
+    </values>
+<flag_field>flagfield</flag_field>
+<reference>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2 2</reference>
+<compare>gpu-rdbus-t_project_plugins 3 2</compare>
+    <compare>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>TASK_PLATFORM</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>gpu</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>128</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;gpu 2</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>munu_platform</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>gpu</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>384</xloc>
+      <yloc>656</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>TASK_PLATFORM</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>w2</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>128</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w2 2</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>munu_platform</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>w2</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>384</xloc>
+      <yloc>448</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>TASK_PLATFORM</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>w9</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>128</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x589e;&#x52a0;&#x5e73;&#x53f0;&#x5b57;&#x6bb5;w9 2</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>munu_platform</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>w9</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>384</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>flagfield</name>
+      </remove>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>480</xloc>
+      <yloc>496</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5b57;&#x6bb5;&#x9009;&#x62e9; 4 2 2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>flagfield</name>
+      </remove>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1312</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5c06;RUNID&#x6309;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c; 2</name>
+    <type>SplitFieldToRows3</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+   <splitfield>MUNU_RUN_ID</splitfield>
+   <delimiter>,</delimiter>
+   <newfield>RUN_ID_NEW</newfield>
+   <rownum>N</rownum>
+   <rownum_field/>
+   <resetrownumber>Y</resetrownumber>
+   <delimiter_is_regex>N</delimiter_is_regex>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>368</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5c06;&#x63d2;&#x4ef6;&#x6309;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c;</name>
+    <type>SplitFieldToRows3</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+   <splitfield>PLUGIN_IDS</splitfield>
+   <delimiter>,</delimiter>
+   <newfield>PLUGIN_ID</newfield>
+   <rownum>N</rownum>
+   <rownum_field/>
+   <resetrownumber>Y</resetrownumber>
+   <delimiter_is_regex>N</delimiter_is_regex>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5c06;&#x63d2;&#x4ef6;&#x6309;&#x3b;&#x548c;,&#x5206;&#x5272;&#x6210;&#x591a;&#x884c;</name>
+    <type>SplitFieldToRows3</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+   <splitfield>CG_PLUGIN</splitfield>
+   <delimiter>&#x3b;&#x7c;,</delimiter>
+   <newfield>CG_PLUGIN_NEW</newfield>
+   <rownum>N</rownum>
+   <rownum_field/>
+   <resetrownumber>Y</resetrownumber>
+   <delimiter_is_regex>Y</delimiter_is_regex>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>560</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x5f97;&#x5230;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;&#x548c;&#x603b;&#x5e27;&#x6570;&#x4ee5;&#x53ca;&#x6240;&#x6709;&#x7684;RUN_ID</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#x2f;&#x2f;web&#x548c;API &#x5c06;CS_SOFT_NAME&#x548c;CG_VERSION&#x62fc;&#x63a5;&#xff0c;&#x62fc;&#x63a5;&#x7684;&#x65f6;&#x5019;&#x9700;&#x8981;&#x5224;&#x65ad;CG_VERSION&#x9996;&#x5b57;&#x6bcd;&#x662f;&#x5426;&#x662f;&#x6570;&#x5b57;&#xff0c;&#x5982;&#x679c;&#x662f;&#x6570;&#x5b57;&#xff0c;&#x62fc;&#x63a5;&#x52a0;&#x7a7a;&#x683c;&#xff0c;&#x5426;&#x5219;&#x76f4;&#x63a5;&#x62fc;&#x63a5;&#xa;&#x2f;&#x2f;client&#x548c;3dsmax &#x76f4;&#x63a5;&#x4f7f;&#x7528;CG_VERSION&#xa;	 if &#x28;CG_VERSION &#x3d;&#x3d; null &#x7c;&#x7c; CG_VERSION &#x3d;&#x3d; undefined&#x29; &#x7b;&#xa;              CG_VERSION &#x3d; &#x22;&#x22;&#x3b;&#xa;          &#x7d;&#xa;     if &#x28;FROM_WHERE &#x3d;&#x3d; &#x27;web&#x27; &#x7c;&#x7c; FROM_WHERE &#x3d;&#x3d; &#x27;api&#x27;&#x29; &#x7b;&#xa;         &#xa;          var str &#x3d; CG_VERSION&#x3b;&#xa;          var n &#x3d; Number&#x28;CG_VERSION.charAt&#x28;1&#x29;&#x29;&#x3b;&#xa;          if &#x28;&#x21;isNaN&#x28;n&#x29;&#x29; &#x7b;&#xa;              str &#x3d; CG_SOFT_NAME &#x2b; &#x22; &#x22; &#x2b; str&#x3b;&#xa;          &#x7d;&#xa;      &#x7d; else &#x7b;&#xa;          if &#x28;FROM_WHERE &#x3d;&#x3d; &#x27;client&#x27; &#x26;&#x26; CG_VERSION.indexOf&#x28;&#x22;maya&#x22;&#x29; &#x3e;&#x3d; 0&#x29; &#x7b;&#xa;              str &#x3d; CG_VERSION.replace&#x28;&#x22;maya&#x22;, &#x22;maya &#x22;&#x29;&#x3b;&#xa;          &#x7d; else &#x7b;&#xa;              str &#x3d; CG_VERSION&#x3b;&#xa;          &#x7d;&#xa;      &#x7d;&#xa;	  var MUNU_RUN_ID&#x3d;RUN_ID&#x3b; &#xa;	  if&#x28;H_RUN_ID &#x21;&#x3d; null &#x26;&#x26; H_RUN_ID &#x21;&#x3d; undefined&#x29;&#x7b;&#xa;	  	var MUNU_RUN_ID&#x3d;RUN_ID&#x2b;&#x22;,&#x22;&#x2b;H_RUN_ID&#x3b;&#xa;	  &#x7d;&#xa;      var TASK_TOTAL_FRAME&#x3d;Number&#x28;DONE&#x29;&#x2b;Number&#x28;FAILED&#x29;&#x2b;Number&#x28;ABORT&#x29;&#x2b;Number&#x28;RESCHEDULED&#x29;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>str</name>
+        <rename>CG_SOFT_NAME</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>Y</replace>
+      </field>      <field>        <name>TASK_TOTAL_FRAME</name>
+        <rename>TASK_TOTAL_FRAME</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>MUNU_RUN_ID</name>
+        <rename>MUNU_RUN_ID</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>304</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6309;&#x63d2;&#x4ef6;&#x7edf;&#x8ba1;&#x603b;&#x65f6;&#x95f4;&#x548c;&#x603b;&#x5e27;&#x6570;</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>Y</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname>total_task</linenr_fieldname>
+      <give_back_row>Y</give_back_row>
+      <group>
+        <field>
+          <name>CG_PLUGIN_NEW</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>total_time</aggregate>
+          <subject>task_total_time</subject>
+          <type>SUM</type>
+          <valuefield/>
+        </field>
+        <field>
+          <aggregate>TOTAL_FRAME</aggregate>
+          <subject>TASK_TOTAL_FRAME</subject>
+          <type>SUM</type>
+          <valuefield/>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>752</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6309;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;&#x7edf;&#x8ba1;&#x603b;&#x65f6;&#x95f4;&#x548c;&#x603b;&#x5e27;&#x6570;</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>Y</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname>total_task1</linenr_fieldname>
+      <give_back_row>Y</give_back_row>
+      <group>
+        <field>
+          <name>CG_SOFT_NAME</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>total_time</aggregate>
+          <subject>task_total_time</subject>
+          <type>SUM</type>
+          <valuefield/>
+        </field>
+        <field>
+          <aggregate>TOTAL_FRAME</aggregate>
+          <subject>TASK_TOTAL_FRAME</subject>
+          <type>SUM</type>
+          <valuefield/>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>672</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f;</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>RUN_ID_NEW</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+      <field>
+        <name>TASK_PLATFORM</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>480</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 10</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>SOFT_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 11</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>PLUGIN_ID</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>480</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 12</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>ID</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1312</xloc>
+      <yloc>544</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 13</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>PLUGIN_VERSION</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>608</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 14</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>PLUGIN_VERSION</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>736</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 15</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>CG_PLUGIN_NEW</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>656</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 16</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>CG_PLUGIN_NEW</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>864</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 17</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>CG_PLUGIN_NEW</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1040</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 18</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>PLUGIN_VERSION</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1360</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 2</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>ID</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>656</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 3</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>ID</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>848</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 4</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>task_id</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+      <field>
+        <name>munu_platform</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>560</xloc>
+      <yloc>496</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 5</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>CG_SOFT_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>560</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 6</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>CG_SOFT_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>784</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 7</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>CG_SOFT_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>928</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 8</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>SOFT_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1360</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x6392;&#x5e8f; 9</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>SOFT_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x63d2;&#x4ef6;&#x914d;&#x7f6e;&#x8f93;&#x51fa;</name>
+    <type>ElasticSearchBulk</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <general>
+      <index>pluginconfiguration</index>
+      <type>plugin</type>
+      <batchSize>500000</batchSize>
+      <timeout/>
+      <timeoutUnit>SECONDS</timeoutUnit>
+      <isJson>N</isJson>
+      <overwriteIfExists>N</overwriteIfExists>
+      <useOutput>N</useOutput>
+      <stopOnError>Y</stopOnError>
+    </general>
+    <fields>
+      <field>
+        <columnName>TOTAL_PLUGIN_CONFIG</columnName>
+        <targetName>totalPluginConfig</targetName>
+      </field>
+      <field>
+        <columnName>total_task</columnName>
+        <targetName>totalTask</targetName>
+      </field>
+      <field>
+        <columnName>PLUGIN_VERSION</columnName>
+        <targetName>pluginName</targetName>
+      </field>
+      <field>
+        <columnName>total_time</columnName>
+        <targetName>totalTime</targetName>
+      </field>
+      <field>
+        <columnName>TOTAL_FRAME</columnName>
+        <targetName>totalFrame</targetName>
+      </field>
+    </fields>
+    <servers>
+      <server>
+        <address>10.60.96.142</address>
+        <port>9300</port>
+      </server>
+    </servers>
+    <settings>
+    </settings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1568</xloc>
+      <yloc>752</yloc>
+      <draw>N</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x63d2;&#x5165; &#x2f; &#x66f4;&#x65b0;</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w0-rdbus</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>t_soft_config</table>
+      <key>
+        <name>SOFT_NAME</name>
+        <field>SOFT_NAME</field>
+        <condition>&#x3d;</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>SOFT_NAME</name>
+        <rename>SOFT_NAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TOTAL_SOFT_CONFIG</name>
+        <rename>TOTAL_SOFT_CONFIG</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>total_time</name>
+        <rename>total_time</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TOTAL_FRAME</name>
+        <rename>TOTAL_FRAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>total_task</name>
+        <rename>total_task</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1472</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x63d2;&#x5165; &#x2f; &#x66f4;&#x65b0; 2</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w0-rdbus</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>t_plugin_config</table>
+      <key>
+        <name>PLUGIN_VERSION</name>
+        <field>PLUGIN_VERSION</field>
+        <condition>&#x3d;</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>PLUGIN_VERSION</name>
+        <rename>PLUGIN_VERSION</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TOTAL_PLUGIN_CONFIG</name>
+        <rename>TOTAL_PLUGIN_CONFIG</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>total_time</name>
+        <rename>total_time</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TOTAL_FRAME</name>
+        <rename>TOTAL_FRAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>total_task</name>
+        <rename>total_task</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1456</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x66ff;&#x6362;NULL&#x503c;</name>
+    <type>IfNull</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <replaceAllByValue/>
+      <replaceAllMask/>
+      <selectFields>N</selectFields>
+      <selectValuesType>Y</selectValuesType>
+      <setEmptyStringAll>Y</setEmptyStringAll>
+    <valuetypes>
+      <valuetype>
+        <name>Integer</name>
+        <value>0</value>
+        <mask/>
+        <set_type_empty_string>N</set_type_empty_string>
+        </valuetype>
+      <valuetype>
+        <name>String</name>
+        <value/>
+        <mask/>
+        <set_type_empty_string>Y</set_type_empty_string>
+        </valuetype>
+      </valuetypes>
+    <fields>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1280</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x66ff;&#x6362;NULL&#x503c; 2</name>
+    <type>IfNull</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <replaceAllByValue/>
+      <replaceAllMask/>
+      <selectFields>N</selectFields>
+      <selectValuesType>Y</selectValuesType>
+      <setEmptyStringAll>Y</setEmptyStringAll>
+    <valuetypes>
+      <valuetype>
+        <name>Integer</name>
+        <value>0</value>
+        <mask/>
+        <set_type_empty_string>N</set_type_empty_string>
+        </valuetype>
+      <valuetype>
+        <name>String</name>
+        <value/>
+        <mask/>
+        <set_type_empty_string>Y</set_type_empty_string>
+        </valuetype>
+      </valuetypes>
+    <fields>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1296</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x79fb;&#x9664;&#x65e0;&#x6548;&#x5b57;&#x6bb5;</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>flagfield</name>
+      </remove>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>240</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x7edf;&#x8ba1;&#x603b;&#x673a;&#x65f6;</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <all_rows>Y</all_rows>
+      <ignore_aggregate>N</ignore_aggregate>
+      <field_ignore/>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>grp</prefix>
+      <add_linenr>N</add_linenr>
+      <linenr_fieldname>total_task</linenr_fieldname>
+      <give_back_row>Y</give_back_row>
+      <group>
+        <field>
+          <name>ID</name>
+        </field>
+      </group>
+      <fields>
+        <field>
+          <aggregate>task_total_time</aggregate>
+          <subject>task_time</subject>
+          <type>SUM</type>
+          <valuefield/>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>752</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x8868;&#x8f93;&#x51fa;</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>w0new</connection>
+    <schema/>
+    <table>tb_abc</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>CG_SOFT_NAME</column_name>
+          <stream_name>CG_SOFT_NAME</stream_name>
+        </field>
+        <field>
+          <column_name>TOTAL_TIME</column_name>
+          <stream_name>total_time</stream_name>
+        </field>
+        <field>
+          <column_name>TOTAL_FRAME</column_name>
+          <stream_name>TOTAL_FRAME</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1168</xloc>
+      <yloc>656</yloc>
+      <draw>N</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x8ba1;&#x7b97;&#x603b;&#x673a;&#x65f6;</name>
+    <type>Calculator</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+       <calculation><field_name>task_time</field_name>
+<calc_type>ADD3</calc_type>
+<field_a>task_failure_time</field_a>
+<field_b>task_aborted_time</field_b>
+<field_c>task_success_time</field_c>
+<value_type>BigNumber</value_type>
+<value_length>-1</value_length>
+<value_precision>-1</value_precision>
+<remove>N</remove>
+<conversion_mask/>
+<decimal_symbol/>
+<grouping_symbol/>
+<currency_symbol/>
+</calculation>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>560</xloc>
+      <yloc>656</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x8f6f;&#x4ef6;&#x914d;&#x7f6e;&#x8f93;&#x51fa;</name>
+    <type>ElasticSearchBulk</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <general>
+      <index>softwareconfiguration</index>
+      <type>software</type>
+      <batchSize>50000</batchSize>
+      <timeout/>
+      <timeoutUnit>SECONDS</timeoutUnit>
+      <isJson>N</isJson>
+      <overwriteIfExists>N</overwriteIfExists>
+      <useOutput>N</useOutput>
+      <stopOnError>Y</stopOnError>
+    </general>
+    <fields>
+      <field>
+        <columnName>TOTAL_SOFT_CONFIG</columnName>
+        <targetName>totalSoftConfig</targetName>
+      </field>
+      <field>
+        <columnName>total_task</columnName>
+        <targetName>totalTask</targetName>
+      </field>
+      <field>
+        <columnName>SOFT_NAME</columnName>
+        <targetName>cgSoftName</targetName>
+      </field>
+      <field>
+        <columnName>total_time</columnName>
+        <targetName>totalTime</targetName>
+      </field>
+      <field>
+        <columnName>TOTAL_FRAME</columnName>
+        <targetName>totalFrame</targetName>
+      </field>
+    </fields>
+    <servers>
+      <server>
+        <address>10.60.96.142</address>
+        <port>9300</port>
+      </server>
+    </servers>
+    <settings>
+    </settings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1552</xloc>
+      <yloc>32</yloc>
+      <draw>N</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x8fde;&#x63a5;task&#x4e0e;task_consume</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<join_type>INNER</join_type>
+<step1>&#x6392;&#x5e8f;</step1>
+<step2>&#x6392;&#x5e8f; 4</step2>
+    <keys_1>
+      <key>RUN_ID_NEW</key>
+      <key>TASK_PLATFORM</key>
+    </keys_1>
+    <keys_2>
+      <key>task_id</key>
+      <key>munu_platform</key>
+    </keys_2>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>560</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x8fde;&#x63a5;&#x63d2;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<join_type>LEFT OUTER</join_type>
+<step1>&#x6392;&#x5e8f; 14</step1>
+<step2>&#x6392;&#x5e8f; 17</step2>
+    <keys_1>
+      <key>PLUGIN_VERSION</key>
+    </keys_1>
+    <keys_2>
+      <key>CG_PLUGIN_NEW</key>
+    </keys_2>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>800</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x540d;&#x79f0;</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<join_type>INNER</join_type>
+<step1>&#x6392;&#x5e8f; 11</step1>
+<step2>&#x6392;&#x5e8f; 12</step2>
+    <keys_1>
+      <key>PLUGIN_ID</key>
+    </keys_1>
+    <keys_2>
+      <key>ID</key>
+    </keys_2>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>544</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>&#x8fde;&#x63a5;&#x8f6f;&#x4ef6;&#x7684;&#x914d;&#x7f6e;&#x6b21;&#x6570;</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<join_type>LEFT OUTER</join_type>
+<step1>&#x6392;&#x5e8f; 9</step1>
+<step2>&#x6392;&#x5e8f; 7</step2>
+    <keys_1>
+      <key>SOFT_NAME</key>
+    </keys_1>
+    <keys_2>
+      <key>CG_SOFT_NAME</key>
+    </keys_2>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1152</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+
+</transformation>

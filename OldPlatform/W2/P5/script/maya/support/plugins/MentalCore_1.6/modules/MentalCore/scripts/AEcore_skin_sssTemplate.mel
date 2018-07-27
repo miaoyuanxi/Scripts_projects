@@ -1,0 +1,121 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+source "AEMentalCoreUIRes.mel";
+
+global proc AEmisssSkinMayaBumpNew(string $attr) {
+	attrNavigationControlGrp 
+		-label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBump", "kmisssFastSkinMayaTempBump"))
+		-attribute $attr
+		bumpControl;
+	AEmisssSkinMayaBumpReplace($attr);
+}
+
+global proc AEmisssSkinMayaBumpReplace(string $attr) {
+	attrNavigationControlGrp -edit
+		-attribute $attr
+		bumpControl;
+	scriptJob -replacePrevious
+		-parent bumpControl
+		-connectionChange $attr 
+		("checkMisssSkinBumpConnection " + $attr);
+}
+
+global proc checkMisssSkinBumpConnection(string $attr) {
+	// on disconnect, random values populate the attr, but it needs
+	// to be set to 0,0,0 if no bump node is connected
+	if (!`connectionInfo -id $attr`) {
+		setAttr $attr 0 0 0;
+	}
+}
+
+global proc AEmisssSkinMayaNew(string $map) {
+	string $mapControl = `attrNavigationControlGrp -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kLightmap2", "kmisssFastSkinMayaTempLightMap2")) -attribute $map -createNew ("createAndAssignLightMap " +$map) "mapControl"`;
+}
+
+global proc AEmisssSkinMayaReplace(string $map) {
+	string $mapControl = `attrNavigationControlGrp -e -attribute $map -createNew ("createAndAssignLightMap " +$map) "mapControl"`;
+}
+
+//Main Template
+//
+
+global proc AEcore_skin_sssTemplate(string $nodeName)
+{
+	AECommonStrings();						// Define common strings
+	
+	AEMentalCoreLogo("mc_core_skin_sss_logo.png");
+
+	AEswatchDisplay $nodeName;         
+	editorTemplate -beginScrollLayout;
+			
+	// Scattering
+	editorTemplate -beginLayout "Optical Properties" -collapse 0;
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kOverallColor", "kmisssFastSkinMayaTempOverallColor"))
+		-addControl "overall_color";
+	editorTemplate -as;
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kEpidermScColor", "kEpidermScColor"))
+		-addControl "front_sss_color";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kEpidermScWeig", "kEpidermScWeig"))
+		-addControl "front_sss_weight";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kEpidermScRad", "kEpidermScRad"))
+		-addControl "front_sss_radius";
+			
+	editorTemplate -as;
+
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kSubdermScColor", "kSubdermScColor"))
+		-addControl "mid_sss_color";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kSubdermScWeig", "kSubdermScWeig"))
+		-addControl "mid_sss_weight";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kSubdermScRad", "kSubdermScRad"))
+		-addControl "mid_sss_radius";
+
+	editorTemplate -as;
+			
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBackScatterColor", "kBackScatterColor"))
+		-addControl "back_sss_color";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBackScatterWeight", "kBackScatterWeight"))
+		-addControl "back_sss_weight";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBackScatterRadius", "kBackScatterRadius"))
+		-addControl "back_sss_radius";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBackScatterDepth", "kBackScatterDepth"))
+		-addControl "back_sss_depth";
+
+	editorTemplate -endLayout;
+		
+	// bump
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kBumpShader", "kmisssFastSkinMayaTempBumpShader")) -collapse 1;
+	editorTemplate -callCustom "AEmisssSkinMayaBumpNew" "AEmisssSkinMayaBumpReplace" "normalCamera";
+	editorTemplate -endLayout;
+		
+	// Data
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kLightmap", "kmisssFastSkinMayaTempLightMap")) -collapse 1;
+	editorTemplate -callCustom "AEmisssSkinMayaNew" "AEmisssSkinMayaReplace " "lightmap";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kSamples", "kmisssFastSkinMayaTempSamples"))
+		-addControl "samples";
+	editorTemplate -endLayout;
+
+	// Algorithm Control
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kAlgorithmControl", "kmisssFastSkinMayaTempAlgoControl")) -collapse 1;
+
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kScaleConversion", "kmisssFastSkinMayaTempScaleConverse"))
+		-addControl "scale_conversion";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_skin_mayaTemplate.kFalloff", "kmisssFastSkinMayaTempFalloff"))
+		-addControl "falloff";
+	editorTemplate -endLayout;
+	
+	// colour management
+	editorTemplate -beginLayout "Colour Management" -collapse 1;
+	editorTemplate -label "Overall Colour" -addControl "cm_overall_color";
+	editorTemplate -label "Epidermal SSS Colour" -addControl "cm_front_sss_color";
+	editorTemplate -label "Subdermal SSS Colour" -addControl "cm_mid_sss_color";
+	editorTemplate -label "Back SSS Colour" -addControl "cm_back_sss_color";
+	editorTemplate -endLayout;
+
+	AEmentalrayBaseTemplate($nodeName);
+	
+	editorTemplate -endScrollLayout; 
+}

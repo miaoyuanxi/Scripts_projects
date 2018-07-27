@@ -1,0 +1,26 @@
+import c4d
+from c4d import gui,documents
+#Welcome to the world of Python
+c4d.modules.render.InitRenderStruct
+
+def main():
+    MyRenderSetting = doc.GetActiveRenderData()
+    Rnderer_ID = {0:'Standard',1023342:'Physical',1:'Software_OpenGL',300001061:'Hardware_OpenGL',1016630:'CineMan',1019782:'V_Ray',1029988:'Arnold(c4dtoa)',1029525:'Octane_GPURender',1036219:'Redshift_GPURender'}
+    Renderer = Rnderer_ID[MyRenderSetting[c4d.RDATA_RENDERENGINE]]
+    #print("Renderer:"+Renderer+"\n\n")
+    
+    
+    print c4d.PREF_OPENGL_HARDWARE
+    
+    
+    #bc = c4d.GetMachineFeatures()
+    #print bc[c4d.OPENGL_RENDERER_NAME]
+    
+    #if Renderer == "300001061":
+        #print Renderer
+
+    
+    #print InitRenderStruct.version
+    
+if __name__=='__main__':
+    main()

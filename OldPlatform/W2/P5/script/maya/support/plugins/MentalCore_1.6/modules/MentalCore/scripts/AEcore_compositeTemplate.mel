@@ -1,0 +1,18 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_compositeTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_composite_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Composite" -collapse 0;
+			editorTemplate -label "Input" -addControl "input";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

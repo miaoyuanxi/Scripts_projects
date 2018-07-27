@@ -1,0 +1,335 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+source "AEMentalCoreLogo.mel";
+
+global proc AEcore_colour_rampInteractiveNew(string $attr)
+{
+	setUITemplate -pst attributeEditorTemplate;
+		string $rampForm = `formLayout`;
+			// create the controls
+			string $scc	= `attrColorSliderGrp -l "Selected Colour" -sb 1 -cw 3 1 -adj 3`;
+			string $spc	= `attrFieldSliderGrp -label "Selected Position" -cw 3 1 -adj 3`;
+			string $sic	= `attrEnumOptionMenuGrp -l "Interpolation"
+				-ei 0 "None"
+				-ei 1 "Linear"
+				-ei 2 "Cubic"
+				-ei 3 "Quantic"`;
+			
+			string $gradCtrl = `gradientControl -ror 1 -h 80 -at $attr -scc $scc -spc $spc -sic $sic core_hairColour_GradientControl`;
+			
+		setParent ..;
+		
+		formLayout
+			-edit
+				-attachForm $spc "left" -20 
+				-attachNone $spc "right"
+				-attachForm $spc "top" 2
+				-attachNone $spc "bottom"
+
+				-attachForm $scc "left" -20
+				-attachNone $scc "right"
+				-attachControl $scc "top" 3 $spc
+				-attachNone $scc "bottom"
+
+				-attachControl $gradCtrl "left" 0 $spc
+				-attachForm $gradCtrl "right" 0
+				-attachForm $gradCtrl "top" 3
+				-attachNone $gradCtrl "bottom"
+
+				-attachForm $sic "left" -20 
+				-attachNone $sic "right"
+				-attachControl $sic "top" 3 $scc
+				-attachNone $sic "bottom"
+
+				$rampForm;
+	setUITemplate -ppt;
+}
+
+
+global proc AEcore_colour_rampInteractiveReplace(string $attr)
+{
+	gradientControl -edit -at $attr core_hairColour_GradientControl;
+}
+
+/////////////////////
+// Control Dimming //
+/////////////////////
+
+global proc AEcore_hairCheckColour(string $nodeName) {
+	if (`getAttr($nodeName + ".use_shave_col")`) {
+		editorTemplate -dimControl $nodeName "colour" 1;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "colour" 0;
+	}
+}
+
+global proc AEcore_hairCheckSpec(string $nodeName) {
+	if (`getAttr($nodeName + ".en_spec")`) {
+		editorTemplate -dimControl $nodeName "overall_spec" 0;
+		editorTemplate -dimControl $nodeName "prim_spec" 0;
+		editorTemplate -dimControl $nodeName "prim_spec_col" 0;
+		editorTemplate -dimControl $nodeName "prim_sharp" 0;
+		editorTemplate -dimControl $nodeName "prim_dev" 0;
+		editorTemplate -dimControl $nodeName "sec_spec" 0;
+		editorTemplate -dimControl $nodeName "sec_spec_col" 0;
+		editorTemplate -dimControl $nodeName "sec_sharp" 0;
+		editorTemplate -dimControl $nodeName "sec_dev" 0;
+		editorTemplate -dimControl $nodeName "trans_spec" 0;
+		editorTemplate -dimControl $nodeName "trans_spec_col" 0;
+		editorTemplate -dimControl $nodeName "trans_sharp" 0;
+		editorTemplate -dimControl $nodeName "trans_dev" 0;
+		editorTemplate -dimControl $nodeName "spec_var" 0;
+		editorTemplate -dimControl $nodeName "fresnel_amt" 0;
+		editorTemplate -dimControl $nodeName "normal_blend_spec" 0;
+		editorTemplate -dimControl $nodeName "directionality" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "overall_spec" 1;
+		editorTemplate -dimControl $nodeName "prim_spec" 1;
+		editorTemplate -dimControl $nodeName "prim_spec_col" 1;
+		editorTemplate -dimControl $nodeName "prim_sharp" 1;
+		editorTemplate -dimControl $nodeName "prim_dev" 1;
+		editorTemplate -dimControl $nodeName "sec_spec" 1;
+		editorTemplate -dimControl $nodeName "sec_spec_col" 1;
+		editorTemplate -dimControl $nodeName "sec_sharp" 1;
+		editorTemplate -dimControl $nodeName "sec_dev" 1;
+		editorTemplate -dimControl $nodeName "trans_spec" 1;
+		editorTemplate -dimControl $nodeName "trans_spec_col" 1;
+		editorTemplate -dimControl $nodeName "trans_sharp" 1;
+		editorTemplate -dimControl $nodeName "trans_dev" 1;
+		editorTemplate -dimControl $nodeName "spec_var" 1;
+		editorTemplate -dimControl $nodeName "fresnel_amt" 1;
+		editorTemplate -dimControl $nodeName "normal_blend_spec" 1;
+		editorTemplate -dimControl $nodeName "directionality" 1;
+	}
+}
+
+global proc AEcore_hairCheckTrans(string $nodeName) {
+	if (`getAttr($nodeName + ".en_fade")`) {
+		editorTemplate -dimControl $nodeName "fade_root" 0;
+		editorTemplate -dimControl $nodeName "fade_tip" 0;
+		editorTemplate -dimControl $nodeName "fade_distance" 0;
+		editorTemplate -dimControl $nodeName "fade_softness" 0;
+		editorTemplate -dimControl $nodeName "fade_edge" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "fade_root" 1;
+		editorTemplate -dimControl $nodeName "fade_tip" 1;
+		editorTemplate -dimControl $nodeName "fade_distance" 1;
+		editorTemplate -dimControl $nodeName "fade_softness" 1;
+		editorTemplate -dimControl $nodeName "fade_edge" 1;
+	}
+}
+
+global proc AEcore_hairCheckAO(string $nodeName) {
+	if (`getAttr($nodeName + ".en_occlusion")`) {
+		editorTemplate -dimControl $nodeName "ao_mode" 0;
+		editorTemplate -dimControl $nodeName "ao_colour" 0;
+		editorTemplate -dimControl $nodeName "ambient_occ" 0;
+		editorTemplate -dimControl $nodeName "diffuse_occ" 0;
+		editorTemplate -dimControl $nodeName "specular_occ" 0;
+		
+		if (`getAttr($nodeName + ".ao_mode")` == 0) {
+			editorTemplate -dimControl $nodeName "ao_spread" 0;
+			editorTemplate -dimControl $nodeName "ao_samples" 0;
+			editorTemplate -dimControl $nodeName "ao_distance" 0;
+			editorTemplate -dimControl $nodeName "ao_cache_points" 0;
+			
+			editorTemplate -dimControl $nodeName "ro_distance" 1;
+			editorTemplate -dimControl $nodeName "ro_falloff" 1;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "ro_distance" 0;
+			editorTemplate -dimControl $nodeName "ro_falloff" 0;
+		
+			editorTemplate -dimControl $nodeName "ao_spread" 1;
+			editorTemplate -dimControl $nodeName "ao_samples" 1;
+			editorTemplate -dimControl $nodeName "ao_distance" 1;
+			editorTemplate -dimControl $nodeName "ao_cache_points" 1;
+		}
+	}
+	else {
+		editorTemplate -dimControl $nodeName "ao_mode" 1;
+		editorTemplate -dimControl $nodeName "ao_colour" 1;
+		editorTemplate -dimControl $nodeName "ambient_occ" 1;
+		editorTemplate -dimControl $nodeName "diffuse_occ" 1;
+		editorTemplate -dimControl $nodeName "specular_occ" 1;
+	}
+}
+
+global proc AEcore_hairCheckIndirect(string $nodeName) {
+	if (`getAttr($nodeName + ".en_indirect")`) {
+		editorTemplate -dimControl $nodeName "opaque_in_fg" 0;
+		editorTemplate -dimControl $nodeName "indirect_col" 0;
+		editorTemplate -dimControl $nodeName "indirect_sat" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "opaque_in_fg" 1;
+		editorTemplate -dimControl $nodeName "indirect_col" 1;
+		editorTemplate -dimControl $nodeName "indirect_sat" 1;
+	}
+}
+
+global proc AEcore_hairCheckCM(string $nodeName) {
+	if (`getAttr($nodeName + ".en_col_management")`) {
+		editorTemplate -dimControl $nodeName "cm_overall_col" 0;
+		editorTemplate -dimControl $nodeName "cm_colour" 0;
+		editorTemplate -dimControl $nodeName "cm_incandesence" 0;
+		editorTemplate -dimControl $nodeName "cm_prim_spec_col" 0;
+		editorTemplate -dimControl $nodeName "cm_sec_spec_col" 0;
+		editorTemplate -dimControl $nodeName "cm_tran_spec_col" 0;
+		editorTemplate -dimControl $nodeName "cm_indirect_col" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "cm_overall_col" 1;
+		editorTemplate -dimControl $nodeName "cm_colour" 1;
+		editorTemplate -dimControl $nodeName "cm_incandesence" 1;
+		editorTemplate -dimControl $nodeName "cm_prim_spec_col" 1;
+		editorTemplate -dimControl $nodeName "cm_sec_spec_col" 1;
+		editorTemplate -dimControl $nodeName "cm_tran_spec_col" 1;
+		editorTemplate -dimControl $nodeName "cm_indirect_col" 1;
+	}
+}
+
+
+global proc AEcore_hairTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_hair_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Diffuse" -collapse 0;
+			editorTemplate -l "Overall Colour" -addControl "overall_col";
+			editorTemplate -l "Diffuse Scale" -addControl "scale";
+			editorTemplate -l "Back Diffuse Scale" -addControl "back_scale";
+			editorTemplate -label "Incandescence" -addControl "incandesence";
+
+			editorTemplate -beginLayout "Hair Colour" -collapse 0;
+				editorTemplate -l "Use Shave Colouring" -addControl "use_shave_col" "AEcore_hairCheckColour";
+				editorTemplate -addSeparator;
+				editorTemplate -callCustom "AEcore_colour_rampInteractiveNew" "AEcore_colour_rampInteractiveReplace" "colour";	
+			editorTemplate -endLayout;
+						
+			editorTemplate -beginLayout "Variation" -collapse 0;
+				editorTemplate -l "Hue" -addControl "h_variation";
+				editorTemplate -l "Saturation" -addControl "s_variation";
+				editorTemplate -l "Value" -addControl "v_variation";
+				editorTemplate -addSeparator;
+				editorTemplate -l "Red" -addControl "r_variation";
+				editorTemplate -l "Green" -addControl "g_variation";
+				editorTemplate -l "Blue" -addControl "b_variation";
+			editorTemplate -endLayout;
+			
+		editorTemplate -endLayout;	
+		
+		editorTemplate -beginLayout "Ambient" -collapse 0;
+			editorTemplate -label "Ambient Contribution" -addControl "ambient_contrib";		
+			editorTemplate -label "Custom Enviroment" -addControl "custom_amb_env";	
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Specular" -collapse 0;
+			editorTemplate -l "Enable Specular" -addControl "en_spec" "AEcore_hairCheckSpec";
+			editorTemplate -l "Overall Amount" -addControl "overall_spec";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Primary Specular" -addControl "prim_spec";
+			editorTemplate -l "Colour" -addControl "prim_spec_col";
+			editorTemplate -l "Sharpness" -addControl "prim_sharp";
+			editorTemplate -l "Shift" -addControl "prim_dev";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Secondary Specular" -addControl "sec_spec";
+			editorTemplate -l "Colour" -addControl "sec_spec_col";
+			editorTemplate -l "Sharpness" -addControl "sec_sharp";
+			editorTemplate -l "Shift" -addControl "sec_dev";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Translucent Specular" -addControl "trans_spec";
+			editorTemplate -l "Colour" -addControl "trans_spec_col";
+			editorTemplate -l "Sharpness" -addControl "trans_sharp";
+			editorTemplate -l "Shift" -addControl "trans_dev";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -l "Specular Variation" -addControl "spec_var";
+			editorTemplate -l "Fresnel Amount" -addControl "fresnel_amt";
+			editorTemplate -l "Light Direction Blend" -addControl "normal_blend_spec";
+			editorTemplate -l "Direction Attenuation" -addControl "directionality";
+			
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Transparency" -collapse 0;
+			editorTemplate -l "Enable Transparency" -addControl "en_fade" "AEcore_hairCheckTrans";
+			editorTemplate -addControl "fade_root";
+			editorTemplate -addControl "fade_tip";
+			editorTemplate -addControl "fade_distance";
+			editorTemplate -addControl "fade_softness";
+			editorTemplate -addControl "fade_edge";			
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Occlusion" -collapse 1;
+			editorTemplate -l "Enable Occlusion" -addControl "en_occlusion" "AEcore_hairCheckAO";
+			editorTemplate -l "Occlusion Mode" -addControl "ao_mode" "AEcore_hairCheckAO";
+			editorTemplate -l "Occlusion Colour" -addControl "ao_colour";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Occlude Ambient" -addControl "ambient_occ";
+			editorTemplate -label "Occlude Diffuse" -addControl "diffuse_occ";
+			editorTemplate -label "Occlude Specular" -addControl "specular_occ";
+			
+			editorTemplate -beginLayout "Ambient Occlusion" -collapse 1;
+				editorTemplate -l "Spread" -addControl "ao_spread";
+				editorTemplate -l "Samples" -addControl "ao_samples";
+				editorTemplate -l "Distance" -addControl "ao_distance";
+				editorTemplate -l "Cache Points" -addControl "ao_cache_points";
+			editorTemplate -endLayout;
+			
+			editorTemplate -beginLayout "Root Occlusion" -collapse 1;
+				editorTemplate -l "Distance Ratio" -addControl "ro_distance";
+				editorTemplate -l "Falloff" -addControl "ro_falloff";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Indirect Illumination" -collapse 1;
+			editorTemplate -label "Enable Indirect" -addControl "en_indirect" "AEcore_hairCheckIndirect";
+			editorTemplate -label "Finalgather Mode" -addControl "opaque_in_fg";
+			editorTemplate -label "Indirect Colour" -addControl "indirect_col";
+			editorTemplate -label "Indirect Saturation" -addControl "indirect_sat";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Light Bloom" -collapse 1;
+			editorTemplate -label "Bloom Scale" -addControl "bloom_scale";
+			editorTemplate -label "Bloom Tint" -addControl "bloom_tint";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Options" -collapse 1;
+			editorTemplate -label "Output Override" -addControl "output_override";
+			editorTemplate -beginLayout "Colour Management" -collapse 1;
+				editorTemplate -label "Enable Colour Management" -addControl "en_col_management" "AEcore_hairCheckCM";
+				editorTemplate -addSeparator;
+				editorTemplate -label "Overall Colour" -addControl "cm_overall_col";
+				editorTemplate -label "Colour" -addControl "cm_colour";
+				editorTemplate -label "Incandescence" -addControl "cm_incandesence";
+				editorTemplate -label "Pri Spec Colour" -addControl "cm_prim_spec_col";
+				editorTemplate -label "Sec Spec Colour" -addControl "cm_sec_spec_col";
+				editorTemplate -label "Trans Spec Colour" -addControl "cm_tran_spec_col";
+				editorTemplate -label "Indirect Colour" -addControl "cm_indirect_col";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		
+		AEmentalrayCommonMaterialTemplate($nodeName, 1, "overall_col");
+		
+		editorTemplate -suppress "colour";
+		editorTemplate -suppress "caching";
+		editorTemplate -suppress "nodeState";
+
+	editorTemplate -endScrollLayout;
+}

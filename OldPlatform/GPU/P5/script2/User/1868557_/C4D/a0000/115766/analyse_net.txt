@@ -1,0 +1,38 @@
+------------texture-----------------
+
+------------Image Size-----------------
+
+Width:1280
+
+Height:720
+
+------------Render Frame-----------------
+
+Start frame:28
+
+End frame:28
+
+------------Render Format-----------------
+
+RI_Format:PNG
+
+MP_Format:Photoshop(PSD)
+
+------------Multi-Pass-----------------
+
+------------camera-----------------
+
+cameraName:Camera
+
+------------RFMesh_name_path-----------------
+
+RFMesh_Name:ParticleMesh01
+
+RFMesh_path:V:\167596\ParticleMesh01_00001.bin
+
+RFMesh_Name:ParticleMesh01
+
+RFMesh_path:V:\167596\ParticleMesh01_00001.bin
+
+------------RFParticle_name_path-----------------
+

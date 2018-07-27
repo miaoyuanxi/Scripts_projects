@@ -1,0 +1,10 @@
+global proc render_163455(string $proj, string $rd)
+{
+	print("\nScript - render_163455 Running...\n");
+	// set project path
+	dirmap -en 1;
+		dirmap -m "C:/KB03" "//10.50.1.4/d/inputData/maya/163000/163455/KB03";
+		dirmap -m "C:/KB03/3_PostProduction/Lighting/Z_Ep##" "//10.50.1.4/d/inputData/maya/163000/163455/KB03/3_PostProduction/Lighting/Z_Ep";	
+		dirmap -m "C:/KB03/2_Production/Assets/Z_ep##" "//10.50.1.4/d/inputData/maya/163000/163455/KB03/2_Production/Assets/Z_ep";
+
+}

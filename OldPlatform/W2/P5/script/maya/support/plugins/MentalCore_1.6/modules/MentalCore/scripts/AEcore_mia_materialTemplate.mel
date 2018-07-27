@@ -1,0 +1,253 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+source "AEMentalCoreUIRes.mel";
+
+source "mia_material_functions.mel";
+
+// Use radio buttons instead of check boxes for the "thin_walled" and
+// "do_refractive_caustics" attributes for better usability
+global proc AEmiaXTransCustomNew(string $thinWalled, string $refractiveCaustics) {
+	rowLayout -nc 2 -columnWidth2 146 100 -columnAttach2 "left" "left";
+		text -label " " "dummyText";
+		columnLayout;
+		radioCollection thinCollectionX;
+			radioButton -label (MC_UIRes("m_AEmia_material_xTemplate.kThinWalled", "kmiaMaterialxTempThinWalled"))
+				-data 1
+				-annotation (MC_UIRes("m_AEmia_material_xTemplate.kThinWalledAnn", "kmiaMaterialxTempThinWalledAnn"))
+				thinRadioX;
+			radioButton -label (MC_UIRes("m_AEmia_material_xTemplate.kSolid", "kmiaMaterialxTempSolid"))
+				-data 0
+				-annotation (MC_UIRes("m_AEmia_material_xTemplate.kSolidAnn", "kmiaMaterialxTempSolidAnn"))
+				solidRadioX;
+		connectControl thinCollectionX $thinWalled;
+		setParent ..;
+	setParent ..;
+
+	separator -height 10;
+	
+	rowLayout -nc 2 -columnWidth2 146 100 -columnAttach2 "left" "left";
+		text -label " " "dummyText";
+		columnLayout;
+		radioCollection refrCausticCollectionX;
+			radioButton -label (MC_UIRes("m_AEmia_material_xTemplate.kRefrCaustic", "kmiaMaterialxTempRefCaustic"))
+				-data 1
+				-annotation (MC_UIRes("m_AEmia_material_xTemplate.kRefrCausticAnn", "kmiaMaterialxTempRefCausticAnn"))
+				refrCausticRadioX;
+			radioButton -label (MC_UIRes("m_AEmia_material_xTemplate.kTransShadow", "kmiaMaterialxTempTransShadow"))
+				-data 0
+				-annotation (MC_UIRes("m_AEmia_material_xTemplate.kTransShadowAnn", "kmiaMaterialxTempTransShadowAnn"))
+				transShadowRadioX;
+		connectControl refrCausticCollectionX $refractiveCaustics;
+		setParent ..;
+	setParent ..;
+
+	separator -height 10;
+}
+
+global proc AEmiaXTransCustomReplace(string $thinWalled, string $refractiveCaustics) {
+	connectControl thinCollectionX $thinWalled;
+}
+
+// For "Overall Bump" and "Standard Bump" the default control created by
+// editorTemplate is a set of three float fields (the attrs are vectors). We
+// want to just connect these attrs to another node however so we override
+// here
+global proc AEmiaXOverallBumpNew(string $attr) {
+	attrNavigationControlGrp 
+		-label (MC_UIRes("m_AEmia_material_xTemplate.kOverallBump", "kOverallBump"))
+		-annotation ""
+		-attribute $attr
+		overallBumpControlX;
+}
+
+global proc AEmiaXOverallBumpReplace(string $attr) {
+	attrNavigationControlGrp -edit
+		-attribute $attr
+		overallBumpControlX;
+}
+
+global proc AEmiaXStandardBumpNew(string $attr) {
+	attrNavigationControlGrp 
+		-label (MC_UIRes("m_AEmia_material_xTemplate.kStandardBump", "kStandardBump"))
+		-annotation ""
+		-attribute $attr
+		standardBumpControlX;
+}
+
+global proc AEmiaXStandardBumpReplace(string $attr) {
+	attrNavigationControlGrp -edit
+		-attribute $attr
+		standardBumpControlX;
+}
+
+/////////////////////
+// Control Dimming //
+/////////////////////
+
+global proc AEcore_mia_materialCheckAO(string $nodeName) {
+	if (`getAttr($nodeName + ".en_occlusion")`) {
+		editorTemplate -dimControl $nodeName "ao_trans_mode" 0;
+		editorTemplate -dimControl $nodeName "ao_trans_depth" 0;
+		editorTemplate -dimControl $nodeName "ao_cache_points" 0;
+		editorTemplate -dimControl $nodeName "ambient_occ" 0;
+		editorTemplate -dimControl $nodeName "diffuse_occ" 0;
+		editorTemplate -dimControl $nodeName "specular_occ" 0;
+		editorTemplate -dimControl $nodeName "reflection_occ" 0;
+		editorTemplate -dimControl $nodeName "subsurface_occ" 0;
+		editorTemplate -dimControl $nodeName "translucency_occ" 0;
+		editorTemplate -dimControl $nodeName "ao_enable_overrides" 0;
+		
+		if (`getAttr($nodeName + ".ao_enable_overrides")`) {
+			editorTemplate -dimControl $nodeName "ao_override_spread" 0;
+			editorTemplate -dimControl $nodeName "ao_override_samples" 0;
+			editorTemplate -dimControl $nodeName "ao_override_distance" 0;
+			editorTemplate -dimControl $nodeName "ao_override_colour" 0;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "ao_override_spread" 1;
+			editorTemplate -dimControl $nodeName "ao_override_samples" 1;
+			editorTemplate -dimControl $nodeName "ao_override_distance" 1;
+			editorTemplate -dimControl $nodeName "ao_override_colour" 1;
+		}
+	}
+	else {
+		editorTemplate -dimControl $nodeName "ao_trans_mode" 1;
+		editorTemplate -dimControl $nodeName "ao_trans_depth" 1;
+		editorTemplate -dimControl $nodeName "ao_cache_points" 1;
+		editorTemplate -dimControl $nodeName "ambient_occ" 1;
+		editorTemplate -dimControl $nodeName "diffuse_occ" 1;
+		editorTemplate -dimControl $nodeName "specular_occ" 1;
+		editorTemplate -dimControl $nodeName "reflection_occ" 1;
+		editorTemplate -dimControl $nodeName "subsurface_occ" 1;
+		editorTemplate -dimControl $nodeName "translucency_occ" 1;
+		editorTemplate -dimControl $nodeName "ao_enable_overrides" 1;
+		editorTemplate -dimControl $nodeName "ao_override_spread" 1;
+		editorTemplate -dimControl $nodeName "ao_override_samples" 1;
+		editorTemplate -dimControl $nodeName "ao_override_distance" 1;
+		editorTemplate -dimControl $nodeName "ao_override_colour" 1;
+	}
+}
+
+global proc AEcore_mia_materialCheckBaked(string $nodeName) {
+	if (`getAttr($nodeName + ".en_baked_beauty")`)
+		editorTemplate -dimControl $nodeName "baked_beauty" 0;
+	else 
+		editorTemplate -dimControl $nodeName "baked_beauty" 1;
+	
+	if (`getAttr($nodeName + ".en_baked_occlusion")`)
+		editorTemplate -dimControl $nodeName "baked_occlusion" 0;
+	else 
+		editorTemplate -dimControl $nodeName "baked_occlusion" 1;
+}
+	
+
+// MAIN TEMPLATE
+//
+
+global proc AEcore_mia_materialTemplate ( string $nodeName )
+{
+	AEMentalCoreLogo("mc_core_mia_material_logo.png");
+	
+	AEswatchDisplay $nodeName; 
+
+	editorTemplate -beginScrollLayout;		
+		editorTemplate -beginLayout "Common Material Attributes" -collapse 0;
+			editorTemplate -label "Colour" -addControl "diffuse";
+			editorTemplate -addControl "cutout_opacity";
+			editorTemplate -label "Incandescence" -addControl "incandesence";
+			editorTemplate -addControl "subsurface";			
+			editorTemplate -label "Diffuse Weight" -addControl "diffuse_weight";			
+			editorTemplate -label "Roughness" -addControl "diffuse_roughness";
+			//editorTemplate -label "Hardware Color" -addControl "diffuse";
+		editorTemplate -endLayout;	
+
+		editorTemplate -beginLayout "Bump" -collapse 1;
+			AEmiaMaterialBump;
+			editorTemplate -callCustom "AEmiaXOverallBumpNew" "AEmiaXOverallBumpReplace" "overall_bump";
+			editorTemplate -callCustom "AEmiaXStandardBumpNew" "AEmiaXStandardBumpReplace" "standard_bump";
+			editorTemplate -label "Normal Map" -addControl "normal_map";
+		editorTemplate -endLayout;	
+		
+		editorTemplate -beginLayout "Ambient" -collapse 0;
+			editorTemplate -label "Ambient Contribution" -addControl "ambient_contrib";		
+			editorTemplate -label "Custom Enviroment" -addControl "custom_amb_env";	
+		editorTemplate -endLayout;
+			    			
+		editorTemplate -beginLayout "Specular" -collapse 1;
+			editorTemplate -label "Specular Balance" -addControl "hl_vs_refl_balance";
+		editorTemplate -endLayout;
+			
+		// Call mia functions
+		AEmiaMaterialReflection;
+		AEmiaMaterialRefraction("AEmiaXTransCustomNew", "AEmiaXTransCustomReplace");
+		AEmiaMaterialAnisotropy;
+		AEmiaMaterialBrdf;
+		AEmiaMaterialTranslucency;
+		AEmiaMaterialIndirectIllum;
+		AEmiaMaterialInterpolation;
+		
+		editorTemplate -beginLayout "Occlusion" -collapse 1;
+			editorTemplate -label "Enable Occlusion" -addControl "en_occlusion" "AEcore_mia_materialCheckAO";
+			editorTemplate -label "Transparency Mode" -addControl "ao_trans_mode";
+			editorTemplate -label "Transparency Depth" -addControl "ao_trans_depth";
+			editorTemplate -label "Cache Points" -addControl "ao_cache_points";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Reflection Occlusion" -addControl "reflectdir_occ";
+			editorTemplate -label "Occlude Ambient" -addControl "ambient_occ";
+			editorTemplate -label "Occlude Diffuse" -addControl "diffuse_occ";
+			editorTemplate -label "Occlude Specular" -addControl "specular_occ";
+			editorTemplate -label "Occlude Reflection" -addControl "reflection_occ";
+			editorTemplate -label "Occlude Subsurface" -addControl "subsurface_occ";
+			editorTemplate -label "Occlude Translucency" -addControl "translucency_occ";
+			editorTemplate -beginLayout "Occlusion Overrides" -collapse 1;
+				editorTemplate -label "Enable Overrides" -addControl "ao_enable_overrides" "AEcore_mia_materialCheckAO";
+				editorTemplate -label "Spread" -addControl "ao_override_spread";
+				editorTemplate -label "Samples" -addControl "ao_override_samples";
+				editorTemplate -label "Distance" -addControl "ao_override_distance";
+				editorTemplate -label "Colour" -addControl "ao_override_colour";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Light Bloom" -collapse 1;
+			editorTemplate -label "Bloom Scale" -addControl "bloom_scale";
+			editorTemplate -label "Bloom Tint" -addControl "bloom_tint";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Baked Channels" -collapse 1;
+			editorTemplate -label "Enable Beauty" -addControl "en_baked_beauty" "AEcore_mia_materialCheckBaked";
+			editorTemplate -label "Baked Beauty" -addControl "baked_beauty";
+			editorTemplate -label "Enable Occlusion" -addControl "en_baked_occlusion" "AEcore_mia_materialCheckBaked";
+			editorTemplate -label "Baked Occlusion" -addControl "baked_occlusion";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Options" -collapse 1;
+			editorTemplate -label "Bump Mode" -addControl "bump_mode";
+			editorTemplate -label "Mentalray Bump" -addControl "bump";
+			editorTemplate -label "Output Override" -addControl "output_override";
+			editorTemplate -beginLayout "Colour Management" -collapse 1;
+				editorTemplate -label "Colour" -addControl "cm_diffuse";
+				editorTemplate -label "Incandescence" -addControl "cm_incandesence";
+				editorTemplate -label "Refl Colour" -addControl "cm_refl_color";
+				editorTemplate -label "Refl Falloff Colour" -addControl "cm_refl_falloff_color";
+				editorTemplate -label "Refr Colour" -addControl "cm_refr_color";
+				editorTemplate -label "Refr Falloff Colour" -addControl "cm_refr_falloff_color";
+				editorTemplate -label "Translucence Colour" -addControl "cm_refr_trans_color";
+				editorTemplate -label "Baked Beauty" -addControl "cm_baked_beauty";
+				editorTemplate -label "Baked Occulsion" -addControl "cm_baked_occ";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+
+		editorTemplate -endLayout;
+	
+		//hardware layout
+		AEmentalrayCommonMaterialTemplate($nodeName, 1, "diffuse");
+		
+		editorTemplate -suppress "backface_cull";
+		editorTemplate -suppress "brdf_conserve_energy";
+		editorTemplate -suppress "caching"; 
+		editorTemplate -suppress "nodeState"; 
+	
+			
+	editorTemplate -endScrollLayout;
+}

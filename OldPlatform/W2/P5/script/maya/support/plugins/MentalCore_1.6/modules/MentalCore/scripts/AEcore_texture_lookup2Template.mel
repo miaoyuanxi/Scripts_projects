@@ -1,0 +1,108 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_texture_lookup2CheckFilter(string $nodeName) {
+	if (`getAttr($nodeName + ".el_filter")`) {
+		editorTemplate -dimControl $nodeName "el_maxminor" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "el_maxminor" 1;
+	}
+}
+
+global proc AEcore_texture_lookup2CheckBlur(string $nodeName) {
+	if (`getAttr($nodeName + ".en_blur")`) {
+		editorTemplate -dimControl $nodeName "blur_res" 0;
+		editorTemplate -dimControl $nodeName "blur_amount" 0;
+		editorTemplate -dimControl $nodeName "blur_quality" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "blur_res" 1;
+		editorTemplate -dimControl $nodeName "blur_amount" 1;
+		editorTemplate -dimControl $nodeName "blur_quality" 1;
+
+	}
+}
+
+
+global proc AEcore_texture_lookup2Template( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_texture_lookup_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Texture" -collapse 0;
+			editorTemplate -addControl "texture";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Elliptical Filtering" -collapse 0;
+			editorTemplate -label "Enable Elliptical Filtering" -addControl "el_filter" "AEcore_texture_lookup2CheckFilter";
+			editorTemplate -label "Anti-aliasing Level" -addControl "el_maxminor";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Transform" -collapse 0;
+			editorTemplate -addControl "translate";
+			editorTemplate -addControl "repeat";
+			
+			editorTemplate -addControl "mirror_x";
+			editorTemplate -addControl "mirror_y";
+			editorTemplate -addControl "wrap_x";
+			editorTemplate -addControl "wrap_y";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Crop Min" -addControl "min";
+			editorTemplate -label "Crop Max" -addControl "max";
+		editorTemplate -endLayout;
+
+		editorTemplate -beginLayout "Color Balance" -collapse 0;
+			editorTemplate -label "Hue" -addControl "hue";
+			editorTemplate -label "Value" -addControl "val";
+			editorTemplate -label "Saturation" -addControl "sat";
+			
+			editorTemplate -addSeparator;
+
+			editorTemplate -addControl "gain";
+			editorTemplate -addControl "offset";
+			editorTemplate -addControl "gamma";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -beginNoOptimize;
+			editorTemplate -addControl "invert";
+			editorTemplate -addControl "alpha_is_luminance";
+			editorTemplate -endNoOptimize;
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Blur" -collapse 1;
+			editorTemplate -label "Enable Blur" -addControl "en_blur" "AEcore_texture_lookup2CheckBlur";
+			editorTemplate -label "Resolution" -addControl "blur_res";
+			editorTemplate -label "Amount" -addControl "blur_amount";
+			editorTemplate -label "Quality" -addControl "blur_quality";
+		editorTemplate -endLayout;
+			
+		editorTemplate -beginLayout "UV Coordinates" -collapse 1;
+			editorTemplate -label "Use Custom UV" -addControl "use_custom_uv";
+			editorTemplate -label "Custom UV" -addControl "custom_uv";
+		editorTemplate -endLayout;
+
+		editorTemplate -beginLayout "Proxy Texture" -collapse 1;
+			editorTemplate -label "Proxy Texture" -addControl "proxy_texture";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Ray Switch Textures" -collapse 1;
+			editorTemplate -label "Finalgather" -addControl "fg_texture";
+			editorTemplate -label "Global Illum" -addControl "gi_texture";
+			editorTemplate -label "Reflection" -addControl "refl_texture";
+			editorTemplate -label "Refraction" -addControl "refr_texture";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+		
+	editorTemplate -suppress "el_eccmax";
+
+	editorTemplate -endScrollLayout;
+}

@@ -1,0 +1,5 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+python("import mentalcore; mentalcore.startup()");

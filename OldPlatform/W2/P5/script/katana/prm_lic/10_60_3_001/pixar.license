@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE PixarLicense SYSTEM "http://renderman.pixar.com/schema/PixarLicense.dtd">
+<PixarLicense>
+  <LicenseInfo>
+    <SerialNumber>815-1544-09302-0804-520029</SerialNumber>
+    <Created>6-nov-2015 00:28:42</Created>
+    <Licensing>PixarLicense-20.0</Licensing>
+    <CustomerInfo>
+      <CustomerName>Rayvision</CustomerName>
+      <ContactName>Rayvision</ContactName>
+      <Phone></Phone>
+      <Fax></Fax>
+      <Email>san@rayvision.com</Email>
+    </CustomerInfo>
+    <LicensedHost>
+    <HostIdentifier>005056a3bc8d</HostIdentifier>
+      <LicenseAccess type="floating">9010@10.60.95.9</LicenseAccess>
+    </LicensedHost>
+  </LicenseInfo>
+</PixarLicense>
+

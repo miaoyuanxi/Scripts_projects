@@ -1,0 +1,39 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_displaceCheckInputMode(string $nodeName) {
+	int $mode = `getAttr($nodeName + ".input_mode")`;
+
+	if ($mode == 1) {
+		editorTemplate -dimControl $nodeName "displacement_c" 1;
+		editorTemplate -dimControl $nodeName "displacement_s" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "displacement_c" 0;
+		editorTemplate -dimControl $nodeName "displacement_s" 1;
+	}
+}
+
+global proc AEcore_displaceTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_displace_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Properties" -collapse 0;
+			editorTemplate -label "Input Mode" -addControl "input_mode" "AEcore_displaceCheckInputMode";
+			editorTemplate -label "Color Displacement" -addControl "displacement_c";
+			editorTemplate -label "Scalar Displacement" -addControl "displacement_s";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Displacement Range" -addControl "range";
+			editorTemplate -label "Displacement Scale" -addControl "scale";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+		
+		editorTemplate -suppress "space";
+
+	editorTemplate -endScrollLayout;
+}

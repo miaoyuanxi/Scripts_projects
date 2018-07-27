@@ -1,0 +1,75 @@
+task onerror  
+node:execute echo2 An error occurred   
+endtask  
+set ENFREQUIREMENTS Windows;
+ task main  
+ onerror fail  
+ node:cd c:/  
+ node:mkdir log  
+ node:cd log  
+ node:mkdir 212869  
+ node:cd \  
+ if ( -m C:/enfwork/$taskId/zzz.txt ) then  
+ node:cd c:/  
+ node:mkdir enfwork  
+ node:cd c:/enfwork  
+ node:mkdir $taskId  
+ node:cd $taskId  
+ node:mkdir output 
+ node:mkdir outputbak 
+ else  
+ node:cd C:/enfwork/$taskId
+ node:execute "del /F /Q zzz.txt">>$logDir$ENFJOBNAME.txt 
+ node:execute echo ..>zzz.txt 
+ endif  
+ node:execute "c:\\fcopy\\FastCopy.exe /cmd=move /speed=full /force_close  /no_confirm_stop /force_start C:\enfwork\\212869\output\*.*  /to=C:\enfwork\\212869\outputbak">>$logDir$ENFJOBNAME.txt
+ node:execute echo2 -----------start $ENFJOBNAME--------- >>$logDir$ENFJOBNAME.txt  
+ node:execute echo2 nodeName : $ENFHOSTNAME >>$logDir$ENFJOBNAME.txt  
+ node:execute echo2 frame : $ENFJOBNAME >>$logDir$ENFJOBNAME.txt 
+ node:execute echo2 project : /c4d_project/test/test >>$logDir$ENFJOBNAME.txt 
+ node:execute echo2 fileName : /c4d_project/test/test/test.c4d >>$logDir$ENFJOBNAME.txt 
+ node:execute \\10.50.1.3\pool\tools\pTime startTime= >$userId-$taskId-$ENFJOBNAME.txt
+node:execute echo2 start Render... >>$logDir$ENFJOBNAME.txt   
+ node:execute echo2 ""C:\Program Files\MAXON\CINEMA 4D R14\CINEMA 4D 64 Bit.exe" -noopengl -nogui  -frame  $frame $frame   -render  "$filePath"   -oresolution   $imageWidth $imageHeight   -oformat  $extensions   -oimage  C:\enfwork\$taskId\output\$outputFileName " >>$logDir$ENFJOBNAME.txt 2>&1  
+ node:execute ""C:\Program Files\MAXON\CINEMA 4D R14\CINEMA 4D 64 Bit.exe" -noopengl -nogui  -frame  $frame $frame   -render  "$filePath"   -oresolution   $imageWidth $imageHeight   -oformat  $extensions   -oimage  C:\enfwork\$taskId\output\$outputFileName " >>$logDir$ENFJOBNAME.txt 2>&1  
+node:execute "cscript /nologo c:\\script\\vbs\\convert.vbs  $userId $taskId  $ENFJOBNAME  "\\10.50.1.4\dd\outputData\small\19121\212869\"" >>$logDir$ENFJOBNAME-debug.txt 2>&1 
+  node:execute "c:\\fcopy\\FastCopy.exe /speed=full /force_close  /no_confirm_stop /force_start C:\enfwork\\212869\output /to=\\10.50.1.4\dd\outputData\19121\212869">>$logDir$ENFJOBNAME.txt
+  node:execute "\\10.50.1.3\pool\tools\\SingleFrameCheck.exe"  C:\enfwork\\212869\output \\10.50.1.4\dd\outputData\19121\212869 >>$logDir$ENFJOBNAME-debug.txt
+  node:execute "c:\\fcopy\\FastCopy.exe /cmd=move /speed=full /force_close  /no_confirm_stop /force_start C:\enfwork\\212869\output\*.*  /to=C:\enfwork\\212869\outputbak">>$logDir$ENFJOBNAME.txt
+ node:execute echo frame=$frame >>$userId-$taskId-$ENFJOBNAME.txt  
+ node:execute echo runID=$ENFRUNID >>$userId-$taskId-$ENFJOBNAME.txt  
+ node:execute echo nodeName=$ENFHOSTNAME >>$userId-$taskId-$ENFJOBNAME.txt  
+ node:execute echo inputName=$fileName >>$userId-$taskId-$ENFJOBNAME.txt  
+ node:execute echo zone=1 >>$userId-$taskId-$ENFJOBNAME.txt  
+ node:execute echo customerPackageId=0 >>$userId-$taskId-$ENFJOBNAME.txt 
+ node:execute echo firstFrame=0 >>$userId-$taskId-$ENFJOBNAME.txt  
+ node:execute \\10.50.1.3\pool\tools\pTime endTime= >>$userId-$taskId-$ENFJOBNAME.txt
+ node:execute xcopy /Y /V /f $userId-$taskId-$ENFJOBNAME.txt  $transfer >>$logDir$ENFJOBNAME-debug.txt   
+ node:execute echo2 -----------end $ENFJOBNAME--------- >>$logDir$ENFJOBNAME.txt  
+ node:sleep 2  
+ endtask  
+ set ENFFAIL_LIMIT 3;  
+ set ENFRESTART_LIMIT 2;  
+ set ENFPRIORITY_LEVEL 35;  
+ set ENFNODE_LIMIT 150;  
+ variable taskId constant "212869";  
+ variable userId constant "19121";  
+ variable project constant "/test/test";  
+ variable projectPath constant "\\\\10.50.1.4\\dd\\inputData\\c4d\\19121\\test\\test";  
+ variable fileName constant "test.c4d";  
+ variable filePath constant "\\\\10.50.1.4\\dd\\inputData\\c4d\\19121\\test\\test\\test.c4d";  
+ variable enginePath constant "C:/Program Files/MAXON/CINEMA 4D R14";  
+ variable layers constant "";  
+ variable extensions constant "TGA";  
+ variable imageWidth constant "1280";  
+ variable imageHeight constant "720";  
+ variable outputFileName constant "test";  
+ variable outputFileName_mp constant "test";  
+ variable transfer constant "\\\\10.50.1.229\\transfer\\txt\\cost\\";  
+ variable logDir constant "c:/log/212869/";  
+  variable frame index 0 value;  
+ indexcount 1  
+ jobs  
+"frame0000" "0"
+"frame0001" "1"
+ endjobs  

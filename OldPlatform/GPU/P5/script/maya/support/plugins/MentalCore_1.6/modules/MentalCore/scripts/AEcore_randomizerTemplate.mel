@@ -1,0 +1,28 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_randomizerTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_randomizer_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -label "Mode" -addControl "mode";
+			editorTemplate -label "Seed" -addControl "seed";
+			editorTemplate -label "Default Colour" -addControl "default_colour";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Hue Variation" -addControl "hue_variation";
+			editorTemplate -label "Saturation Variation" -addControl "sat_variation";
+			editorTemplate -label "Value Variation" -addControl "val_variation";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Random Colour Maps" -addControl "rand_colour";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

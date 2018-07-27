@@ -1,0 +1,160 @@
+//  Copyright (c)2012 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+/////////////////////
+// Shader Override //
+/////////////////////
+
+global proc mc_propagate_hair_shader(string $node)
+{
+	string $envNode[] =
+		`listConnections ($node + ".mc_shaderOverride")`;
+
+	if (size($envNode) && !`about -b`)
+		showEditor $envNode[0];
+		
+	mc_update_hair_shader $node;
+}
+
+global proc mc_update_hair_shader(string $node)
+{
+	int $env = `connectionInfo -id ($node + ".mc_shaderOverride")`;
+	if ($env)
+		button -e -label "Delete"
+			-command ("mc_delete_hair_shader \"" + $node + "\"")
+			core_CreateFurOverrideButton;
+	else
+		button -e
+			-label "Create"
+			-command ("mc_create_hair_shader \"" + $node + "\"")
+			core_CreateFurOverrideButton;
+	control -e -en $env core_OpenFurOverrideButton;
+}
+
+global proc mc_create_hair_shader(string $node)
+{
+	string $shader = `mrCreateCustomNode -asShader "" "core_hair"`;
+	connectAttr ($shader + ".message") ($node + ".mc_shaderOverride");
+	
+	mc_update_hair_shader $node;
+}
+
+global proc mc_delete_hair_shader(string $node)
+{
+	//remove shader and geo
+	string $shader[] = `listConnections ($node + ".mc_shaderOverride")`;
+	if (size($shader))
+	{
+		//remove shader
+		delete $shader[0];
+	}
+	
+	mc_update_hair_shader $node;
+}
+
+global proc AEhair_shader_new(string $attr) 
+{
+	string $node = plugNode($attr);
+	
+	rowLayout -numberOfColumns 3 core_hairOverrideLayout;
+		text -label "Custom Shader";
+		button -label "Create"
+			-command ("mc_create_hair_shader \"" + $node + "\"")
+				core_CreateFurOverrideButton;
+		symbolButton -image "inArrow.xpm"
+			-command ("mc_propagate_hair_shader \"" + $node + "\"")
+				core_OpenFurOverrideButton;
+	setParent ..;
+	
+	mc_update_hair_shader $node;
+}
+
+global proc AEhair_shader_replace(string $attr) 
+{	
+	string $node = plugNode($attr);
+	
+	if (!`attributeExists "mc_shaderOverride" $node`)
+		addAttr -at "message" -ln "mc_shaderOverride" $node;
+
+	button -e -command ("mc_create_hair_shader \"" + $node + "\"")
+			core_CreateFurOverrideButton;
+	symbolButton -e -command ("mc_propagate_hair_shader \"" + $node + "\"")
+			core_OpenFurOverrideButton;
+			
+	mc_update_hair_shader $node;
+}
+
+//------------------------
+
+
+global proc AEpfxHairTemplate ( string $nodeName )
+{
+	editorTemplate -beginScrollLayout;
+
+		editorTemplate -suppress "useObjectColor";
+		editorTemplate -suppress "objectColor";
+		editorTemplate -suppress "drawOverride";
+		editorTemplate -suppress "brush";
+		editorTemplate -suppress "renderHairs";
+		editorTemplate -suppress "curveMode";
+		editorTemplate -suppress "leafCurveMode";
+		editorTemplate -suppress "flowerCurveMode";
+
+		editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kDisplayQuality")) "displayPercent";
+		editorTemplate -addControl "drawAsMesh";
+		editorTemplate -addControl "sampleDensity";
+		editorTemplate -addControl "seed";
+		editorTemplate -addControl "drawOrder";
+		editorTemplate -addControl "surfaceOffset";
+		editorTemplate -addControl "motionBlurred";
+		editorTemplate -interruptOptimize;
+		editorTemplate -addControl "primaryVisibility";
+
+		// PfxHair Render
+		// 
+		editorTemplate -beginLayout (uiRes("m_AEpfxHairTemplate.kControlCurves")) -collapse 1;
+			editorTemplate -addControl "controlCurve";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout (uiRes("m_AEpfxHairTemplate.kMeshOutput")) -collapse 1;
+			editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kColorPerVertex")) "meshVertexColorMode";
+			editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kHardEdges")) "meshHardEdges";
+			editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kOutputQuads")) "meshQuadOutput";
+			editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kPolyLimit")) "meshPolyLimit";
+			editorTemplate -addControl "cameraPoint";
+			editorTemplate -beginLayout (uiRes("m_AEpfxHairTemplate.kMeshVeertexDetails")) -collapse 1;
+				editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kMainVertexBuffer")) "mainVertBufSize";
+				editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kLeafVertexBuffer")) "leafVertBufSize";
+				editorTemplate -addControl -label (uiRes("m_AEpfxHairTemplate.kFlowerVertexBuffer")) "flowerVertBufSize";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout (uiRes("m_AEpfxHairTemplate.kNurbsOutput")) -collapse 1;
+			editorTemplate -addControl "degree";
+			editorTemplate -addControl "curveAlign";
+		editorTemplate -endLayout;
+
+        editorTemplate -beginLayout (uiRes("m_AEpfxHairTemplate.kRenderStats")) ;
+            editorTemplate -beginNoOptimize;
+            editorTemplate -label (uiRes("m_AEpfxHairTemplate.kReceiveShadowsmentalray"))  -addControl "receiveShadows";
+            editorTemplate -label (uiRes("m_AEpfxHairTemplate.kVisibleInReflectionsmentalray"))  -addControl "visibleInReflections";
+            editorTemplate -label (uiRes("m_AEpfxHairTemplate.kVisibleInRefractionsmentalray"))  -addControl "visibleInRefractions";
+            editorTemplate -endNoOptimize;
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "MentalCore" -cl true;
+	
+		if (!`attributeExists "mc_shaderOverride" $nodeName`)
+			addAttr -at "message" -ln "mc_shaderOverride" $nodeName;
+		
+		editorTemplate -callCustom "AEhair_shader_new" "AEhair_shader_replace" "mc_shaderOverride";
+
+		editorTemplate -endLayout;
+
+		// include/call base class/node attributes
+		AEshapeTemplate $nodeName;
+
+	editorTemplate -addExtraControls;
+	editorTemplate -endScrollLayout;
+
+}

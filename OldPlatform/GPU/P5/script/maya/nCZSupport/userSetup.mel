@@ -1,0 +1,14 @@
+///
+/// Author: ³ÂÖÙ(Neil Chen)
+///
+/// Creation Date: 2011/4/13
+///
+/// Description: 
+///		General user setup
+/// Feedback:
+///		Neil_chenzhong@yahoo.com
+///
+
+string $proj = `workspace -q -rd`;
+source "//10.50.8.2/p/script/maya/nCZSupport/nCMainScripts.mel";
+nCInitialize($proj);

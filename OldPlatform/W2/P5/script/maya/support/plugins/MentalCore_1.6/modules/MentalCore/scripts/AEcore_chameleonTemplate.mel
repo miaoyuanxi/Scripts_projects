@@ -1,0 +1,70 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+source "AEMentalCoreLogo.mel";
+
+/////////////////////
+// Control Dimming //
+/////////////////////
+
+global proc AEcore_chameleonCheckMode(string $nodeName) {
+	if (`getAttr($nodeName + ".mode")`) {
+		editorTemplate -dimControl $nodeName "base_material" 1;
+		editorTemplate -dimControl $nodeName "copy_material" 1;
+		editorTemplate -dimControl $nodeName "cutout" 1;
+		editorTemplate -dimControl $nodeName "shadow_col" 1;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "base_material" 0;
+		editorTemplate -dimControl $nodeName "copy_material" 0;
+		editorTemplate -dimControl $nodeName "cutout" 0;
+		editorTemplate -dimControl $nodeName "shadow_col" 0;
+	}
+	if (`getAttr($nodeName + ".dir_mode")`) {
+		editorTemplate -dimControl $nodeName "sample_dir" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "sample_dir" 1;
+	}
+}
+
+global proc AEcore_chameleonTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_chameleon_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -l "Output Mode" -addControl "mode" "AEcore_chameleonCheckMode";
+			editorTemplate -l "Direction Mode" -addControl "dir_mode" "AEcore_chameleonCheckMode";
+		editorTemplate -endLayout;	
+		
+		editorTemplate -beginLayout "Sample Paramaters" -collapse 0;
+			editorTemplate -label "Min Search Distance" -addControl "min_dist";		
+			editorTemplate -label "Max Serach Distance" -addControl "max_dist";
+			editorTemplate -label "Falloff" -addControl "falloff";
+			editorTemplate -label "Target Geometry" -addControl "target_object";
+			editorTemplate -addSeparator;
+			editorTemplate -l "Reverse Direction" -addControl "reverse_dir";
+			editorTemplate -l "Sample Direction" -addControl "sample_dir";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Material Paramaters" -collapse 0;
+			editorTemplate -label "Base Material" -addControl "base_material";		
+			editorTemplate -label "Clone Material" -addControl "copy_material";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Cutout Opacity" -addControl "cutout";
+			editorTemplate -label "Shadow Colour" -addControl "shadow_col";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Flip Backface" -addControl "flip_backface";
+			editorTemplate -label "Backface AO" -addControl "backface_ao";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Output" -collapse 0;
+			editorTemplate -l "Mix" -addControl "mix";
+		editorTemplate -endLayout;
+		
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

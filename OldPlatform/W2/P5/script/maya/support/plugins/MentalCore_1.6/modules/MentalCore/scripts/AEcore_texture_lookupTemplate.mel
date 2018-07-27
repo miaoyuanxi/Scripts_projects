@@ -1,0 +1,59 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_texture_lookupTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_texture_lookup_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Texture" -collapse 0;
+			editorTemplate -addControl "texture";
+			editorTemplate -label "Elliptical Filtering" -addControl "el_filter";
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Transform" -collapse 0;
+			editorTemplate -addControl "translate";
+			editorTemplate -addControl "repeat";
+			
+			editorTemplate -addControl "mirror_x";
+			editorTemplate -addControl "mirror_y";
+			editorTemplate -addControl "wrap_x";
+			editorTemplate -addControl "wrap_y";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -label "Crop Min" -addControl "min";
+			editorTemplate -label "Crop Max" -addControl "max";
+		editorTemplate -endLayout;
+
+		editorTemplate -beginLayout "Color Balance" -collapse 0;
+			editorTemplate -label "Hue" -addControl "hue";
+			editorTemplate -label "Value" -addControl "val";
+			editorTemplate -label "Saturation" -addControl "sat";
+			
+			editorTemplate -addSeparator;
+
+			editorTemplate -addControl "gain";
+			editorTemplate -addControl "offset";
+			editorTemplate -addControl "gamma";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -beginNoOptimize;
+			editorTemplate -addControl "invert";
+			editorTemplate -addControl "alpha_is_luminance";
+			editorTemplate -endNoOptimize;
+		editorTemplate -endLayout;
+			
+		editorTemplate -beginLayout "UV Coordinates" -collapse 1;
+			editorTemplate -label "Use Custom UV" -addControl "use_custom_uv";
+			editorTemplate -label "Custom UV" -addControl "custom_uv";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

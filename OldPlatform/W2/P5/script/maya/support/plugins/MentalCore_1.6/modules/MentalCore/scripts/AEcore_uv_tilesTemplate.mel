@@ -1,0 +1,43 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_tex_tilesCreate ( string $nodeName )
+{
+	$nodeName = `basenameEx $nodeName`;
+	python("from mentalcore import AEcore_uv_tiles; AEcore_uv_tiles.createLayout(\"" + $nodeName + "\")");
+}
+
+global proc AEcore_tex_tilesChange ( string $nodeName )
+{		
+	$nodeName = `basenameEx $nodeName`;
+	python("from mentalcore import AEcore_uv_tiles; AEcore_uv_tiles.refreshLayout(\"" + $nodeName + "\")");
+}
+
+global proc AEcore_uv_tilesTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_uv_tiles_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "UV Tiles" -collapse 0;
+			editorTemplate -callCustom "AEcore_tex_tilesCreate" "AEcore_tex_tilesChange" $nodeName;
+		editorTemplate -endLayout;
+		
+		editorTemplate -beginLayout "Color Balance" -collapse 1;
+			editorTemplate -addControl "gain";
+			editorTemplate -addControl "offset";
+			editorTemplate -addControl "gamma";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -addControl "alpha_is_luminance";
+			
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+		
+		editorTemplate -suppress "tiles";
+
+	editorTemplate -endScrollLayout;
+}

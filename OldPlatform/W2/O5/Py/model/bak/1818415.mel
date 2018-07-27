@@ -1,0 +1,2 @@
+setAttr -type "string" defaultRenderGlobals.preMel "";
+setAttr -type "string" defaultRenderGlobals.postMel "";

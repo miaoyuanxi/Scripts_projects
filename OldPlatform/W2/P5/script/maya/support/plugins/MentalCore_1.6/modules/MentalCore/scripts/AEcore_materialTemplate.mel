@@ -1,0 +1,649 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+
+
+global proc AEcoreRampSpecCol_rampNew(string $attr)
+{
+	setUITemplate -pst attributeEditorTemplate;
+		string $rampForm = `formLayout`;
+			// create the controls
+			string $scc	= `attrColorSliderGrp -l "Selected Colour" -sb 1 -cw 3 1 -adj 3`;
+			string $spc	= `attrFieldSliderGrp -label "Selected Position" -cw 3 1 -adj 3`;
+			string $sic	= `attrEnumOptionMenuGrp -l "Interpolation"
+				-ei 0 "None"
+				-ei 1 "Linear"
+				-ei 2 "Cubic"
+				-ei 3 "Quantic"`;
+			
+			string $gradCtrl = `gradientControl -ror 1 -h 80 -at $attr -scc $scc -spc $spc -sic $sic coreRampSpecCol_GradientControl`;
+			
+		setParent ..;
+		
+		formLayout
+			-edit
+				-attachForm $spc "left" -20 
+				-attachNone $spc "right"
+				-attachForm $spc "top" 2
+				-attachNone $spc "bottom"
+
+				-attachForm $scc "left" -20
+				-attachNone $scc "right"
+				-attachControl $scc "top" 3 $spc
+				-attachNone $scc "bottom"
+
+				-attachControl $gradCtrl "left" 0 $spc
+				-attachForm $gradCtrl "right" 0
+				-attachForm $gradCtrl "top" 3
+				-attachNone $gradCtrl "bottom"
+
+				-attachForm $sic "left" -20 
+				-attachNone $sic "right"
+				-attachControl $sic "top" 3 $scc
+				-attachNone $sic "bottom"
+
+				$rampForm;
+	setUITemplate -ppt;
+}
+
+global proc AEcoreRampSpecCol_rampReplace(string $attr)
+{
+	gradientControl -edit -at $attr coreRampSpecCol_GradientControl;
+}
+
+
+global proc AEcoreRampSpecFalloff_rampNew(string $attr)
+{
+	setUITemplate -pst attributeEditorTemplate;
+		string $rampForm = `formLayout`;
+			// create the controls
+			string $scc	= `attrFieldSliderGrp -label "Selected Value"`;
+			string $spc	= `attrFieldSliderGrp -label "Selected Position"`;
+			string $sic	= `attrEnumOptionMenuGrp -l "Interpolation"
+				-ei 0 "None"
+				-ei 1 "Linear"
+				-ei 2 "Cubic"
+				-ei 3 "Quantic"`;
+			
+			string $gradCtrl = `gradientControl -ror 1 -h 80 -at $attr -scc $scc -spc $spc -sic $sic coreRampSpecFalloff_GradientControl`;
+			
+		setParent ..;
+		
+		formLayout
+			-edit
+				-attachForm $spc "left" -20 
+				-attachNone $spc "right"
+				-attachForm $spc "top" 2
+				-attachNone $spc "bottom"
+
+				-attachForm $scc "left" -20
+				-attachNone $scc "right"
+				-attachControl $scc "top" 3 $spc
+				-attachNone $scc "bottom"
+
+				-attachControl $gradCtrl "left" 0 $spc
+				-attachForm $gradCtrl "right" 0
+				-attachForm $gradCtrl "top" 3
+				-attachNone $gradCtrl "bottom"
+
+				-attachForm $sic "left" -20 
+				-attachNone $sic "right"
+				-attachControl $sic "top" 3 $scc
+				-attachNone $sic "bottom"
+
+				$rampForm;
+	setUITemplate -ppt;
+}
+
+global proc AEcoreRampSpecFalloff_rampReplace(string $attr)
+{
+	gradientControl -edit -at $attr coreRampSpecFalloff_GradientControl;
+}
+
+
+global proc AEcoreMatBRDF_rampNew(string $attr)
+{
+	setUITemplate -pst attributeEditorTemplate;
+		string $rampForm = `formLayout`;
+			// create the controls
+			string $scc	= `attrFieldSliderGrp -label "Selected Value"`;
+			string $spc	= `attrFieldSliderGrp -label "Selected Position"`;
+			string $sic	= `attrEnumOptionMenuGrp -l "Interpolation"
+				-ei 0 "None"
+				-ei 1 "Linear"
+				-ei 2 "Cubic"
+				-ei 3 "Quantic"`;
+			
+			string $gradCtrl = `gradientControl -ror 1 -h 80 -at $attr -scc $scc -spc $spc -sic $sic coreMatBRDF_GradientControl`;
+			
+		setParent ..;
+		
+		formLayout
+			-edit
+				-attachForm $spc "left" -20 
+				-attachNone $spc "right"
+				-attachForm $spc "top" 2
+				-attachNone $spc "bottom"
+
+				-attachForm $scc "left" -20
+				-attachNone $scc "right"
+				-attachControl $scc "top" 3 $spc
+				-attachNone $scc "bottom"
+
+				-attachControl $gradCtrl "left" 0 $spc
+				-attachForm $gradCtrl "right" 0
+				-attachForm $gradCtrl "top" 3
+				-attachNone $gradCtrl "bottom"
+
+				-attachForm $sic "left" -20 
+				-attachNone $sic "right"
+				-attachControl $sic "top" 3 $scc
+				-attachNone $sic "bottom"
+
+				$rampForm;
+	setUITemplate -ppt;
+}
+
+global proc AEcoreMatBRDF_rampReplace(string $attr)
+{
+	gradientControl -edit -at $attr coreMatBRDF_GradientControl;
+}
+
+
+/////////////////////
+// Control Dimming //
+/////////////////////
+
+global proc AEcore_materialCheckBlinn(string $nodeName) {
+	if (`getAttr($nodeName + ".en_blinn")`) {
+		editorTemplate -dimControl $nodeName "blinn_amt" 0;
+		editorTemplate -dimControl $nodeName "blinn_col" 0;
+		editorTemplate -dimControl $nodeName "blinn_ecc" 0;
+		editorTemplate -dimControl $nodeName "blinn_rloff" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "blinn_amt" 1;
+		editorTemplate -dimControl $nodeName "blinn_col" 1;
+		editorTemplate -dimControl $nodeName "blinn_ecc" 1;
+		editorTemplate -dimControl $nodeName "blinn_rloff" 1;
+	}
+}
+
+global proc AEcore_materialCheckPhong(string $nodeName) {
+	if (`getAttr($nodeName + ".en_phong")`) {
+		editorTemplate -dimControl $nodeName "phong_amt" 0;
+		editorTemplate -dimControl $nodeName "phong_col" 0;
+		editorTemplate -dimControl $nodeName "phong_exp" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "phong_amt" 1;
+		editorTemplate -dimControl $nodeName "phong_col" 1;
+		editorTemplate -dimControl $nodeName "phong_exp" 1;
+	}
+}
+
+global proc AEcore_materialCheckVelvet(string $nodeName) {
+	if (`getAttr($nodeName + ".en_velvet")`) {
+		editorTemplate -dimControl $nodeName "velvet_amt" 0;
+		editorTemplate -dimControl $nodeName "velvet_col" 0;
+		editorTemplate -dimControl $nodeName "velvet_backscatter" 0;
+		editorTemplate -dimControl $nodeName "velvet_edge" 0;
+		editorTemplate -dimControl $nodeName "velvet_rough" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "velvet_amt" 1;
+		editorTemplate -dimControl $nodeName "velvet_col" 1;
+		editorTemplate -dimControl $nodeName "velvet_backscatter" 1;
+		editorTemplate -dimControl $nodeName "velvet_edge" 1;
+		editorTemplate -dimControl $nodeName "velvet_rough" 1;
+	}
+}
+
+global proc AEcore_materialCheckGlossy(string $nodeName) {
+	if (`getAttr($nodeName + ".en_glossy")`) {
+		editorTemplate -dimControl $nodeName "glossy_amt" 0;
+		editorTemplate -dimControl $nodeName "glossy_col" 0;
+		editorTemplate -dimControl $nodeName "glossy_rough" 0;
+		editorTemplate -dimControl $nodeName "glossy_sharp" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "glossy_amt" 1;
+		editorTemplate -dimControl $nodeName "glossy_col" 1;
+		editorTemplate -dimControl $nodeName "glossy_rough" 1;
+		editorTemplate -dimControl $nodeName "glossy_sharp" 1;
+	}
+}
+
+global proc AEcore_materialCheckRampSpec(string $nodeName) {
+	if (`getAttr($nodeName + ".en_rspec")`) {
+		editorTemplate -dimControl $nodeName "rspec_amt" 0;
+		editorTemplate -dimControl $nodeName "rspec_ecc" 0;
+		editorTemplate -dimControl $nodeName "rspec_col" 0;
+		editorTemplate -dimControl $nodeName "rspec_falloff" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "rspec_amt" 1;
+		editorTemplate -dimControl $nodeName "rspec_ecc" 1;
+		editorTemplate -dimControl $nodeName "rspec_col" 1;
+		editorTemplate -dimControl $nodeName "rspec_falloff" 1;
+	}
+}
+
+global proc AEcore_materialCheckRefl(string $nodeName) {
+	if (`getAttr($nodeName + ".en_refl")`) {
+		editorTemplate -dimControl $nodeName "reflectivity" 0;
+		editorTemplate -dimControl $nodeName "refl_col" 0;
+		editorTemplate -dimControl $nodeName "refl_metal" 0;
+		editorTemplate -dimControl $nodeName "refl_curve" 0;
+		editorTemplate -dimControl $nodeName "refl_energy_con" 0;
+		editorTemplate -dimControl $nodeName "refl_max_dist" 0;
+		editorTemplate -dimControl $nodeName "refl_falloff" 0;
+		editorTemplate -dimControl $nodeName "refl_falloff_to_col" 0;
+		editorTemplate -dimControl $nodeName "refl_glossy" 0;
+		editorTemplate -dimControl $nodeName "refl_samples" 0;
+		editorTemplate -dimControl $nodeName "refl_single_env" 0;
+		editorTemplate -dimControl $nodeName "refl_env_only" 0;
+		editorTemplate -dimControl $nodeName "refl_skip_inside" 0;
+		editorTemplate -dimControl $nodeName "refl_depth" 0;
+		editorTemplate -dimControl $nodeName "custom_refl_env" 0;
+		
+		if (`getAttr($nodeName + ".refl_falloff_to_col")`) 
+			editorTemplate -dimControl $nodeName "refl_falloff_col" 0;
+		else
+			editorTemplate -dimControl $nodeName "refl_falloff_col" 1;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "reflectivity" 1;
+		editorTemplate -dimControl $nodeName "refl_col" 1;
+		editorTemplate -dimControl $nodeName "refl_metal" 1;
+		editorTemplate -dimControl $nodeName "refl_curve" 1;
+		editorTemplate -dimControl $nodeName "refl_energy_con" 1;
+		editorTemplate -dimControl $nodeName "refl_max_dist" 1;
+		editorTemplate -dimControl $nodeName "refl_falloff" 1;
+		editorTemplate -dimControl $nodeName "refl_falloff_to_col" 1;
+		editorTemplate -dimControl $nodeName "refl_falloff_col" 1;
+		editorTemplate -dimControl $nodeName "refl_glossy" 1;
+		editorTemplate -dimControl $nodeName "refl_samples" 1;
+		editorTemplate -dimControl $nodeName "refl_single_env" 1;
+		editorTemplate -dimControl $nodeName "refl_env_only" 1;
+		editorTemplate -dimControl $nodeName "refl_skip_inside" 1;
+		editorTemplate -dimControl $nodeName "refl_depth" 1;
+		editorTemplate -dimControl $nodeName "custom_refl_env" 1;
+	}
+}
+
+global proc AEcore_materialCheckRefr(string $nodeName) {
+	if (`getAttr($nodeName + ".en_refr")`) {
+		editorTemplate -dimControl $nodeName "refr_index" 0;
+		editorTemplate -dimControl $nodeName "refr_col" 0;
+		editorTemplate -dimControl $nodeName "refr_energy_con" 0;
+		editorTemplate -dimControl $nodeName "refr_0_deg" 0;
+		editorTemplate -dimControl $nodeName "refr_90_deg" 0;
+		editorTemplate -dimControl $nodeName "refr_brdf_curve" 0;
+		editorTemplate -dimControl $nodeName "refr_max_dist" 0;
+		editorTemplate -dimControl $nodeName "refr_falloff" 0;
+		editorTemplate -dimControl $nodeName "refr_falloff_to_col" 0;
+		editorTemplate -dimControl $nodeName "refr_glossy" 0;
+		editorTemplate -dimControl $nodeName "refr_samples" 0;
+		editorTemplate -dimControl $nodeName "refr_depth" 0;
+		editorTemplate -dimControl $nodeName "custom_refr_env" 0;
+		
+		if (`getAttr($nodeName + ".refr_falloff_to_col")`) 
+			editorTemplate -dimControl $nodeName "refr_falloff_col" 0;
+		else
+			editorTemplate -dimControl $nodeName "refr_falloff_col" 1;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "refr_index" 1;
+		editorTemplate -dimControl $nodeName "refr_col" 1;
+		editorTemplate -dimControl $nodeName "refr_energy_con" 1;
+		editorTemplate -dimControl $nodeName "refr_0_deg" 1;
+		editorTemplate -dimControl $nodeName "refr_90_deg" 1;
+		editorTemplate -dimControl $nodeName "refr_brdf_curve" 1;
+		editorTemplate -dimControl $nodeName "refr_max_dist" 1;
+		editorTemplate -dimControl $nodeName "refr_falloff" 1;
+		editorTemplate -dimControl $nodeName "refr_falloff_to_col" 1;
+		editorTemplate -dimControl $nodeName "refr_falloff_col" 1;
+		editorTemplate -dimControl $nodeName "refr_glossy" 1;
+		editorTemplate -dimControl $nodeName "refr_samples" 1;
+		editorTemplate -dimControl $nodeName "refr_depth" 1;
+		editorTemplate -dimControl $nodeName "custom_refr_env" 1;
+	}
+}
+
+global proc AEcore_materialCheckAO(string $nodeName) {
+	if (`getAttr($nodeName + ".en_occlusion")`) {
+		editorTemplate -dimControl $nodeName "ao_trans_mode" 0;
+		editorTemplate -dimControl $nodeName "ao_trans_depth" 0;
+		editorTemplate -dimControl $nodeName "ao_cache_points" 0;
+		editorTemplate -dimControl $nodeName "ambient_occ" 0;
+		editorTemplate -dimControl $nodeName "diffuse_occ" 0;
+		editorTemplate -dimControl $nodeName "specular_occ" 0;
+		editorTemplate -dimControl $nodeName "reflection_occ" 0;
+		editorTemplate -dimControl $nodeName "subsurface_occ" 0;
+		editorTemplate -dimControl $nodeName "translucency_occ" 0;
+		editorTemplate -dimControl $nodeName "ao_enable_overrides" 0;
+		
+		if (`getAttr($nodeName + ".ao_enable_overrides")`) {
+			editorTemplate -dimControl $nodeName "ao_override_spread" 0;
+			editorTemplate -dimControl $nodeName "ao_override_samples" 0;
+			editorTemplate -dimControl $nodeName "ao_override_distance" 0;
+			editorTemplate -dimControl $nodeName "ao_override_colour" 0;
+		}
+		else {
+			editorTemplate -dimControl $nodeName "ao_override_spread" 1;
+			editorTemplate -dimControl $nodeName "ao_override_samples" 1;
+			editorTemplate -dimControl $nodeName "ao_override_distance" 1;
+			editorTemplate -dimControl $nodeName "ao_override_colour" 1;
+		}
+	}
+	else {
+		editorTemplate -dimControl $nodeName "ao_trans_mode" 1;
+		editorTemplate -dimControl $nodeName "ao_trans_depth" 1;
+		editorTemplate -dimControl $nodeName "ao_cache_points" 1;
+		editorTemplate -dimControl $nodeName "ambient_occ" 1;
+		editorTemplate -dimControl $nodeName "diffuse_occ" 1;
+		editorTemplate -dimControl $nodeName "specular_occ" 1;
+		editorTemplate -dimControl $nodeName "reflection_occ" 1;
+		editorTemplate -dimControl $nodeName "subsurface_occ" 1;
+		editorTemplate -dimControl $nodeName "translucency_occ" 1;
+		editorTemplate -dimControl $nodeName "ao_enable_overrides" 1;
+		editorTemplate -dimControl $nodeName "ao_override_spread" 1;
+		editorTemplate -dimControl $nodeName "ao_override_samples" 1;
+		editorTemplate -dimControl $nodeName "ao_override_distance" 1;
+		editorTemplate -dimControl $nodeName "ao_override_colour" 1;
+	}
+}
+
+global proc AEcore_materialCheckIndirect(string $nodeName) {
+	if (`getAttr($nodeName + ".en_indirect")`) {
+		editorTemplate -dimControl $nodeName "indirect_col" 0;
+		editorTemplate -dimControl $nodeName "indirect_sat" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "indirect_col" 1;
+		editorTemplate -dimControl $nodeName "indirect_sat" 1;
+	}
+}
+
+global proc AEcore_materialCheckShadow(string $nodeName) {
+	if (`getAttr($nodeName + ".en_shad_overrides")`) {
+		editorTemplate -dimControl $nodeName "shad_col" 0;
+		editorTemplate -dimControl $nodeName "shad_trans" 0;
+		editorTemplate -dimControl $nodeName "shad_0_deg" 0;
+		editorTemplate -dimControl $nodeName "shad_90_deg" 0;
+		editorTemplate -dimControl $nodeName "shad_brdf_curve" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "shad_col" 1;
+		editorTemplate -dimControl $nodeName "shad_trans" 1;
+		editorTemplate -dimControl $nodeName "shad_0_deg" 1;
+		editorTemplate -dimControl $nodeName "shad_90_deg" 1;
+		editorTemplate -dimControl $nodeName "shad_brdf_curve" 1;
+	}
+}
+
+global proc AEcore_materialCheckBaked(string $nodeName) {
+	if (`getAttr($nodeName + ".en_baked_beauty")`)
+		editorTemplate -dimControl $nodeName "baked_beauty" 0;
+	else 
+		editorTemplate -dimControl $nodeName "baked_beauty" 1;
+	
+	if (`getAttr($nodeName + ".en_baked_occlusion")`)
+		editorTemplate -dimControl $nodeName "baked_occlusion" 0;
+	else 
+		editorTemplate -dimControl $nodeName "baked_occlusion" 1;
+	
+	if (`getAttr($nodeName + ".en_baked_indirect")`)
+		editorTemplate -dimControl $nodeName "baked_indirect" 0;
+	else 
+		editorTemplate -dimControl $nodeName "baked_indirect" 1;
+}
+
+global proc AEcore_materialCheckCM(string $nodeName) {
+	if (`getAttr($nodeName + ".en_col_management")`) {
+		editorTemplate -dimControl $nodeName "cm_colour" 0;
+		editorTemplate -dimControl $nodeName "cm_incandesence" 0;
+		editorTemplate -dimControl $nodeName "cm_blinn_col" 0;
+		editorTemplate -dimControl $nodeName "cm_phong_col" 0;
+		editorTemplate -dimControl $nodeName "cm_velvet_col" 0;
+		editorTemplate -dimControl $nodeName "cm_glossy_col" 0;
+		editorTemplate -dimControl $nodeName "cm_rspec_col" 0;
+		editorTemplate -dimControl $nodeName "cm_refl_col" 0;
+		editorTemplate -dimControl $nodeName "cm_refl_falloff_col" 0;
+		editorTemplate -dimControl $nodeName "cm_refr_col" 0;
+		editorTemplate -dimControl $nodeName "cm_refr_falloff_col" 0;
+		editorTemplate -dimControl $nodeName "cm_indirect_col" 0;
+		editorTemplate -dimControl $nodeName "cm_shadow_col" 0;
+		editorTemplate -dimControl $nodeName "cm_baked_beauty" 0;
+		editorTemplate -dimControl $nodeName "cm_baked_occ" 0;
+		editorTemplate -dimControl $nodeName "cm_baked_indirect" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "cm_colour" 1;
+		editorTemplate -dimControl $nodeName "cm_incandesence" 1;
+		editorTemplate -dimControl $nodeName "cm_blinn_col" 1;
+		editorTemplate -dimControl $nodeName "cm_phong_col" 1;
+		editorTemplate -dimControl $nodeName "cm_velvet_col" 1;
+		editorTemplate -dimControl $nodeName "cm_glossy_col" 1;
+		editorTemplate -dimControl $nodeName "cm_rspec_col" 1;
+		editorTemplate -dimControl $nodeName "cm_refl_col" 1;
+		editorTemplate -dimControl $nodeName "cm_refl_falloff_col" 1;
+		editorTemplate -dimControl $nodeName "cm_refr_col" 1;
+		editorTemplate -dimControl $nodeName "cm_refr_falloff_col" 1;
+		editorTemplate -dimControl $nodeName "cm_indirect_col" 1;
+		editorTemplate -dimControl $nodeName "cm_shadow_col" 1;
+		editorTemplate -dimControl $nodeName "cm_baked_beauty" 1;
+		editorTemplate -dimControl $nodeName "cm_baked_occ" 1;
+		editorTemplate -dimControl $nodeName "cm_baked_indirect" 1;
+	}
+}
+
+
+global proc AEcore_materialTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_material_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Common Material Attributes" -collapse 0;
+			editorTemplate -label "Colour" -addControl "diffuse";
+			editorTemplate -label "Transparency" -addControl "transparency";
+			editorTemplate -label "Cutout Opacity" -addControl "cutout_opacity";
+			editorTemplate -label "Incandescence" -addControl "incandesence";
+			editorTemplate -label "Subsurface" -addControl "subsurface";
+			editorTemplate -label "Diffuse Weight" -addControl "diffuse_weight";
+			editorTemplate -label "Roughness" -addControl "roughness";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Bump" -collapse 1;
+			editorTemplate -label "Overall Bump" -addControl "overall_bump";
+			editorTemplate -label "Standard Bump" -addControl "standard_bump";
+			editorTemplate -label "Normal Map" -addControl "normal_map";
+			editorTemplate -label "Normal Map Blend" -addControl "normal_map_blend";
+			editorTemplate -beginLayout "Bump Affects" -collapse 1;
+				editorTemplate -label "Bump Diffuse" -addControl "bump_affect_diff";
+				editorTemplate -label "Bump Specular" -addControl "bump_affect_spec";
+				editorTemplate -label "Bump Reflection" -addControl "bump_affect_refl";
+				editorTemplate -label "Bump Refraction" -addControl "bump_affect_refr";					
+			editorTemplate -endLayout;				
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Ambient" -collapse 0;
+			editorTemplate -label "Ambient Contribution" -addControl "ambient_contrib";		
+			editorTemplate -label "Custom Enviroment" -addControl "custom_amb_env";	
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Specular" -collapse 0;
+			editorTemplate -beginLayout "Blinn" -collapse 0;
+				editorTemplate -label "Enable Blinn" -addControl "en_blinn" "AEcore_materialCheckBlinn";
+				editorTemplate -label "Amount" -addControl "blinn_amt";
+				editorTemplate -label "Colour" -addControl "blinn_col";
+				editorTemplate -label "Eccentricty" -addControl "blinn_ecc";
+				editorTemplate -label "Rolloff" -addControl "blinn_rloff";
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Phong" -collapse 1;
+				editorTemplate -label "Enable Phong" -addControl "en_phong" "AEcore_materialCheckPhong";
+				editorTemplate -label "Amount" -addControl "phong_amt";
+				editorTemplate -label "Colour" -addControl "phong_col";
+				editorTemplate -label "Exponent" -addControl "phong_exp";
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Velvet" -collapse 1;
+				editorTemplate -label "Enable Velvet" -addControl "en_velvet" "AEcore_materialCheckVelvet";
+				editorTemplate -label "Amount" -addControl "velvet_amt";
+				editorTemplate -label "Colour" -addControl "velvet_col";
+				editorTemplate -label "Backscatter" -addControl "velvet_backscatter";
+				editorTemplate -label "Edgeiness" -addControl "velvet_edge";
+				editorTemplate -label "Roughness" -addControl "velvet_rough";
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Glossy" -collapse 1;
+				editorTemplate -label "Enable Glossy" -addControl "en_glossy" "AEcore_materialCheckGlossy";
+				editorTemplate -label "Amount" -addControl "glossy_amt";
+				editorTemplate -label "Colour" -addControl "glossy_col";
+				editorTemplate -label "Roughness" -addControl "glossy_rough";
+				editorTemplate -label "Sharpness" -addControl "glossy_sharp";
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Ramp" -collapse 1;
+				editorTemplate -label "Enable Ramp Spec" -addControl "en_rspec" "AEcore_materialCheckRampSpec";
+				editorTemplate -label "Amount" -addControl "rspec_amt";
+				editorTemplate -label "Eccentricty" -addControl "rspec_ecc";
+				editorTemplate -beginLayout "Colour Ramp" -collapse 0;
+					editorTemplate -callCustom "AEcoreRampSpecCol_rampNew" "AEcoreRampSpecCol_rampReplace" "rspec_col";
+				editorTemplate -endLayout;
+				editorTemplate -beginLayout "Falloff Ramp" -collapse 0;
+					editorTemplate -callCustom "AEcoreRampSpecFalloff_rampNew" "AEcoreRampSpecFalloff_rampReplace" "rspec_falloff";
+				editorTemplate -endLayout;
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Custom Specular" -collapse 1;
+				editorTemplate -label "Custom Specular" -addControl "custom_spec";				
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Reflection" -collapse 0;
+			editorTemplate -label "Enable Reflections" -addControl "en_refl" "AEcore_materialCheckRefl";
+			editorTemplate -label "Reflectivity" -addControl "reflectivity";
+			editorTemplate -label "Colour" -addControl "refl_col";
+			editorTemplate -label "Metal Material" -addControl "refl_metal";
+			editorTemplate -beginLayout "Reflection BRDF" -collapse 0;
+				editorTemplate -callCustom "AEcoreMatBRDF_rampNew" "AEcoreMatBRDF_rampReplace" "refl_curve";	
+			editorTemplate -endLayout;
+			editorTemplate -beginLayout "Advanced Reflection" -collapse 1;
+				editorTemplate -label "Conserve Energy" -addControl "refl_energy_con";
+				editorTemplate -label "Max Distance" -addControl "refl_max_dist";
+				editorTemplate -label "Falloff" -addControl "refl_falloff";
+				editorTemplate -label "Falloff To Colour" -addControl "refl_falloff_to_col" "AEcore_materialCheckRefl";
+				editorTemplate -label "Falloff Colour" -addControl "refl_falloff_col";
+				editorTemplate -addSeparator;
+				editorTemplate -label "Glossiness" -addControl "refl_glossy";
+				editorTemplate -label "Samples" -addControl "refl_samples";
+				editorTemplate -label "Single Env Sample" -addControl "refl_single_env";
+				editorTemplate -label "Enviroment Only" -addControl "refl_env_only";
+				editorTemplate -label "Skip Inside Reflections" -addControl "refl_skip_inside";
+				editorTemplate -label "Reflection Depth" -addControl "refl_depth";
+				editorTemplate -addSeparator;				
+				editorTemplate -label "Custom Enviroment" -addControl "custom_refl_env";				
+				editorTemplate -endLayout;
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Refraction" -collapse 0;
+			editorTemplate -label "Enable Refractions" -addControl "en_refr" "AEcore_materialCheckRefr";
+			editorTemplate -label "IOR" -addControl "refr_index";
+			editorTemplate -label "Colour" -addControl "refr_col";		
+			editorTemplate -beginLayout "Advanced Refractions" -collapse 1;
+				editorTemplate -label "Conserve Energy" -addControl "refr_energy_con";
+				editorTemplate -label "0 Degree Refraction" -addControl "refr_0_deg";
+				editorTemplate -label "90 Degree Refraction" -addControl "refr_90_deg";
+				editorTemplate -label "BRDF Curve" -addControl "refr_brdf_curve";
+				editorTemplate -addSeparator;
+				editorTemplate -label "Max Distance" -addControl "refr_max_dist";
+				editorTemplate -label "Falloff" -addControl "refr_falloff";
+				editorTemplate -label "Falloff To Colour" -addControl "refr_falloff_to_col" "AEcore_materialCheckRefr";
+				editorTemplate -label "Falloff Colour" -addControl "refr_falloff_col";
+				editorTemplate -addSeparator;
+				editorTemplate -label "Glossy" -addControl "refr_glossy";
+				editorTemplate -label "Samples" -addControl "refr_samples";
+				editorTemplate -label "Refraction Depth" -addControl "refr_depth";
+				editorTemplate -addSeparator;
+				editorTemplate -label "Custom Enviroment" -addControl "custom_refr_env";				
+				editorTemplate -endLayout;
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Translucency" -collapse 1;
+			editorTemplate -label "Custom Translucency" -addControl "custom_translucency";		
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Ambient Occlusion" -collapse 1;
+			editorTemplate -label "Enable Ambient Occlusion" -addControl "en_occlusion" "AEcore_materialCheckAO";
+			editorTemplate -label "Transparency Mode" -addControl "ao_trans_mode";
+			editorTemplate -label "Transparency Depth" -addControl "ao_trans_depth";
+			editorTemplate -label "Cache Points" -addControl "ao_cache_points";
+			editorTemplate -addSeparator;
+			editorTemplate -label "Occlude Ambient" -addControl "ambient_occ";
+			editorTemplate -label "Occlude Diffuse" -addControl "diffuse_occ";
+			editorTemplate -label "Occlude Specular" -addControl "specular_occ";
+			editorTemplate -label "Occlude Reflection" -addControl "reflection_occ";
+			editorTemplate -label "Occlude Subsurface" -addControl "subsurface_occ";
+			editorTemplate -label "Occlude Translucency" -addControl "translucency_occ";
+			editorTemplate -beginLayout "Occlusion Overrides" -collapse 1;
+				editorTemplate -label "Enable Overrides" -addControl "ao_enable_overrides" "AEcore_materialCheckAO";
+				editorTemplate -label "Spread" -addControl "ao_override_spread";
+				editorTemplate -label "Samples" -addControl "ao_override_samples";
+				editorTemplate -label "Distance" -addControl "ao_override_distance";
+				editorTemplate -label "Colour" -addControl "ao_override_colour";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Indirect Illumination" -collapse 0;
+			editorTemplate -label "Enable Indirect" -addControl "en_indirect" "AEcore_materialCheckIndirect";
+			editorTemplate -label "Indirect Colour" -addControl "indirect_col";
+			editorTemplate -label "Indirect Saturation" -addControl "indirect_sat";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Shadow" -collapse 1;
+			editorTemplate -label "Shadow Overrides" -addControl "en_shad_overrides" "AEcore_materialCheckShadow";
+			editorTemplate -label "Colour" -addControl "shad_col";
+			editorTemplate -label "Transparency" -addControl "shad_trans";
+			editorTemplate -label "Shadow 0 Degree" -addControl "shad_0_deg";
+			editorTemplate -label "Shadow 90 Degree" -addControl "shad_90_deg";
+			editorTemplate -label "Shadow BRDF Curve" -addControl "shad_brdf_curve";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Light Bloom" -collapse 1;
+			editorTemplate -label "Bloom Scale" -addControl "bloom_scale";
+			editorTemplate -label "Bloom Tint" -addControl "bloom_tint";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Baked Channels" -collapse 1;
+			editorTemplate -label "Enable Baked Beauty" -addControl "en_baked_beauty" "AEcore_materialCheckBaked";
+			editorTemplate -label "Baked Beauty" -addControl "baked_beauty";
+			editorTemplate -label "Enable Baked Occlusion" -addControl "en_baked_occlusion" "AEcore_materialCheckBaked";
+			editorTemplate -label "Baked Occlusion" -addControl "baked_occlusion";
+			editorTemplate -label "Enable Baked Indirect" -addControl "en_baked_indirect" "AEcore_materialCheckBaked";
+			editorTemplate -label "Baked Indirect" -addControl "baked_indirect";
+		editorTemplate -endLayout;
+		editorTemplate -beginLayout "Options" -collapse 1;
+			editorTemplate -label "Output Override" -addControl "output_override";
+			editorTemplate -beginLayout "Colour Management" -collapse 1;
+				editorTemplate -label "Enable Colour Management" -addControl "en_col_management" "AEcore_materialCheckCM";
+				editorTemplate -addSeparator;
+				editorTemplate -label "Colour" -addControl "cm_colour";
+				editorTemplate -label "Incandescence" -addControl "cm_incandesence";
+				editorTemplate -label "Blinn Colour" -addControl "cm_blinn_col";
+				editorTemplate -label "Phong Colour" -addControl "cm_phong_col";
+				editorTemplate -label "Velvet Colour" -addControl "cm_velvet_col";
+				editorTemplate -label "Glossy Colour" -addControl "cm_glossy_col";
+				editorTemplate -label "Ramp Specular Colour" -addControl "cm_rspec_col";
+				editorTemplate -label "Refl Colour" -addControl "cm_refl_col";
+				editorTemplate -label "Refl Falloff Colour" -addControl "cm_refl_falloff_col";
+				editorTemplate -label "Refr Colour" -addControl "cm_refr_col";
+				editorTemplate -label "Refr Falloff Colour" -addControl "cm_refr_falloff_col";
+				editorTemplate -label "Indirect Colour" -addControl "cm_indirect_col";
+				editorTemplate -label "Shadow Colour" -addControl "cm_shadow_col";
+				editorTemplate -label "Baked Beauty" -addControl "cm_baked_beauty";
+				editorTemplate -label "Baked Occulsion" -addControl "cm_baked_occ";
+				editorTemplate -label "Baked Indirect" -addControl "cm_baked_indirect";
+			editorTemplate -endLayout;
+		editorTemplate -endLayout;
+
+		AEmentalrayCommonMaterialTemplate($nodeName, 1, "diffuse");
+		
+		editorTemplate -suppress "caching";
+		editorTemplate -suppress "nodeState";
+
+	editorTemplate -endScrollLayout;
+}

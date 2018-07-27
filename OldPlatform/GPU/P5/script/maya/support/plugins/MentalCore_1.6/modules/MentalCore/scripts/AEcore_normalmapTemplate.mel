@@ -1,0 +1,21 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_normalmapTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_normalmap_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -label "Normal Map" -addControl "normal_map";
+			editorTemplate -label "Blend" -addControl "blend";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+	
+	editorTemplate -suppress "normal_input"; 
+}

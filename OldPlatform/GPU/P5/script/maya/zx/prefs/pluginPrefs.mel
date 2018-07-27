@@ -1,0 +1,31 @@
+//Maya Preference 2014 (Release 1)
+//
+//
+evalDeferred("autoLoadPlugin(\"\", \"pgYetiMaya\", \"pgYetiMaya\")");
+evalDeferred("autoLoadPlugin(\"\", \"DirectConnect\", \"DirectConnect\")");
+evalDeferred("autoLoadPlugin(\"\", \"mayaHIK\", \"mayaHIK\")");
+evalDeferred("autoLoadPlugin(\"\", \"AbcImport\", \"AbcImport\")");
+evalDeferred("autoLoadPlugin(\"\", \"mtoa\", \"mtoa\")");
+evalDeferred("autoLoadPlugin(\"\", \"tiffFloatReader\", \"tiffFloatReader\")");
+evalDeferred("autoLoadPlugin(\"\", \"shaveNode\", \"shaveNode\")");
+evalDeferred("autoLoadPlugin(\"\", \"VectorRender\", \"VectorRender\")");
+evalDeferred("autoLoadPlugin(\"\", \"gpuCache\", \"gpuCache\")");
+evalDeferred("autoLoadPlugin(\"\", \"pgYetiVRayMaya\", \"pgYetiVRayMaya\")");
+evalDeferred("autoLoadPlugin(\"\", \"rotateHelper\", \"rotateHelper\")");
+evalDeferred("autoLoadPlugin(\"\", \"MayaMuscle\", \"MayaMuscle\")");
+evalDeferred("autoLoadPlugin(\"\", \"autoLoader\", \"autoLoader\")");
+evalDeferred("autoLoadPlugin(\"\", \"fbxmaya\", \"fbxmaya\")");
+evalDeferred("autoLoadPlugin(\"\", \"matrixNodes\", \"matrixNodes\")");
+evalDeferred("autoLoadPlugin(\"\", \"ik2Bsolver\", \"ik2Bsolver\")");
+evalDeferred("autoLoadPlugin(\"\", \"modelingToolkit\", \"modelingToolkit\")");
+evalDeferred("autoLoadPlugin(\"\", \"OpenEXRLoader\", \"OpenEXRLoader\")");
+evalDeferred("autoLoadPlugin(\"\", \"faceMachine\", \"faceMachine\")");
+evalDeferred("autoLoadPlugin(\"\", \"ikSpringSolver\", \"ikSpringSolver\")");
+evalDeferred("autoLoadPlugin(\"\", \"Mayatomr\", \"Mayatomr\")");
+evalDeferred("autoLoadPlugin(\"\", \"AbcExport\", \"AbcExport\")");
+evalDeferred("autoLoadPlugin(\"\", \"vrayformaya\", \"vrayformaya\")");
+evalDeferred("autoLoadPlugin(\"\", \"ArubaTessellator\", \"ArubaTessellator\")");
+evalDeferred("autoLoadPlugin(\"\", \"quatNodes\", \"quatNodes\")");
+evalDeferred("autoLoadPlugin(\"\", \"mayaCharacterization\", \"mayaCharacterization\")");
+evalDeferred("autoLoadPlugin(\"\", \"OneClick\", \"OneClick\")");
+evalDeferred("autoLoadPlugin(\"\", \"sceneAssembly\", \"sceneAssembly\")");

@@ -1,0 +1,1142 @@
+proc HfTDebug(
+	string	$tag,
+	string	$debug
+)
+{
+}
+
+proc string stripMultiIndex( string $plug )
+{
+	string	$multiIndex = match( "\\[[0-9]*\\]", $plug );
+
+	if ( $multiIndex == "" ) {
+		return $plug;
+	}
+
+	string	$stripped = substring( $plug, 1, (size($plug) - size($multiIndex)) );
+
+	return $stripped;
+}
+
+proc int getMultiIndex( string $plug )
+{
+	string	$multiIndexB = match( "\\[[0-9]*\\]", $plug );
+
+	if ( $multiIndexB == "" ) {
+		return -1;
+	}
+
+	string	$multiIndexStr = substring( $multiIndexB, 2, (size($multiIndexB)-1) );
+	int		$multiIndex = $multiIndexStr;
+
+	return $multiIndex;
+}
+
+proc string baseFromHairMapsAttr(
+	string	$hairMapsAttr
+)
+{
+	int		$l = size( $hairMapsAttr );
+
+	if ( $l > 3 ) {
+		string	$temp = substring( $hairMapsAttr, $l - 2, $l );
+
+		if ( $temp == "Map" ) {
+			$temp = substring( $hairMapsAttr, 1, $l - 3 );
+			return $temp;
+		} else {
+			return "";
+		} 
+	} else {
+		return "";
+	}
+}
+
+proc string hairMapUSamplesAttr(
+	string	$baseAttr
+)
+{
+	return ($baseAttr + "MapUSamples");
+}
+
+proc string hairMapVSamplesAttr(
+	string	$baseAttr
+)
+{
+	return ($baseAttr + "MapVSamples");
+}
+
+
+proc string[] getDstPlugs(
+	string	$srcPlug
+)
+{
+	string	$dstPlugs[];
+	
+	// work around bug in connectionInfo -dfs where a
+	// string is returned instead of a string array
+	// if there are no connections
+	//
+	if ( `connectionInfo -isSource $srcPlug` ) {
+		$dstPlugs = `connectionInfo -dfs $srcPlug`;
+	}
+	
+	return $dstPlugs;
+}
+
+
+proc string feedbackMapDirtyAttr(
+	string	$baseAttr
+)
+{
+	return ($baseAttr + "MapDirty");
+}
+
+
+proc string feedbackSamplesDirtyAttr(
+	string	$baseAttr
+)
+{
+	return ($baseAttr + "SamplesDirty");
+}
+
+proc setMapFile(
+	string	$mapPlug,
+	string	$mapFile
+)
+{
+	string	$tag = "setMapFile";
+
+	HfTDebug($tag, "setting " + $mapPlug + " to " + $mapFile);
+	setAttr -type "string" $mapPlug $mapFile;
+
+	int		$mi = getMultiIndex( $mapPlug );
+
+	if ( $mi >= 0 ) {
+		string	$baseAttr = plugAttr( stripMultiIndex( $mapPlug ) );
+		
+		$baseAttr = baseFromHairMapsAttr( $baseAttr );
+
+		if ( $baseAttr != "" ) {
+			string	$hd = plugNode( $mapPlug );
+			string	$mapUSamplesPlug = $hd + "." + hairMapUSamplesAttr($baseAttr) + "[" + $mi + "]";
+			string	$mapVSamplesPlug = $hd + "." + hairMapVSamplesAttr($baseAttr) + "[" + $mi + "]";
+
+			HfTDebug($tag, "zeroing " + $mapUSamplesPlug + " & " + $mapVSamplesPlug);
+			setAttr $mapUSamplesPlug 0;
+			setAttr $mapVSamplesPlug 0;
+
+			// if a feedback node is connected to the map plug, clear the map
+			// dirty flag
+			//
+			string	$connections[] = getDstPlugs( $mapPlug );
+			string	$c;
+
+			for ( $c in $connections ) {
+				if ( `nodeType $c` == "FurFeedback" ) {
+					string	$dirtyPlug = plugNode( $c ) + "." + feedbackMapDirtyAttr($baseAttr);
+
+					HfTDebug( $tag, "clearing " + $dirtyPlug );
+					setAttr $dirtyPlug 0;
+					$dirtyPlug = plugNode( $c ) + "." + feedbackSamplesDirtyAttr($baseAttr);
+					HfTDebug( $tag, "clearing " + $dirtyPlug );
+					setAttr $dirtyPlug 0;
+				}
+			}
+		}
+	}
+}
+proc outputError(string $file,string $errorTxt)
+{
+	$fileId = `fopen $file "w"`;
+
+	fprint $fileId ("ERROR:" + $errorTxt + "\r\n");
+
+	fclose $fileId; 
+
+	quit -f;
+}
+
+
+proc string zwGetOverrideAttr(string $layer, string $attr)
+{
+	if ($layer == `editRenderLayerGlobals -query -currentRenderLayer`)
+	{
+		return $attr;
+	}
+
+	string $buf[] = `editRenderLayerAdjustment -layer $layer -query`;
+	int $find = false;
+	for ($i=0; $i<size($buf); $i++)
+	{
+		if ($buf[$i] == $attr)
+		{
+			$find = true;
+			break;
+		}
+	}
+	if (!$find)
+	{
+		$buf = `listConnections "renderLayerManager.renderLayerId[0]"`;
+		$layer = $buf[0];
+	}
+
+	$buf = `listConnections -source false -plugs true -connections true $attr`;
+	for ($i=1; $i<size($buf); $i+=2)
+	{
+		if ($buf[$i] == `match ($layer + "[.]adjustments\\[[0-9]+\\][.]plug") $buf[$i]`)
+		{
+			return (`match ($layer + "[.]adjustments\\[[0-9]+\\]") $buf[$i]` + ".value");
+		}
+	}
+
+	return $attr;
+}
+
+//main
+global proc maya_preRender(string $projPath,string $txtPath,float $renderFrame)
+{
+	if (`pluginInfo -q -loaded "C:/Program Files/3Delight/maya/plugins/3delight_for_maya2012.mll"`)
+	    loadPlugin "C:/Program Files/3Delight/maya/plugins/3dfm_shave2012.mll";
+	
+	string $realPath = $txtPath + "_render.txt";
+//	string $realPath = $txtPath;
+
+	string $renderLayers[] = `listConnections "renderLayerManager.renderLayerId"`;
+	//reset all renderlayers
+	for ($item in $renderLayers)
+	{
+		if (`getAttr -lock ($item+".renderable")`)
+			setAttr -l 0 ($item+".renderable");
+
+		setAttr ($item + ".renderable") 0; 
+		
+	}
+
+	catch(`setAttr "defaultRenderGlobals.modifyExtension" 0`);
+
+	//reset all cameras
+	string $cams[] = `ls -cameras`;
+	for ($item in $cams)
+	{
+		if (`getAttr -lock ($item + ".renderable")`)
+			catch(`setAttr -l 0 ($item + ".renderable")`);
+
+		catch(`setAttr ($item + ".renderable") 0`);
+	}
+
+	if (`filetest -f $realPath`)
+	{	
+		$fileID = `fopen $realPath r`;
+
+		if ($fileID == 0)
+		{
+			// cannot open the file
+			outputError($txtPath + "_err.txt", ("Failed to open " + $realPath));
+			return;
+		}
+
+		setAttr "defaultRenderGlobals.animation" 1;
+
+		while (!`feof $fileID`) 
+		{
+			string $nextLine = strip(`fgetline $fileID`);
+			$nextLine = `encodeString $nextLine`;
+
+			//1.set texture for those missed
+			if ($nextLine == "separator----texture.A.f")
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+					{
+						if (`getAttr -lock ($buf[0] + ".fileTextureName")`)
+							setAttr -l false ($buf[0] + ".fileTextureName");
+						setAttr  -type "string" ($buf[0] + ".fileTextureName") $buf[1];
+					}
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//2.set mentalrayTextures for those missed
+			if (($nextLine == "separator----MrTexture.A.f")&&(`pluginInfo -q -loaded Mayatomr`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".fileTextureName") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//3.set mib_ptex_lookup for those missed
+			if (($nextLine == "separator----Mibptex.A.f")&&(`pluginInfo -q -loaded Mayatomr`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".filename") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//4.set mentalrayIblShape for those missed
+			if (($nextLine == "separator----MrIblShape.A.f")&&(`pluginInfo -q -loaded Mayatomr`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".texture") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//5.set cacheFile for those missed
+			if ($nextLine == "separator----cache.A.f")
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					string $onlyPath = `substitute "[\\/][^\\/]+$" $buf[1] ""`;
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".cachePath") $onlyPath;
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//6.set diskCache for those missed. Ignore
+
+			//7. set fur texture
+			if (($nextLine == "separator----fur.A.f")&&(`pluginInfo -q -loaded Fur`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setMapFile($buf[0], substituteAllString($buf[1], "\\", "/"));
+
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//8.set shaveCache for those missed
+			if (($nextLine == "separator----shave.B.d")&&(`pluginInfo -q -loaded shaveNode`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".tmpDir") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+				
+				if (`objExists shaveGlobals`)
+				{
+					if (`getAttr shaveGlobals.keepHairPassPics`) 
+					{
+						string $sbuf[];
+						clear $sbuf;
+						tokenize $txtPath "/" $sbuf;
+						setAttr -type "string" shaveGlobals.hairFilenamePrefix ("C:/enfwork/" + $sbuf[2] + "/output/shaveHair");
+					}
+				}
+			}
+		
+			//9.set dynGlobals for those missed. Ignore.
+			
+			//10.set realflow mesh cache
+			if (($nextLine == "separator----realflowMesh.B.f")&&(`pluginInfo -q -loaded realflow`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".Path") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//11.set realflow emitter cache
+			if (($nextLine == "separator----realflowEmitter.B.d")&&(`pluginInfo -q -loaded realflow`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".Paths[0]") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//12.set vray mesh 
+			if (($nextLine == "separator----VrayMesh.A.f")&&(`pluginInfo -q -loaded vrayformaya`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".fileName") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//13.set vray IES
+			if (($nextLine == "separator----VrayIES.A.f")&&(`pluginInfo -q -loaded vrayformaya`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".iesFile") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//14.set image plane texture for those missed
+			if ($nextLine == "separator----ImagePlane.A.f")
+			{
+				string $allFiles[] = `ls -type imagePlane`;    
+				for($item in $allFiles)
+					setAttr  -type "string" ($item + ".imageName") "";
+
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+
+
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".imageName") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+
+			//15.set Arnold paths
+			if (($nextLine == "separator----Arnold.B.d")&&(`pluginInfo -q -loaded mtoa`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+					{
+						string $seg[];
+						clear $seg;
+
+						tokenize $buf[0] "." $seg;
+						if ($seg[1] == "plugins_path")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" "defaultArnoldRenderOptions.plugins_path" $buf[1];
+						}
+						if ($seg[1] == "procedural_searchpath")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" "defaultArnoldRenderOptions.procedural_searchpath" $buf[1];
+						}
+						if ($seg[1] == "shader_searchpath")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" "defaultArnoldRenderOptions.shader_searchpath" $buf[1];
+						}
+						if ($seg[1] == "texture_searchpath")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" "defaultArnoldRenderOptions.texture_searchpath" $buf[1];
+						}
+					}
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//16.set Alembic files for those missed
+			if (($nextLine == "separator----Alembic.A.f")&&(`pluginInfo -q -loaded AbcImport`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr -type "string" ($buf[0] + ".abc_File") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//17.set maxwell EnvTexture for those missed
+			if (($nextLine == "separator----maxwellEnvTexture.A.f")&&(`pluginInfo -q -loaded maxwell`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr -type "string" ($buf[0] + ".environment.envTexture") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+			
+			//18.set maxwell PointLightGeom for those missed
+			if (($nextLine == "separator----maxwellPointLightGeom.A.f")&&(`pluginInfo -q -loaded maxwell`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr -type "string" ($buf[0] + ".pointLightGeom") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//19.set maxwell SpotLightGeom for those missed
+			if (($nextLine == "separator----maxwellSpotLightGeom.A.f")&&(`pluginInfo -q -loaded maxwell`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr -type "string" ($buf[0] + ".spotLightGeom") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//20.set maxwell AreaLightGeom for those missed
+			if (($nextLine == "separator----maxwellAreaLightGeom.A.f")&&(`pluginInfo -q -loaded maxwell`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr -type "string" ($buf[0] + ".areaLightGeom") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//21.set substanceFile for those missed
+			if (($nextLine == "separator----SubstanceFile.A.f")&&(`pluginInfo -q -loaded Substance`))
+			{
+				global int $sbs_PackageHasJustBeenChanged;
+
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+					{
+
+						$sbs_PackageHasJustBeenChanged = 1; //update our global variable
+
+						string $outs[] = `listConnections -s 0 -d 1 -c 1 -plugs 1 -type substanceOutput $buf[0]`;
+						for ($j = 0;$j<size($outs);$j+=2)
+						{
+							catch(`disconnectAttr $outs[$j] $outs[$j+1]`);
+						}
+
+						
+						string $newpath = substituteAllString($buf[1], "\\", "/");
+						
+						setAttr ($buf[0] + ".relocalized") 1;
+						setAttr ($buf[0] + ".package") -type "string" ($newpath);
+
+						for ($j = 0;$j<size($outs);$j+=2)
+						{
+							catch(`connectAttr -f $outs[$j] $outs[$j+1]`);
+						}
+
+					}
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//22.set mental ray proxy for those missed
+			if (($nextLine == "separator----MrProxy.A.f")&&(`pluginInfo -q -loaded Mayatomr`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+					{
+						setAttr -type "string" ($buf[0] + ".miProxyFile") $buf[1];
+					}
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//23.set aiStandIn 
+			if (($nextLine == "separator----aiStandIn.A.f")&&(`pluginInfo -q -loaded mtoa`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+						setAttr  -type "string" ($buf[0] + ".dso") $buf[1];
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//24.set yetiFur 
+			if (($nextLine == "separator----yetiFur.B.d")&&(`pluginInfo -q -loaded pgYetiMaya`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+					{
+						string $cfile = `getAttr ($buf[0]+".cacheFileName")`;
+						string $basename = basename( $cfile,".fur" );
+
+						setAttr  -type "string" ($buf[0] + ".cacheFileName") ($buf[1]+"/"+$basename + ".fur");
+					}
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//25.set mental ray maps
+			if (($nextLine == "separator----MrMaps.A.f")&&(`pluginInfo -q -loaded Mayatomr`))
+			{
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+					{
+						string $seg[];
+						clear $seg;
+
+						tokenize $buf[0] "." $seg;
+						if ($seg[1] == "photonMap")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" ("miDefaultOptions.photonMapFilename") $buf[1];
+							setAttr "miDefaultOptions.photonMapRebuild" 0;
+						}
+						if ($seg[1] == "finalGatherMap")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" ("miDefaultOptions.finalGatherFilename") $buf[1];
+							//if (`getAttr miDefaultOptions.finalGatherRebuild` == 1)
+								setAttr miDefaultOptions.finalGatherRebuild 2;
+						}
+					}
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+			}
+
+			//26.set Vray maps
+			if (($nextLine == "separator----VrayMaps.A.f")&&(`pluginInfo -q -loaded vrayformaya`))
+			{
+				if (`objExists vraySettings.sys_rayc_dynMemLimit`)
+					catch(`setAttr "vraySettings.sys_rayc_dynMemLimit" 20000`);
+
+				string $buf[];
+				clear $buf;
+
+				$nextLine = strip(`fgetline $fileID`);
+				$nextLine = `encodeString $nextLine`;
+				$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+				int $num = size($buf);
+				if ($num == 3)
+		                {
+					if ($buf[2] ==1)
+					{
+						string $seg[];
+						clear $seg;
+
+						tokenize $buf[0] "." $seg;
+						editRenderLayerGlobals -currentRenderLayer $seg[0];
+						
+						string $asf = `getAttr vraySettings.imap_autoSaveFile`;
+						if (strip($asf)!="")
+						{
+							string $shortname = `match "[^/\\]+$" $asf`;
+							string $newFile = `workspace -q -rootDirectory` + $shortname;
+							setAttr -type "string" ("vraySettings.imap_autoSaveFile") $newFile;
+						}
+						string $asf = `getAttr vraySettings.pmap_autoSaveFile`;
+						if (strip($asf)!="")
+						{
+							string $shortname = `match "[^/\\]+$" $asf`;
+							string $newFile = `workspace -q -rootDirectory` + $shortname;
+							setAttr -type "string" ("vraySettings.pmap_autoSaveFile") $newFile;
+						}
+						string $asf = `getAttr vraySettings.causticsAutoSaveFile`;
+						if (strip($asf)!="")
+						{
+							string $shortname = `match "[^/\\]+$" $asf`;
+							string $newFile = `workspace -q -rootDirectory` + $shortname;
+							setAttr -type "string" ("vraySettings.causticsAutoSaveFile") $newFile;
+						}
+						string $asf = `getAttr vraySettings.autoSaveFile`;
+						if (strip($asf)!="")
+						{
+							string $shortname = `match "[^/\\]+$" $asf`;
+							string $newFile = `workspace -q -rootDirectory` + $shortname;
+							setAttr -type "string" ("vraySettings.autoSaveFile") $newFile;
+						}	
+					}
+				}
+
+				while ($num == 3)
+				{
+					if ($buf[2] ==1)
+					{
+						string $seg[];
+						clear $seg;
+
+						tokenize $buf[0] "." $seg;
+						if ($seg[1] == "Irradiance")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" ("vraySettings.imap_fileName") $buf[1];
+						}
+						if ($seg[1] == "Photon")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" ("vraySettings.pmap_file") $buf[1];
+						}
+						if ($seg[1] == "Caustics")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" ("vraySettings.causticsFile") $buf[1];
+						}
+						if ($seg[1] == "SphericalHarmonics")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" ("vraySettings.shr_file_name") $buf[1];
+						}
+						if ($seg[1] == "LightCache")
+						{
+							editRenderLayerGlobals -currentRenderLayer $seg[0];
+							setAttr -type "string" ("vraySettings.fileName") $buf[1];
+						}
+					}
+	
+					$nextLine = strip(`fgetline $fileID`);
+					$nextLine = `encodeString $nextLine`;
+					$buf = `python ("\"" + $nextLine + "\".split('::')")`;
+					$num = size($buf);
+				}
+
+			}
+
+			//27.set render settings
+			if ($nextLine == "separator----RenderSettings.B")
+			{
+				string $buf[];
+				clear $buf;
+
+				$next = strip(`fgetline $fileID`);
+				$next = `encodeString $next`;
+				while (size($next))
+				{
+					if (`gmatch $next "format*"`)	//ignore
+					{
+					}
+	
+
+					if (`gmatch $next "Render Layer*"`)	
+					{
+						$buf = `python ("'" + $next + "'.split('::')")`;
+						int $num = size($buf);
+						
+						for ($item in $renderLayers)
+						{
+							if ($item == $buf[1])
+								setAttr ($item + ".renderable") 1; 
+						}
+					}
+
+					if (`gmatch $next "Start*"`)
+					{
+						$buf = `python ("'" + $next + "'.split('::')")`;
+						int $num = size($buf);
+
+						if (`getAttr -lock defaultRenderGlobals.startFrame`)
+							setAttr -l 0 defaultRenderGlobals.startFrame;
+
+						setAttr defaultRenderGlobals.startFrame $buf[1]; 
+					}
+					
+					if (`gmatch $next "End*"`)
+					{
+						$buf = `python ("'" + $next + "'.split('::')")`;
+						int $num = size($buf);
+						
+						if (`getAttr -lock defaultRenderGlobals.endFrame`)
+							setAttr -l 0 defaultRenderGlobals.endFrame;
+
+						setAttr defaultRenderGlobals.endFrame $buf[1]; 
+					}
+
+					if (`gmatch $next "Camera*"`)
+					{
+						$buf = `python ("'" + $next + "'.split('::')")`;
+						int $num = size($buf);
+
+						catch(`setAttr ($buf[1] + ".renderable") 1`); 
+					}
+					
+					if (`gmatch $next "Width*"`)
+					{
+						$buf = `python ("'" + $next + "'.split('::')")`;
+						int $num = size($buf);
+						int $val = int($buf[1]);
+
+						if (`getAttr -lock defaultResolution.width`)
+							setAttr -l 0 defaultResolution.width;
+
+						setAttr defaultResolution.width $val; 
+						
+						if(`pluginInfo -q -loaded vrayformaya`&&`objExists vraySettings.aspectLock`)
+						{
+							setAttr vraySettings.aspectLock 0;
+							setAttr vraySettings.width $val;
+						}
+					}
+
+					if (`gmatch $next "Height*"`)
+					{
+						$buf = `python ("'" + $next + "'.split('::')")`;
+						int $num = size($buf);
+						int $val = int($buf[1]);
+
+						if (`getAttr -lock defaultResolution.height`)
+							setAttr -l 0 defaultResolution.height;
+
+						setAttr defaultResolution.height $val; 
+					
+						if(`pluginInfo -q -loaded vrayformaya`&&`objExists vraySettings.aspectLock`)
+						{
+							setAttr vraySettings.aspectLock 0;
+							setAttr vraySettings.height $val;
+						}
+						
+					}
+					
+					if (`gmatch $next "VrayAnimPrepass*"`)
+					{
+						if(`pluginInfo -q -loaded vrayformaya`)
+						{
+							string $buf[];
+							clear $buf;
+							tokenize $txtPath "/" $buf;
+							string $newPath = "C:/enfwork/" + $buf[2] + "/output/";
+
+							for ($item in $renderLayers)
+							{
+								int $renderable = `getAttr ($item + ".renderable")`;
+								if ($renderable)
+								{
+									string $attr = zwGetOverrideAttr($item, "defaultRenderGlobals.currentRenderer");
+									string $renderer = `getAttr $attr`;
+									if ($renderer == "vray")
+									{
+										string $attr = zwGetOverrideAttr($item, "vraySettings.imap_mode");
+										string $imode = `getAttr $attr`;
+										if ($imode == 6)
+										{
+											string $attr1 = zwGetOverrideAttr($item, "vraySettings.imap_autoSaveFile");
+											string $map = `getAttr $attr1`;
+											
+											string $sbuf[];
+											clear $sbuf;
+											tokenize $map "/" $sbuf;
+											string $asfname = "";
+											if ($sbuf[size($sbuf)-1] != "")
+												$asfname = $sbuf[size($sbuf)-1];
+											else 
+												$asfname = "ir.vrmap";
+
+											editRenderLayerGlobals -currentRenderLayer $item;
+											setAttr -type "string" ("vraySettings.imap_autoSaveFile") ($newPath + $asfname);
+										}
+									}
+								}
+							}
+						}
+					}
+
+					$next = strip(`fgetline $fileID`);
+					$next = `encodeString $next`;
+				}
+			}
+		}
+		fclose $fileID;
+
+	}
+
+
+	
+	/////////////////////////////////////////////////////////////////////////
+	//esp. for vixo
+	if (`gmatch $projPath "*15476*"`)
+	{
+		if (`about -version`=="2011 x64")
+		{
+			if (`pluginInfo -q -loaded PGrass`)
+			{
+				catch(eval("source PGrassUtil.mel")); 
+				catch(PGrass_dumpAllData()); 
+			}
+			if (`pluginInfo -q -loaded PGrass`)
+			{
+				catch(eval("source PTreeUtil.mel")); 
+				catch(PTree_dumpAllData()); 
+			}
+		}
+	}
+
+	if (`gmatch $projPath "*61367*"`)
+	{
+		catch(`setAttr "Higga*:be_contrained.fur_vis" 1`);
+	
+	}
+
+	if (`gmatch $projPath "*16630*"`)
+	{
+		catch(eval("source preMel.mel")); 
+		catch(preMel()); 
+	
+	}
+
+	//esp. for GDC
+	if (`gmatch $projPath "*15251*"`)
+	{
+		catch(`setAttr -type "string" defaultRenderGlobals.imageFilePrefix "<RenderLayer>/<Scene>_<RenderLayer>"`);
+		if (`about -version`=="2010 x64")
+			catch(maCGRepairBtyXtra());
+	
+	}
+
+	/////////////////////////////////////////////////////////////////////////
+
+	//file -rename "test.mb"; file -save;
+	print ("Done!\n");
+}

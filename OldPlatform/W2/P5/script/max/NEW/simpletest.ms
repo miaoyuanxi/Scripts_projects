@@ -1,0 +1,1 @@
+render outputwidth:(512) outputheight:(216)  frame:18 outputfile:"d:/work/test/aa_18.exr" quiet:true progressbar:true

@@ -1,0 +1,85 @@
+///
+/// Author: ³ÂÖÙ(Neil Chen)
+///
+/// File Name: _RV_RSConfig.mel
+///
+/// Creation Date: 2016/03/16
+///
+/// Description: 
+///		NULL
+/// Feedback:
+///		Neil_chenzhong@yahoo.com
+///
+///
+
+global proc _RV_RSConfig()
+{
+	// total VRAM - 6G
+	int $vram_mb = 1024*6;
+
+	string $tline = "_RV_RSConfig running ...";
+	//print("\n_RV_RSConfig running ...");
+	$tline += ("\n" + `date -d` + " " + `date -t`);
+
+	// normally should check if plugin rs loaded or not
+	// but leave it for now
+	string $buff[] = `ls -type "RedshiftOptions"`;
+	if(`size $buff`>0){
+		//print("\n-->_RV_RSConfig setting up ...");
+		$tline += "\n-->_RV_RSConfig setting up ...";
+		int $_p_vram_used = 0.95;
+
+		int $_p_pc_reserved = 0;
+		int $_p_pc_reserved = 0;
+		int $_p_texcache = 15;
+		int $_p_gputex_max = 256;
+		int $_p_rayreserved = 0;
+
+		// use the first one without namespace if more than 1
+		if(`size $buff`>1){
+			$buff = `ls "*redshiftOptions*"`;
+		}
+		int $idGIEngine = `getAttr ($buff[0] + ".primaryGIEngine")`;
+		switch($idGIEngine){
+			// Irradiance Cache
+			case 3:
+				$_p_pc_reserved = 0;
+				$_p_pc_reserved = 0;
+				$_p_texcache = 15;
+				$_p_gputex_max = 256;
+				$_p_rayreserved = 0;
+				break;
+			// Brute Force
+			case 4:
+				$_p_pc_reserved = 0;
+				$_p_pc_reserved = 0;
+				$_p_texcache = 15;
+				$_p_gputex_max = 256;
+				$_p_rayreserved = 0;
+				break;
+			// default to 980Ti
+			// 6G
+			default:
+				$_p_pc_reserved = 0;
+				$_p_pc_reserved = 0;
+				$_p_texcache = 15;
+				$_p_gputex_max = 256;
+				$_p_rayreserved = 0;
+		}
+		// set it up
+		catch(`setAttr ($buff[0] + ".percentageOfGPUMemoryToUse") $_p_vram_used`);
+		catch(`setAttr ($buff[0] + ".maxNumGPUMBForIrradiancePointCloudHierarchy") $_pointcloud_reserved`);
+		catch(`setAttr ($buff[0] + ".maxNumGPUMBForForICPHierarchy") $_irracache_reserved`);
+		catch(`setAttr ($buff[0] + ".percentageOfFreeMemoryUsedForTextureCache") $_p_texcache`);
+		catch(`setAttr ($buff[0] + ".maxNumGPUMBForTextureCache") $_gputex_max`);
+		catch(`setAttr ($buff[0] + ".maxNumCPUMBForTextureCache") $_cputex_max`);
+		catch(`setAttr ($buff[0] + ".numGPUMBToReserveForRays") $_rayreserved`);
+		//file -save;
+	}
+	/*
+	string $tf = "C:\\_RV_RSConfig\\log\\ak47.txt";
+	$fileId = `fopen $tf "w"`;
+	fwrite $fileId $tline;
+	fclose $fileId;
+	*/
+}

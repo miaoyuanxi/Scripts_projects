@@ -1,0 +1,1 @@
+xcopy /y /f "\\10.50.10.231\aXYZ design\Anima.xml" "C:\Program Files\Autodesk\3ds Max 2013\plugins"

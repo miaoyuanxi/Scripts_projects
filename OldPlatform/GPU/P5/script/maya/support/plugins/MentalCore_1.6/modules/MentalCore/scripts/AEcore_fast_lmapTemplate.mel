@@ -1,0 +1,65 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+source "AEMentalCoreLogo.mel";
+source "AEMentalCoreUIRes.mel";
+
+global proc AEcore_lmap_CheckAO(string $nodeName) {
+	int $mode = `getAttr($nodeName + ".ao")`;
+
+	if ($mode == 1) {
+		editorTemplate -dimControl $nodeName "ao_samples" 0;
+		editorTemplate -dimControl $nodeName "ao_distance" 0;
+		editorTemplate -dimControl $nodeName "ao_colour" 0;
+	}
+	else {
+		editorTemplate -dimControl $nodeName "ao_samples" 1;
+		editorTemplate -dimControl $nodeName "ao_distance" 1;
+		editorTemplate -dimControl $nodeName "ao_colour" 1;
+	}
+}
+
+global proc AEcore_fast_lmapTemplate ( string $nodeName )
+{
+	AEMentalCoreLogo("mc_core_fast_lmap_logo.png");
+
+	AEswatchDisplay $nodeName;
+	
+	editorTemplate -beginScrollLayout;
+
+	// Sample
+	editorTemplate -beginLayout "Lightmap Sample" -collapse 0;
+	editorTemplate -beginNoOptimize;
+	editorTemplate -label "Include Indirect Lighting" -addControl "indirect";
+	editorTemplate -label "Include Ambient Lighting" -addControl "envlight";
+	editorTemplate -endNoOptimize;
+	editorTemplate -label "Additional Colour" -addControl "add";
+	
+	editorTemplate -addSeparator;
+	
+	editorTemplate -label "Diffuse Light Scale" -addControl "diffuse_intensity";
+	editorTemplate -label "Indirect Light Scale" -addControl "indirect_intensity";
+	editorTemplate -label "Ambient Light Scale" -addControl "amb_intensity";
+	
+	editorTemplate -addSeparator;
+	
+	editorTemplate -label "Enable Ambient Occlusion" -addControl "ao" "AEcore_lmap_CheckAO";
+	editorTemplate -label "Samples" -addControl "ao_samples";
+	editorTemplate -label "Distance" -addControl "ao_distance";
+	editorTemplate -label "Colour" -addControl "ao_colour";
+	
+	editorTemplate -endLayout;
+
+	// Data
+	editorTemplate -beginLayout (MC_UIRes("m_AEmisss_fast_lmap_mayaTemplate.kLightmapWrite", "kLightmapWrite")) -collapse 1;
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_lmap_mayaTemplate.kLightmap", "kLightmap")) -addControl "lightmap";
+	editorTemplate -label (MC_UIRes("m_AEmisss_fast_lmap_mayaTemplate.kScatterBias", "kScatterBias")) -addControl "scatter_bias";
+	editorTemplate -endLayout;
+
+	AEmentalrayBaseLightTemplate($nodeName);
+	AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

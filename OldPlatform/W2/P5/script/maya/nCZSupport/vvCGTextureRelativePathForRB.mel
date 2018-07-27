@@ -1,0 +1,22 @@
+//////////////////////////////////////////////////////////
+//
+//	Script Name: 
+//	Author: WansHoulOng
+//	Created: 
+//
+//	Update/Change: WansHoulOng
+//	Last Updated: 
+//	Description:
+//				
+//////////////////////////////////////////////////////////
+
+global proc vvCGTextureRelativePathForRB()
+{
+	catch(`putenv "VV_PATH" "//10.50.10.4/d/inputdata/maya/18445/VickTheViking/sourceimages"`);
+	print("\nVV_PATH env set!\n");
+
+
+	catch(`putenv "IDMT_PROJECTS" "//file-cluster/GDC/Projects"`);
+	print("\nIDMT_PROJECTS env set!\n");
+}
+

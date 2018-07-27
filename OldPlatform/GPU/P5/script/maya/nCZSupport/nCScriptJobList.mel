@@ -1,0 +1,60 @@
+///
+/// Author: ³ÂÖÙ(Neil Chen)
+///
+/// Creation Date: 2011/5/11
+///
+/// Description: 
+///		initialize scriptJob
+/// Feedback:
+///		Neil_chenzhong@yahoo.com
+///
+
+global proc gdcForceSceneSave()
+{
+	string $fullFileName = `nCGetFullFileName`;
+	if(`gmatch $fullFileName "*18445*"`){
+		print("\n	-> force scene saved...");
+		file -save -force;
+	}
+}
+
+global proc vvImportAllReferencesForRB()
+{
+	string $buff[] = `file -query -reference`;
+	for ($f in $buff){
+		$rfnodename = `referenceQuery -rfn $f`;
+		int $flag = `referenceQuery -isLoaded $rfnodename`;
+		if($flag){		    
+		    $rffilename = `referenceQuery -filename -withoutCopyNumber $f`;
+		    $rffilename = `toNativePath $rffilename`;
+		    if(`filetest -f $rffilename`){
+			  file -ir $rffilename;
+		    }
+		    
+		}
+	}
+}
+
+global proc nCSceneOpenedScriptJob()
+{
+// DESCRIPTION:
+//	SCENE OPEN SCRIPTJOB
+
+	// global variables update
+	print("\nScene opened script-job runing...\n");
+
+	// gdc ops
+	gdcForceSceneSave;
+}
+
+global proc nCScriptJobList()
+{
+	print("\nnCScriptJobList running...\n");
+
+	// scene open
+	scriptJob	-event "SceneOpened"
+		  "catch(`nCSceneOpenedScriptJob`);";
+}
+
+
+

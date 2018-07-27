@@ -1,0 +1,107 @@
+﻿#!/usr/bin/env python   
+#coding=utf-8   
+import os
+import shutil
+import subprocess
+import sys
+import time
+
+#获取机器名 
+def getHostName():   
+        sys = os.name 
+        hostname=""  
+        if sys == 'nt':   
+                hostname = os.getenv('computername')   
+                #return hostname   
+        elif sys == 'posix':   
+                host = os.popen('echo $HOSTNAME')   
+                try:   
+                        hostname = host.read()   
+                        #return hostname   
+                finally:   
+                        host.close()   
+        print hostname
+        return hostname
+       
+    
+def changeEnfuzionCfg():
+    hostname = getHostName()
+    if len(hostname)==4:
+        if(hostname.startswith('B')):
+            last=int(hostname[1:])
+            if(last >= 0 and last <= 100):
+                #读取host文件
+                lineNum=0
+                path=r'C:\EnFuzion\enfuzion.options.txt'
+                #要查找的字符
+                findStr="property Windows,analyseNode"
+                #要替换的字符
+                replaceStr="property analyseNode,oversea\n"
+                input = open(path, 'r')
+                try:
+                    flist = input.readlines() 
+                    for line in  flist: 
+                        lineNum +=1
+                        if findStr in line:
+                        #给这一行赋值
+                            flist[lineNum-1]=replaceStr
+                            f=open(path,'w')
+                            f.writelines(flist)
+                            break      
+                finally:
+                    input.close()
+def changeHost():
+    hostname = getHostName()
+    if len(hostname)==4:
+        last=int(hostname[1:])
+        print last
+        ip = ''
+        if(last <= 40 ):
+            ip = '10.50.100.2'
+        elif(last <= 80 ):
+            ip = '10.50.100.3'
+        elif(last <= 120 ):
+            ip = '10.50.100.4'
+        elif(last <= 160 ):
+            ip = '10.50.100.5'
+        elif(last <= 200 ):
+            ip = '10.50.100.6'
+        else:
+            ip = '10.50.100.1'
+        #读取host文件
+        lineNum=0
+        path=r'C:\WINDOWS\system32\drivers\etc\hosts'
+        #要查找的字符
+        findStr="dataIp"
+        #要替换的字符
+        replaceStr=ip + ' dataIp\n'
+        exist = 0
+        input = open(path, 'r')
+        try:
+            flist = input.readlines() 
+            for line in  flist: 
+                lineNum +=1
+                if findStr in line:
+                #给这一行赋值
+                    exist = 1
+                    flist[lineNum-1]=replaceStr
+                    f=open(path,'w')
+                    f.writelines(flist)
+                    f.close()
+                    break
+            if(exist == 0):
+                 output = open(path, 'a') 
+                 replaceStr="\n"+replaceStr 
+                 output .write(replaceStr)  
+                 output .close( )              
+        finally:
+            input.close()
+        
+
+#main方法   当执行python文件时从这里开始执行
+if __name__ == '__main__':
+    changeHost()
+   
+
+    
+    

@@ -1,0 +1,25 @@
+//  Copyright (c)2012 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+
+global proc AEcore_color_to_scalarTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_color_to_scalar_logo.png");
+	
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -addControl "mode";
+			editorTemplate -addControl "color";
+			
+			editorTemplate -addSeparator;
+			
+			editorTemplate -addControl "invert";
+			editorTemplate -addControl "clamp_min";
+			editorTemplate -addControl "clamp_max";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

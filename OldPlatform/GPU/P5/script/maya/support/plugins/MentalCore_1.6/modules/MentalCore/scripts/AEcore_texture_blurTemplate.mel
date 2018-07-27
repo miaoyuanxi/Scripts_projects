@@ -1,0 +1,29 @@
+//  Copyright (c)2011 Core CG
+//  All rights reserved
+//  www.core-cg.com
+
+global proc AEcore_texture_blurTemplate( string $nodeName )
+{	
+	AEMentalCoreLogo("mc_core_texture_blur_logo.png");
+
+	editorTemplate -beginScrollLayout;
+		editorTemplate -beginLayout "Parameters" -collapse 0;
+			editorTemplate -label "Texture" -addControl "tex";
+			
+			editorTemplate -addSeparator;
+
+			editorTemplate -beginNoOptimize;
+			editorTemplate -label "Interpolate" -addControl "interpolate";
+			editorTemplate -endNoOptimize;
+			
+			editorTemplate -label "Wrap X" -addControl "wrap_x";
+			editorTemplate -label "Wrap Y" -addControl "wrap_y";
+			editorTemplate -label "Blur Resolution" -addControl "blur_res";
+			editorTemplate -label "Blur" -addControl "blur";
+			editorTemplate -label "Quality" -addControl "quality";
+		editorTemplate -endLayout;
+
+		AEmentalrayBaseTemplate($nodeName);
+
+	editorTemplate -endScrollLayout;
+}

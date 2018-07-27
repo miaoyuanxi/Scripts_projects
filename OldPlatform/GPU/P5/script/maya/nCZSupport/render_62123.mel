@@ -1,0 +1,29 @@
+global proc render_62123(string $proj, string $rd)
+{
+	print("\nScript - render_62123 Running...\n");
+	// set project path
+	setProject $proj;
+
+	// set mental ray image format as openEXR
+	//setParentToCommonTab();
+	catch(`loadPlugin -n "Mayatomr.mll"`);
+	string $imageFormat = "exr";
+	setAttr defaultRenderGlobals.imageFormat 51;
+	setAttr defaultRenderGlobals.imfkey -type "string" $imageFormat;
+	setAttr mentalrayGlobals.imageCompression 4;
+	setAttr mentalrayGlobals.compressionQuality 0;
+
+	// puppet output path settings
+	string $str, $this_rd;
+	$str = `nCGetFullFileName`;
+	$str = `nCShortFileName $str`;
+	$str = `nCRemoveExtFromFileName $str`;
+	$rd = `substituteAllString $rd "\\" "/"`;
+	if(!`gmatch $rd "*/"`){
+		$rd += "/";
+	}
+	$this_rd = $rd + $str + "/" + "hair";
+	$this_rd = `toNativePath $this_rd`;
+	catch(`sysFile -md $this_rd`);
+	catch(`setAttr "*.rdir" -type "string" $this_rd`);
+}
